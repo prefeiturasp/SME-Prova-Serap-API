@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  sme.serap.prova.api:
+    image: ${DOCKER_REGISTRY-}smeserapprovaapi
+    build:
+      context: .
+      dockerfile: src/SME.SERAp.Prova.Api/Dockerfile

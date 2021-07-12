@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>3f740024-a1e8-46f0-ab52-e1e75943c295</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerfileContext>..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="4.2.0" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SME.SERAp.Prova.Aplicacao\SME.SERAp.Prova.Aplicacao.csproj" />
+    <ProjectReference Include="..\SME.SERAp.Prova.Infra\SME.SERAp.Prova.Infra.csproj" />
+    <ProjectReference Include="..\SME.SERAp.Prova.IoC\SME.SERAp.Prova.IoC.csproj" />
+  </ItemGroup>
+
+</Project>
