@@ -12,6 +12,7 @@ jobs:
     runs-on: dotnet
 
     steps:
+      - uses: actions/checkout@v2
       -
          name: Login to registry
          uses: docker/login-action@v1
@@ -23,5 +24,22 @@ jobs:
     
       - name: Build the Docker image    
         run: | 
-             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api |
+             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+
+  deploy:
+    runs-on: dotnet    
+    needs: [ build ]
+    steps:
+      - name: Run an adjust of kubernetes dev
+        env: # Ou como uma variável de ambiente
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+        run: |
+          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config
+          kubectl get nodes          
+      - 
+       name: Change Images
+       run: |
+         kubectl rollout restart sme-serap-estudante/sme-prova-serap-api -n sme-serap-estudante             
+         rm -f /runner/.kube/config      
