@@ -20,6 +20,5 @@ jobs:
         password: ${{ secrets.REGISTRY_PWD }}
 
     
-    - name: Build the Docker image
-    - uses: actions/checkout@v2    
+    - name: Build the Docker image    
     - run: docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/development/sme-prova-serap-api 
