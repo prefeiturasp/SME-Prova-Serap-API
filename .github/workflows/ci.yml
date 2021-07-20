@@ -1,5 +1,5 @@
 name: Docker Image CI
-
+ 
 on:
   push:
     branches: [ development ]
@@ -9,7 +9,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: dotnet
 
     steps:
     - uses: actions/checkout@v2
