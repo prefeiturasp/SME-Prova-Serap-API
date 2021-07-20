@@ -29,6 +29,8 @@ jobs:
 
   deploy:
     runs-on: dotnet    
+    environment:
+      name: development
     needs: [ build ]
     steps:
       - name: Run an adjust of kubernetes dev
