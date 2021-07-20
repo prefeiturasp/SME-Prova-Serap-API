@@ -14,5 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/development/sme-prova-serap-api | 
-           echo ${{registry_pwd}} | sudo docker login registry.sme.prefeitura.sp.gov.br --username ${{registry_user}} --password-stdin 
+      run: docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/development/sme-prova-serap-api 
