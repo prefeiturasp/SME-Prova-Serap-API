@@ -23,5 +23,5 @@ jobs:
     
       - name: Build the Docker image    
         run: | 
-             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/development/sme-prova-serap-api |
-             docker push registry.sme.prefeitura.sp.gov.br/development/sme-prova-serap-api
+             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/${GITHUB_REF##*/}/sme-prova-serap-api |
+             docker push registry.sme.prefeitura.sp.gov.br/${GITHUB_REF##*/}/sme-prova-serap-api
