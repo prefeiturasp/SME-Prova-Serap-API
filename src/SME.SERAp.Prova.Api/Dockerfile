@@ -16,7 +16,7 @@ COPY ["src/SME.SERAp.Prova.IoC/SME.SERAp.Prova.IoC.csproj", "SME.SERAp.Prova.IoC
 
 RUN dotnet restore "SME.SERAp.Prova.Api/SME.SERAp.Prova.Api.csproj"
 COPY . .
-WORKDIR "/src/SME.SERAp.Prova.Api"
+WORKDIR "/src/src/SME.SERAp.Prova.Api"
 RUN dotnet build "SME.SERAp.Prova.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
