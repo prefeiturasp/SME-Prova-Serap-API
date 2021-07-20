@@ -16,12 +16,12 @@ jobs:
          name: Login to registry
          uses: docker/login-action@v1
          with:
-          registry: registry.sme.prefeitura.sp.gov.br
+          registry: ${{ secrets.REGISTRY_HOST }}
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PWD }}
 
     
       - name: Build the Docker image    
         run: | 
-             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag registry.sme.prefeitura.sp.gov.br/${GITHUB_REF##*/}/sme-prova-serap-api |
-             docker push registry.sme.prefeitura.sp.gov.br/${GITHUB_REF##*/}/sme-prova-serap-api
+             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api |
+             docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
