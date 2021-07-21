@@ -60,6 +60,13 @@ jobs:
       name: release
     needs: [ build ]
     steps:
+      - name: Executando Scripts
+        env:
+          USER_DB: ${{ secrets.USER_DB }}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+          URL_DB: ${{ secrets.URL_DB }}
+        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
+
       - name: Run an adjust of kubernetes dev
         env: # Ou como uma variável de ambiente
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
