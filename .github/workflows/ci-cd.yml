@@ -9,7 +9,7 @@ jobs:
 
   build:
 
-    runs-on: dotnet
+    runs-on: serap
 
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,7 @@ jobs:
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
   deploy-development:
-    runs-on: dotnet
+    runs-on: serap
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
@@ -54,7 +54,7 @@ jobs:
          rm -f /runner/.kube/config      
   
   deploy-release:
-    runs-on: dotnet
+    runs-on: serap
     if: ${{ github.ref == 'refs/heads/release' }}        
     environment:
       name: release
