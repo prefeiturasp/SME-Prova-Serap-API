@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/prefeiturasp/SME-Prova-Serap-API/issues"
   },
-  "homepage": "https://github.com/prefeiturasp/SME-Prova-Serap-API#readme"
+  "homepage": "https://github.com/prefeiturasp/SME-Prova-Serap-API#readme",
+  "devDependencies": {
+    "semantic-release": "^17.4.4"
+  }
 }
