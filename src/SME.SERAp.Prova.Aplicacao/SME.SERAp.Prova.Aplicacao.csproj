@@ -6,9 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Queries\" />
-    <Folder Include="UseCase\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.SERAp.Prova.Dados\SME.SERAp.Prova.Dados.csproj" />
     <ProjectReference Include="..\SME.SERAp.Prova.Infra\SME.SERAp.Prova.Infra.csproj" />
   </ItemGroup>
 
