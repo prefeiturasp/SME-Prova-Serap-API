@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Sentry;
-using SME.SERAp.Prova.Infra.Dtos;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Linq;
