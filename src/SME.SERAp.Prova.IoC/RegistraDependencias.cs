@@ -56,6 +56,7 @@ namespace SME.SERAp.Prova.IoC
         {
             services.TryAddScoped<IObterVersaoApiUseCase, ObterVersaoApiUseCase>();
             services.TryAddScoped<IObterVersaoFrontUseCase, ObterVersaoFrontUseCase>();
+            services.TryAddScoped<IAutenticarUsuarioUseCase, AutenticarUsuarioUseCase>();
         }
     }
 }
