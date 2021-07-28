@@ -32,6 +32,7 @@ namespace SME.SERAp.Prova.Api.Middlewares
             {
                 NegocioException negocioException => new ResultadoBaseResult(context.Exception.Message, negocioException.StatusCode),
                 ValidacaoException validacaoException => new ResultadoBaseResult(new RetornoBaseDto(validacaoException.Erros)),
+                NaoAutorizadoException naoAutorizadoException => new ResultadoBaseResult(context.Exception.Message, naoAutorizadoException.StatusCode),
                 _ => new ResultadoBaseResult("Ocorreu um erro interno. Favor contatar o suporte.", 500),
             };
             base.OnException(context);

@@ -2,6 +2,10 @@
 {
     public class UsuarioAutenticacaoDto
     {
+        public UsuarioAutenticacaoDto()
+        {
+
+        }
         public UsuarioAutenticacaoDto(string token)
         {
             Token = token;

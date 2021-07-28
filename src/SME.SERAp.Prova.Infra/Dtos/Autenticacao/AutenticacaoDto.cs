@@ -2,7 +2,7 @@
 {
     public class AutenticacaoDto
     {
-        public string Login { get; set; }
+        public long Login { get; set; }
         public string Senha { get; set; }
     }
 }
