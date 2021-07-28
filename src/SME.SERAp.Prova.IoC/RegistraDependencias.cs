@@ -1,5 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dados.Cache;
+using SME.SERAp.Prova.Dados.Interfaces;
+using SME.SERAp.Prova.Infra.Interfaces;
+using SME.SERAp.Prova.Infra.Services;
 
 namespace SME.SERAp.Prova.IoC
 {
@@ -33,22 +39,23 @@ namespace SME.SERAp.Prova.IoC
         {
             //services.TryAddScoped<IContextoAplicacao, ContextoHttp>();
             //services.TryAddScoped<ISgpContext, SgpContext>();
-            //services.TryAddScoped<IUnitOfWork, UnitOfWork>();
+
         }
 
         private static void RegistrarRepositorios(IServiceCollection services)
         {
-
+            services.TryAddScoped<IRepositorioCache, RepositorioCache>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
         {
-
+            services.TryAddScoped<IServicoLog, ServicoLog>();
         }
 
         private static void RegistrarCasosDeUso(IServiceCollection services)
         {
-
+            services.TryAddScoped<IObterVersaoApiUseCase, ObterVersaoApiUseCase>();
+            services.TryAddScoped<IObterVersaoFrontUseCase, ObterVersaoFrontUseCase>();
         }
     }
 }

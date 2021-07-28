@@ -5,7 +5,7 @@ using SME.SERAp.Prova.Api.Middlewares;
 
 namespace SME.SERAp.Prova.Api.Configuracoes
 {
-    public static class RegistrarMvc
+    public static class RegistraMvc
     {
         public static void Registrar(IServiceCollection services, SentryOptions sentryOptions)
         {
