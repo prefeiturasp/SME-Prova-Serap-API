@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -12,5 +13,18 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public long AlunoRA { get; set; }
         public string Senha { get; set; }
+    }
+    public class VerificaAutenticacaoUsuarioQueryValidator : AbstractValidator<VerificaAutenticacaoUsuarioQuery>
+    {
+        public VerificaAutenticacaoUsuarioQueryValidator()
+        {
+            RuleFor(a => a.AlunoRA)
+                .NotEmpty()
+                .WithMessage("O RA do aluno é obrigatório.");
+
+            RuleFor(a => a.Senha)
+                .NotEmpty()
+                .WithMessage("O senha do aluno é obrigatório.");
+        }
     }
 }
