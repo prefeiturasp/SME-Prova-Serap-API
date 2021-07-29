@@ -26,9 +26,9 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     retornoDto.Token = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login));
                 }
-                else throw new NaoAutorizadoException("Não autorizado");
+                else throw new NaoAutorizadoException("Senha inválida", 412);
 
-            } else throw new NaoAutorizadoException("Não autorizado");
+            } else throw new NaoAutorizadoException("Código EOL inválido", 411);
 
             return retornoDto;
         }
