@@ -31,7 +31,7 @@ jobs:
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
       - name: Build da imagem docker para as branches de story            
-          run: | 
+        run: | 
              echo ${GITHUB_REF##*/}             
 
   deploy-development:
