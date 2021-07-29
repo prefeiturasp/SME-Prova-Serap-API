@@ -16,16 +16,15 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<UsuarioAutenticacaoDto> Executar(AutenticacaoDto autenticacaoDto)
         {
-            var retornoDto = new UsuarioAutenticacaoDto();
-            var alunoRA = long.Parse(autenticacaoDto.Login);
+            var retornoDto = new UsuarioAutenticacaoDto();            
 
-            var usuarioExiste = await mediator.Send(new VerificaUsuarioAtivoQuery(alunoRA));
+            var usuarioExiste = await mediator.Send(new VerificaUsuarioAtivoQuery(autenticacaoDto.Login));
             if (usuarioExiste)
             {
-                var podeGerarToken = await mediator.Send(new VerificaAutenticacaoUsuarioQuery(alunoRA, autenticacaoDto.Senha));
+                var podeGerarToken = await mediator.Send(new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
                 if (podeGerarToken)
                 {
-                    retornoDto.Token = await mediator.Send(new ObterTokenJwtQuery(alunoRA));
+                    retornoDto.Token = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login));
                 }
                 else throw new NaoAutorizadoException("Não autorizado");
 

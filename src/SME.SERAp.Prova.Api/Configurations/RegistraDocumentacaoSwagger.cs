@@ -17,17 +17,32 @@ namespace SME.SERAp.Prova.Api.Configuracoes
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = $"SGP v1", Version = versaoAtual });
-                c.AddSecurityDefinition("Bearer",
-                    new OpenApiSecurityScheme
+
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SERAp Estudantes API", Version = versaoAtual });
+
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "Para autenticação, incluir 'Bearer' seguido do token JWT. Exemplo: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
                     {
-                        In = ParameterLocation.Header,
-                        Description = "Para autenticação, incluir 'Bearer' seguido do token JWT",
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey
-                    });
-                var requirement = new OpenApiSecurityRequirement();
-                c.AddSecurityRequirement(requirement);
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    { securitySchema, new[] { "Bearer" } }
+                };
+
+                c.AddSecurityRequirement(securityRequirement);
+
             });
         }
     }
