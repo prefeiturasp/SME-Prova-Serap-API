@@ -32,7 +32,7 @@ jobs:
 
       - name: Build da imagem docker para as branches de story            
         run: | 
-             echo ${GITHUB_REF##*/}             
+             echo ${GITHUB_REF}          
 
   deploy-development:
     runs-on: serap
