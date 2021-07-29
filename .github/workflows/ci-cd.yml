@@ -30,9 +30,8 @@ jobs:
              docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
-      - name: Build da imagem docker para as branches de story    
-        if: ${{ github.ref == 'refs/heads/story/**' }}   
-        run: | 
+      - name: Build da imagem docker para as branches de story            
+          run: | 
              echo ${GITHUB_REF##*/}             
 
   deploy-development:
