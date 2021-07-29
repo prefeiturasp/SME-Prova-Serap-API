@@ -2,8 +2,10 @@ name: Docker Image CI
  
 on:
   push:
-    branches: [ development, release ]
-  
+    branches: 
+      - development
+      - release
+      - 'story/**' 
 
 jobs:
 
@@ -26,7 +28,7 @@ jobs:
         run: | 
              docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
-
+  
   deploy-development:
     runs-on: serap
     if: ${{ github.ref == 'refs/heads/development' }}        

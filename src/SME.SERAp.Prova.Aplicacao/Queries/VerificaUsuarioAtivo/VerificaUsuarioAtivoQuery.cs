@@ -3,18 +3,18 @@ using MediatR;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterTokenJwtQuery : IRequest<string>
+    public class VerificaUsuarioAtivoQuery : IRequest<bool>
     {
-        public ObterTokenJwtQuery(long alunoRA)
+        public VerificaUsuarioAtivoQuery(long alunoRA)
         {
             AlunoRA = alunoRA;
         }
 
         public long AlunoRA { get; set; }
     }
-    public class ObterTokenJwtQueryValidator : AbstractValidator<ObterTokenJwtQuery>
+    public class VerificaUsuarioAtivoQueryValidator : AbstractValidator<VerificaUsuarioAtivoQuery>
     {
-        public ObterTokenJwtQueryValidator()
+        public VerificaUsuarioAtivoQueryValidator()
         {
             RuleFor(a => a.AlunoRA)
                 .NotEmpty()
