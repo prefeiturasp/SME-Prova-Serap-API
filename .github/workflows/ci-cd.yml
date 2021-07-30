@@ -17,10 +17,10 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '5.0.0'
 
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore .\SME.SERAp.Prova.Api.sln
 
       - name: Sonarqube Begin
         run: | 
@@ -28,7 +28,7 @@ jobs:
           dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
 
       - name: Build
-        run: dotnet build
+        run: dotnet build .\SME.SERAp.Prova.Api.sln
 
       - name: Test with the dotnet CLI
         run: dotnet test --settings coverlet.runsettings --logger:trx
