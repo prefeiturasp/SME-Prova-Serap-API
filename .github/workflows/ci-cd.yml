@@ -14,21 +14,30 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - 
-        name: Sonarscanner for dotnet
-        uses: Secbyte/dotnet-sonarscanner@v2.3
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
         with:
-          buildCommand: dotnet build .
-          testCommand: dotnet test .
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
-          projectName: SME-prova-serap-api
-          sonarOrganisation: sme
-          sonarHostname: "http://sonar.sme.prefeitura.sp.gov.br"
-          beginArguments: >
-              /d:sonar.verbose="true"
-              /d:sonar.cs.opencover.reportsPaths='"/path/to/coverage.xml"'
-              /d:sonar.coverage.exclusions='"**/*.cs","**/*.md"'
+          dotnet-version: '5.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Sonarqube Begin
+        run: | 
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /s:$GITHUB_WORKSPACE/SonarQube.Analysis.xml
+
+      - name: Build
+        run: dotnet build
+
+      - name: Test with the dotnet CLI
+        run: dotnet test --settings coverlet.runsettings --logger:trx
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          ASPNETCORE_ENVIRONMENT: Development
+
+      - name: Sonarqube end
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
          name: Login to registry
