@@ -13,6 +13,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - 
+        name: Sonarscanner for dotnet
+        uses: Secbyte/dotnet-sonarscanner@v2.3
+        with:
+          buildCommand: dotnet build .
+          testCommand: dotnet test .
+          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
+          projectName: SME-prova-serap-api
+          sonarOrganisation: sme
+          sonarHostname: "http://sonar.sme.prefeitura.sp.gov.br"
+          beginArguments: >
+              /d:sonar.verbose="true"
+              /d:sonar.cs.opencover.reportsPaths='"/path/to/coverage.xml"'
+              /d:sonar.coverage.exclusions='"**/*.cs","**/*.md"'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
          name: Login to registry
          uses: docker/login-action@v1
@@ -22,36 +39,36 @@ jobs:
           password: ${{ secrets.REGISTRY_PWD }}
 
     
-      - name: Build the Docker image    
-        run: | 
-             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
-             docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+  #     - name: Build the Docker image    
+  #       run: | 
+  #            docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+  #            docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
-  deploy-development:
-    runs-on: serap
-    if: ${{ github.ref == 'refs/heads/development' }}        
-    environment:
-      name: development
-    needs: [ build ]
-    steps:
-      - name: Executando Scripts
-        env:
-          USER_DB: ${{ secrets.USER_DB }}
-          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
-          URL_DB: ${{ secrets.URL_DB }}
-        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
+  # deploy-development:
+  #   runs-on: serap
+  #   if: ${{ github.ref == 'refs/heads/development' }}        
+  #   environment:
+  #     name: development
+  #   needs: [ build ]
+  #   steps:
+  #     - name: Executando Scripts
+  #       env:
+  #         USER_DB: ${{ secrets.USER_DB }}
+  #         PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+  #         URL_DB: ${{ secrets.URL_DB }}
+  #       run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
       
-      - name: Run an adjust of kubernetes dev
-        env: # Ou como uma variável de ambiente
-          RANCHER_URL: ${{ secrets.RANCHER_URL }}
-          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-        run: |
-          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
-      - 
-       name: Change Images
-       run: |
-         kubectl rollout restart deployment/sme-prova-serap-front -n sme-serap-estudante           
-         rm -f /runner/.kube/config      
+  #     - name: Run an adjust of kubernetes dev
+  #       env: # Ou como uma variável de ambiente
+  #         RANCHER_URL: ${{ secrets.RANCHER_URL }}
+  #         RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+  #       run: |
+  #         sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
+  #     - 
+  #      name: Change Images
+  #      run: |
+  #        kubectl rollout restart deployment/sme-prova-serap-front -n sme-serap-estudante           
+  #        rm -f /runner/.kube/config      
   
   deploy-release:
     runs-on: serap
