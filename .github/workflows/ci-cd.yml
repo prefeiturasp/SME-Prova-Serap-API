@@ -31,7 +31,7 @@ jobs:
         run: dotnet build SME.SERAp.Prova.Api.sln
 
       - name: Test with the dotnet CLI
-        run: dotnet test --settings coverlet.runsettings --logger:trx
+        run: dotnet test SME.SERAp.Prova.Api.sln --settings coverlet.runsettings --logger:trx
         env:
           ASPNETCORE_ENVIRONMENT: Development
 
