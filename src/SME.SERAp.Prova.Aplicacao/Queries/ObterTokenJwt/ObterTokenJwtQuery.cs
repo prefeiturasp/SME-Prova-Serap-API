@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
+using System;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterTokenJwtQuery : IRequest<string>
+    public class ObterTokenJwtQuery : IRequest<(string, DateTime)>
     {
         public ObterTokenJwtQuery(long alunoRA)
         {

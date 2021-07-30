@@ -24,7 +24,9 @@ namespace SME.SERAp.Prova.Aplicacao
                 var podeGerarToken = await mediator.Send(new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
                 if (podeGerarToken)
                 {
-                    retornoDto.Token = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login));
+                    var tokenDtExpiracao = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login));
+                    retornoDto.Token = tokenDtExpiracao.Item1 ; 
+                    retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
 

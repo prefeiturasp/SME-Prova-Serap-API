@@ -17,9 +17,9 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            var token = await mediator.Send(new ObterTokenJwtQuery(long.Parse(alunoRa)));
+            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(long.Parse(alunoRa)));
 
-            return new UsuarioAutenticacaoDto(token);
+            return new UsuarioAutenticacaoDto(tokenDataExpiracao.Item1, tokenDataExpiracao.Item2);
         }
     }
 }
