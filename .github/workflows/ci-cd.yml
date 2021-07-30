@@ -25,7 +25,7 @@ jobs:
       - name: Sonarqube Begin
         run: | 
           export PATH="$PATH:/runner/.dotnet/tools"
-          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/"
 
       - name: Build
         run: dotnet build SME.SERAp.Prova.Api.sln
