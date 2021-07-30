@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
@@ -37,6 +38,17 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 
             using var conn = new SqlConnection(connectionStringOptions.Eol);
             return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoRetornoDto>(query, new { alunoRA });
+
+        }
+        public async Task<AlunoEol> ObterAlunoDetalhePorRa(long alunoRA)
+        {
+
+            var query = @"select al.nm_aluno as nome, al.nm_social_aluno as nomeSocial 
+                            from aluno al 
+			                    where al.cd_aluno = @alunoRA";
+
+            using var conn = new SqlConnection(connectionStringOptions.Eol);
+            return await conn.QueryFirstOrDefaultAsync<AlunoEol>(query, new { alunoRA });
 
         }
     }
