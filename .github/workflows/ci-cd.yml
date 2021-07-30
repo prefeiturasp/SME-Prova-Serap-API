@@ -25,13 +25,13 @@ jobs:
       - name: Sonarqube Begin
         run: | 
           export PATH="$PATH:/runner/.dotnet/tools"
-          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/"
+          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"'
 
       - name: Build
         run: dotnet build SME.SERAp.Prova.Api.sln
 
       - name: Test with the dotnet CLI
-        run: dotnet test SME.SERAp.Prova.Api.sln --settings coverlet.runsettings --logger:trx
+        run: dotnet test SME.SERAp.Prova.Api.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         env:
           ASPNETCORE_ENVIRONMENT: Development
 
