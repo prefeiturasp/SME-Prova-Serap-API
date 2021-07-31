@@ -41,6 +41,7 @@ jobs:
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"          
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JAVA_HOME: ''
       -
          name: Login to registry
          uses: docker/login-action@v1
