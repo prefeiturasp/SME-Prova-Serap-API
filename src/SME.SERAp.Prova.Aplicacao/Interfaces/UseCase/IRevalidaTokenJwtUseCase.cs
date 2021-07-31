@@ -5,6 +5,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IRevalidaTokenJwtUseCase
     {
-        public Task<UsuarioAutenticacaoDto> Executar();
+        public Task<UsuarioAutenticacaoDto> Executar(RevalidaTokenDto revalidaTokenDto);
     }
 }

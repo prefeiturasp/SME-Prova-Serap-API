@@ -22,16 +22,15 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await autenticarUsuarioUseCase.Executar(autenticacaoDto));
         }
 
-        [Authorize("Bearer")]
         [HttpPost("revalidar")]
         [ValidaDto]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]        
-        public async Task<IActionResult> RevalidarToken([FromServices] IRevalidaTokenJwtUseCase revalidaTokenJwtUseCase)
+        public async Task<IActionResult> RevalidarToken([FromServices] IRevalidaTokenJwtUseCase revalidaTokenJwtUseCase,[FromBody] RevalidaTokenDto revalidaTokenDto)
         {
-            return Ok(await revalidaTokenJwtUseCase.Executar());
+            return Ok(await revalidaTokenJwtUseCase.Executar(revalidaTokenDto));
         }
         
         [Authorize("Bearer")]

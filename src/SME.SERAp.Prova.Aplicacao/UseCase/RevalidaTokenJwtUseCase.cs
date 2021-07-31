@@ -13,11 +13,11 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task<UsuarioAutenticacaoDto> Executar()
+        public async Task<UsuarioAutenticacaoDto> Executar(RevalidaTokenDto revalidaTokenDto)
         {
-            var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-
-            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(long.Parse(alunoRa)));
+            var raToken = await mediator.Send(new VerificaERetornaRaPorTokenQuery(revalidaTokenDto.Token));
+            
+            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(raToken));
 
             return new UsuarioAutenticacaoDto(tokenDataExpiracao.Item1, tokenDataExpiracao.Item2);
         }
