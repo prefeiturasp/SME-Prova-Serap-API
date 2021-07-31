@@ -14,8 +14,8 @@ jobs:
       - name: Sonarscanner for dotnet
         uses: Secbyte/dotnet-sonarscanner@v2.3
         with:
-          buildCommand: dotnet build SME.SERAp.Prova.Api.sln
-          testCommand: dotnet test SME.SERAp.Prova.Api.sln
+          buildCommand: dotnet build .
+          testCommand: dotnet test .
           projectKey: SME-prova-serap-api
           projectName: SME-prova-serap-api
           sonarOrganisation: default-organization
