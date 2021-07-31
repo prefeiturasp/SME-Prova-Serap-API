@@ -18,7 +18,7 @@ jobs:
           testCommand: dotnet test SME.SERAp.Prova.Api.sln
           projectKey: SME-prova-serap-api
           projectName: SME-prova-serap-api
-          sonarOrganisation: sme
+          sonarOrganisation: default-organization
           sonarHostname: "http://sonar.sme.prefeitura.sp.gov.br/"
           beginArguments: >
               /d:sonar.verbose="true"
