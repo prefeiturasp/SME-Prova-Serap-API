@@ -15,6 +15,6 @@ namespace SME.SERAp.Prova.Infra.Exceptions
             StatusCode = (int)statusCode;
         }
 
-        public int StatusCode { get; }
+        public int StatusCode { get; }        
     }
 }

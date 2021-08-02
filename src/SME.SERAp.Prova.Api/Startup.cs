@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Prometheus;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
@@ -37,7 +36,7 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(conexaoDadosVariaveis);
 
-            var sentryOptions = new SentryOptions();            
+            var sentryOptions = new SentryOptions();
             Configuration.GetSection("Sentry").Bind(sentryOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(sentryOptions);
 
@@ -51,7 +50,7 @@ namespace SME.SERAp.Prova.Api
             services.AddSingleton(logOptions);
 
             services.AddHttpContextAccessor();
-                        services.AddMemoryCache();
+            services.AddMemoryCache();
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
