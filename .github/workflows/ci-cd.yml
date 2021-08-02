@@ -9,7 +9,7 @@ jobs:
 
   build:
 
-    runs-on: serap
+    runs-on: sonar
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,6 @@ jobs:
 
       - name: Sonarqube Begin
         run: | 
-          export PATH="$PATH:/runner/.dotnet/tools"
           dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
 
       - name: Build
@@ -37,12 +36,9 @@ jobs:
 
       - name: Sonarqube end
         run: | 
-          export PATH="$PATH:/runner/.dotnet/tools"
-          echo $JAVA_HOME
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"          
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JAVA_HOME: ''
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
       -
          name: Login to registry
          uses: docker/login-action@v1
