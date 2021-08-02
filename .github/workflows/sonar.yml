@@ -1,6 +1,7 @@
 name: Testing Sonar
- 
-  workflow_dispatch:  
+
+on:
+ workflow_dispatch:
 
 jobs:
 
@@ -22,7 +23,7 @@ jobs:
       - name: Sonarqube Begin
         run: | 
           export PATH="$PATH:/runner/.dotnet/tools"          
-          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
+          dotnet sonarscanner-begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
 
       - name: Build
         run: dotnet build SME.SERAp.Prova.Api.sln
@@ -35,4 +36,4 @@ jobs:
       - name: Sonarqube end
         run: | 
           export PATH="$PATH:/runner/.dotnet/tools"  
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
