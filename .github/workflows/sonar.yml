@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          dotnet tool install --global dotnet-sonarscanner
+          [ ! -e "/runner/.dotnet/tools/dotnet-sonarscanner" ] && dotnet tool install --global dotnet-sonarscanner
           dotnet restore SME.SERAp.Prova.Api.sln          
 
       - name: Sonarqube Begin
