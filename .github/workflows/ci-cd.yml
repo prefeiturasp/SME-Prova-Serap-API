@@ -106,5 +106,5 @@ jobs:
       - 
        name: Change Images
        run: |
-         kubectl rollout restart deployment/sme-prova-serap-front -n sme-serap-estudante           
+         kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante           
          rm -f /runner/.kube/config   
