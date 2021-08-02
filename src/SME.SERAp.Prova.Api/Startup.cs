@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using Prometheus;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
@@ -28,30 +27,38 @@ namespace SME.SERAp.Prova.Api
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SME.SERAp.Prova.Api", Version = "v1" });
-            });
-
 
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
-
             services.AddSingleton(jwtVariaveis);
 
             var conexaoDadosVariaveis = new ConnectionStringOptions();
             Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
-
             services.AddSingleton(conexaoDadosVariaveis);
 
-            var sentryOptions = new SentryOptions();            
+            var sentryOptions = new SentryOptions();
             Configuration.GetSection("Sentry").Bind(sentryOptions, c => c.BindNonPublicProperties = true);
-
             services.AddSingleton(sentryOptions);
 
+            var gitHubOptions = new GithubOptions();
+            Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(gitHubOptions);
+
+            var logOptions = new LogOptions();
+            Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);
+            logOptions.SentryDSN = sentryOptions.Dsn;
+            services.AddSingleton(logOptions);
+
+            services.AddHttpContextAccessor();
+            services.AddMemoryCache();
+
+            services.AddApplicationInsightsTelemetry(Configuration);
+
+            RegistraClientesHttp.Registrar(services, gitHubOptions);
             RegistraDependencias.Registrar(services);
             RegistraAutenticacao.Registrar(services, jwtVariaveis);
-            RegistrarMvc.Registrar(services, sentryOptions);
+            RegistraMvc.Registrar(services, sentryOptions);
+            RegistraDocumentacaoSwagger.Registrar(services);
 
             services.AddResponseCompression();
             services.Configure<BrotliCompressionProviderOptions>(options =>
