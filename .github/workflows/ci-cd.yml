@@ -2,14 +2,17 @@ name: Docker Image CI
  
 on:
   push:
-    branches: [ development, release ]
-  
+    branches: 
+      - development
+      - release
+      - 'story/**' 
 
 jobs:
 
   build:
-
     runs-on: serap
+    environment:
+           name: development
 
     steps:
       - uses: actions/checkout@v2
@@ -41,17 +44,23 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
       -
          name: Login to registry
-         uses: docker/login-action@v1
+         uses: docker/login-action@v1         
          with:
           registry: ${{ secrets.REGISTRY_HOST }}
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PWD }}
 
-    
-      - name: Build the Docker image    
+      - name: Build da imagem docker para as branches principais
+        if: ${{ github.ref == 'refs/heads/development' || github.ref == 'refs/heads/release' }}   
         run: | 
              docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+
+      # TODO: BUILDAR PARA BRANCH DA STORY, FAZER PARSE NO NOME DA IMAGEM;
+      # - name: Build da imagem docker para as branches de story   
+      #   if:   ${{(github.ref | cut -d'/' -f 3) == 'story' }}       
+      #   run: | 
+      #        echo ${GITHUB_REF}          
 
   deploy-development:
     runs-on: serap
