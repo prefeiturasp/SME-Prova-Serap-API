@@ -7,9 +7,7 @@
 
         public string NomeFinal()
         {
-            if (string.IsNullOrEmpty(NomeSocial))
-                return Nome;
-            else return NomeSocial;
+            return Nome;
         }
     }
 }
