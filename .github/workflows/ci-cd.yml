@@ -37,6 +37,7 @@ jobs:
 
       - name: Sonarqube end
         run: | 
+          export PATH="$PATH:/runner/.dotnet/tools"  
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"          
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
