@@ -18,30 +18,11 @@ namespace SME.SERAp.Prova.IoC
             services.AdicionarValidadoresFluentValidation();
 
             RegistrarRepositorios(services);
-            RegistrarContextos(services);
-            RegistrarComandos(services);
-            RegistrarConsultas(services);
             RegistrarServicos(services);
             RegistrarCasosDeUso(services);
             RegistrarMapeamentos.Registrar();
         }
 
-        private static void RegistrarComandos(IServiceCollection services)
-        {
-
-        }
-
-        private static void RegistrarConsultas(IServiceCollection services)
-        {
-
-        }
-
-        private static void RegistrarContextos(IServiceCollection services)
-        {
-            //services.TryAddScoped<IContextoAplicacao, ContextoHttp>();
-            //services.TryAddScoped<ISgpContext, SgpContext>();
-
-        }
 
         private static void RegistrarRepositorios(IServiceCollection services)
         {
