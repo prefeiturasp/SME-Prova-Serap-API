@@ -31,6 +31,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 ValidAudience = jwtOptions.Audience,
                 ValidateIssuerSigningKey = true,
                 ValidateAudience = true,
+                ValidateLifetime = false
             };
             try
             {
@@ -49,7 +50,6 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             catch (System.Exception)
             {
-
                 throw new NaoAutorizadoException("Token inválido");
             }
         }
