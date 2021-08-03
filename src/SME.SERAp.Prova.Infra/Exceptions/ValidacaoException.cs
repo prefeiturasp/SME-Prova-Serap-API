@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
+    [Serializable()]
     public class ValidacaoException : Exception
     {
         public readonly IEnumerable<ValidationFailure> Erros;

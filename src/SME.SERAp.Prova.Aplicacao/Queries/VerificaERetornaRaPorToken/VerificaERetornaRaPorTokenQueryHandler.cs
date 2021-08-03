@@ -50,7 +50,6 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             catch (System.Exception)
             {
-
                 throw new NaoAutorizadoException("Token inválido");
             }
         }

@@ -3,6 +3,7 @@ using System.Net;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
+    [Serializable()]
     public class NegocioException : Exception
     {
         public NegocioException(string mensagem, int statusCode = 409) : base(mensagem)

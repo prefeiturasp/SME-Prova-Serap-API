@@ -3,6 +3,7 @@ using System.Net;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
+    [Serializable()]
     public class NaoAutorizadoException : Exception
     {
         public NaoAutorizadoException(string mensagem, int statusCode = 401) : base(mensagem)
