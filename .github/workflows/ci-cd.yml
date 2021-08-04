@@ -8,11 +8,10 @@ on:
     - ".github/workflows/**"  
 
 jobs:
-
-  build:
-
+   
+  sonar-dev:
     runs-on: sonar
-
+    if: ${{ github.ref == 'refs/heads/development' }}
     steps:
       - uses: actions/checkout@v2
 
@@ -42,9 +41,15 @@ jobs:
           export PATH="$PATH:/runner/.dotnet/tools"  
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"          
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
-      -
-         name: Login to registry
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}                 
+
+  build:
+
+    runs-on: sonar
+
+    steps:
+      - uses: actions/checkout@v2     
+      -  name: Login to registry
          uses: docker/login-action@v1
          with:
           registry: ${{ secrets.REGISTRY_HOST }}
