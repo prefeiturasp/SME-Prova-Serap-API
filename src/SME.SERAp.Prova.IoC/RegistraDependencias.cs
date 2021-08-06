@@ -42,6 +42,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IAutenticarUsuarioUseCase, AutenticarUsuarioUseCase>();
             services.TryAddScoped<IRevalidaTokenJwtUseCase, RevalidaTokenJwtUseCase>();
             services.TryAddScoped<IObterMeusDadosUseCase, ObterMeusDadosUseCase>();
+            services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();            
         }
     }
 }
