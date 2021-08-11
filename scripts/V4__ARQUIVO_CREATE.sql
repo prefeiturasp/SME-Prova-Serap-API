@@ -7,6 +7,3 @@ create table if not exists public.arquivo
 	arquivo_tipo varchar(100),
 	CONSTRAINT arquivo_pk PRIMARY KEY (id)
 );
-create index if not exists arquivo_id_idx ON public.arquivo (id);
-create index if not exists arquivo_arquivo_tipo_idx ON public.arquivo (arquivo_tipo);
-create index if not exists arquivo_nome_idx ON public.arquivo (nome);
