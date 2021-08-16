@@ -3,5 +3,6 @@
     public class ObterAlunoAtivoRetornoDto
     {
         public long CodigoAluno { get; set; }
+        public int Ano { get; set; }
     }
 }
