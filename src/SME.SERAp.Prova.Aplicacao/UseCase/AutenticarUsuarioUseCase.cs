@@ -18,13 +18,13 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var retornoDto = new UsuarioAutenticacaoDto();            
 
-            var usuarioExiste = await mediator.Send(new VerificaUsuarioAtivoQuery(autenticacaoDto.Login));
-            if (usuarioExiste)
+            var aluno = await mediator.Send(new ObterAlunoAtivoQuery(autenticacaoDto.Login));
+            if (aluno != null)
             {
                 var podeGerarToken = await mediator.Send(new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
                 if (podeGerarToken)
                 {
-                    var tokenDtExpiracao = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login));
+                    var tokenDtExpiracao = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano));
                     retornoDto.Token = tokenDtExpiracao.Item1 ; 
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }

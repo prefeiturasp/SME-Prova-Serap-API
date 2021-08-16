@@ -1,6 +1,6 @@
 create table if not exists public.prova_componente_curricular
 (
-	id bigint not null ,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	prova_id bigint not null ,
 	componente_curricular_id bigint null ,
 	CONSTRAINT prova_componente_curricular_pk PRIMARY KEY (id),

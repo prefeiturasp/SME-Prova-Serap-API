@@ -15,9 +15,9 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<UsuarioAutenticacaoDto> Executar(RevalidaTokenDto revalidaTokenDto)
         {
-            var raToken = await mediator.Send(new VerificaERetornaRaPorTokenQuery(revalidaTokenDto.Token));
-            
-            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(raToken));
+            var tokenInformacoes = await mediator.Send(new VerificaERetornaInformacoesPorTokenQuery(revalidaTokenDto.Token));            
+
+            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(tokenInformacoes.Ra, tokenInformacoes.Ano));
 
             return new UsuarioAutenticacaoDto(tokenDataExpiracao.Item1, tokenDataExpiracao.Item2);
         }

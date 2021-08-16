@@ -9,6 +9,7 @@ namespace SME.SERAp.Prova.Dados
         {
             FluentMapper.Initialize(config =>
             {
+                config.AddMap(new ProvaMap());
                 config.ForDommel();
             });
         }

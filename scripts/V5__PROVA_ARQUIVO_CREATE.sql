@@ -1,6 +1,6 @@
 create table if not exists public.prova_arquivo
 (
-	id bigint not null ,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	prova_id bigint not null ,
 	arquivo_id bigint not null ,
 	status int4,

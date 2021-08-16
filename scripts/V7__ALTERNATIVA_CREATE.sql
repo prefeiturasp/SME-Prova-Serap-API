@@ -1,6 +1,6 @@
 create table if not exists public.alternativa
 (
-	id bigint not null ,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	descricao varchar,
 	ordem int,
 	numeracao varchar,

@@ -1,26 +1,40 @@
-﻿using SME.SERAp.Prova.Infra;
+﻿using MediatR;
+using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterProvasAreaEstudanteUseCase : IObterProvasAreaEstudanteUseCase
     {
+        private readonly IMediator mediator;
+
+        public ObterProvasAreaEstudanteUseCase(IMediator mediator)
+        {
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
         public async Task<IEnumerable<ObterProvasRetornoDto>> Executar()
         {
-            var provas = new List<ObterProvasRetornoDto>() { 
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 1", 20, new System.DateTime(2021, 5, 26), null),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 2", 20, new System.DateTime(2021, 5, 26), new System.DateTime(2021, 6, 1)),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 3", 20, new System.DateTime(2021, 5, 26), null),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 4", 20, new System.DateTime(2021, 5, 26), new System.DateTime(2021, 6, 1)),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 5", 20, new System.DateTime(2021, 5, 26), null),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 6", 20, new System.DateTime(2021, 5, 26), new System.DateTime(2021, 6, 1)),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 7", 20, new System.DateTime(2021, 5, 26), null),
-                new ObterProvasRetornoDto("Prova São Paulo 2021 - 8", 20, new System.DateTime(2021, 5, 26), new System.DateTime(2021, 6, 1)),
-            };
+            var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
+            if (string.IsNullOrEmpty(alunoLogadoAno))
+                throw new NegocioException("Ano do aluno logado não localizado");
 
-            return await Task.FromResult(provas);
+            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Now));
+            if (provas.Any())
+            {
+                var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
+                foreach (var prova in provas)
+                {
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim));
+                }
+                
+                return provasParaRetornar;
+            }
+            else return default;
         }
     }
 }

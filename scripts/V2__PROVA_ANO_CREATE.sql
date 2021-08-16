@@ -1,6 +1,6 @@
 create table if not exists public.prova_ano
 (
-	id bigint not null ,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	prova_id bigint not null ,
 	ano varchar(10),
 	CONSTRAINT prova_ano_pk PRIMARY KEY (id),

@@ -1,6 +1,6 @@
 create table if not exists public.arquivo
 (
-	id bigint not null,
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY,
 	nome varchar(100),
 	nome_original varchar(100),
 	caminho varchar(100),
