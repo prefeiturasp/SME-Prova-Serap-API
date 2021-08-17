@@ -1,18 +1,19 @@
 ﻿using FluentValidation;
 using MediatR;
+using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class VerificaUsuarioAtivoQuery : IRequest<bool>
+    public class ObterAlunoAtivoQuery : IRequest<ObterAlunoAtivoRetornoDto>
     {
-        public VerificaUsuarioAtivoQuery(long alunoRA)
+        public ObterAlunoAtivoQuery(long alunoRA)
         {
             AlunoRA = alunoRA;
         }
 
         public long AlunoRA { get; set; }
     }
-    public class VerificaUsuarioAtivoQueryValidator : AbstractValidator<VerificaUsuarioAtivoQuery>
+    public class VerificaUsuarioAtivoQueryValidator : AbstractValidator<ObterAlunoAtivoQuery>
     {
         public VerificaUsuarioAtivoQueryValidator()
         {

@@ -24,6 +24,7 @@ namespace SME.SERAp.Prova.Aplicacao
             IList<Claim> claims = new List<Claim>();
 
             claims.Add(new Claim("RA", request.AlunoRA.ToString()));
+            claims.Add(new Claim("ANO", request.AlunoAno.ToString()));
 
             var dataHoraExpiracao = now.AddMinutes(double.Parse(jwtOptions.ExpiresInMinutes));
 

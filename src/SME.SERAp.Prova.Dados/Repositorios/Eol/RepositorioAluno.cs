@@ -20,7 +20,8 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
         {
 
             var query = @"SELECT top 1
-	                            aluno.cd_aluno CodigoAluno
+	                            aluno.cd_aluno CodigoAluno,
+	                            se.sg_resumida_serie as Ano
                             FROM
 	                            v_matricula_cotic matricula
                             INNER JOIN v_aluno_cotic aluno ON
@@ -31,6 +32,10 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 	                            matrTurma.cd_turma_escola = turesc.cd_turma_escola
                             INNER JOIN escola e ON
 	                            turesc.cd_escola = e.cd_escola
+                            INNER JOIN serie_turma_escola ste ON
+								ste.cd_turma_escola = turesc.cd_turma_escola
+							INNER JOIN serie_ensino se ON 
+								se.cd_serie_ensino = ste.cd_serie_ensino
                             WHERE
 	                            aluno.cd_aluno = @alunoRA
 	                            AND matrTurma.cd_situacao_aluno IN (1, 6, 10, 13)

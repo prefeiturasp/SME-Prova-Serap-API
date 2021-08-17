@@ -28,6 +28,7 @@ namespace SME.SERAp.Prova.IoC
         {
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
             services.TryAddScoped<IRepositorioAluno, RepositorioAluno>();
+            services.TryAddScoped<IRepositorioProva, RepositorioProva>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -42,6 +43,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IAutenticarUsuarioUseCase, AutenticarUsuarioUseCase>();
             services.TryAddScoped<IRevalidaTokenJwtUseCase, RevalidaTokenJwtUseCase>();
             services.TryAddScoped<IObterMeusDadosUseCase, ObterMeusDadosUseCase>();
+            services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();
         }
     }
 }

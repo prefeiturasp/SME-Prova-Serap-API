@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.IdentityModel.Tokens;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class VerificaERetornaRaPorTokenQueryHandler : IRequestHandler<VerificaERetornaRaPorTokenQuery, long>
+    public class VerificaERetornaInformacoesPorTokenQueryHandler : IRequestHandler<VerificaERetornaInformacoesPorTokenQuery, InformacoesTokenDto>
     {
         private readonly JwtOptions jwtOptions;
 
-        public VerificaERetornaRaPorTokenQueryHandler(JwtOptions jwtOptions)
+        public VerificaERetornaInformacoesPorTokenQueryHandler(JwtOptions jwtOptions)
         {
             this.jwtOptions = jwtOptions ?? throw new System.ArgumentNullException(nameof(jwtOptions));
         }
-        public async Task<long> Handle(VerificaERetornaRaPorTokenQuery request, CancellationToken cancellationToken)
+        public async Task<InformacoesTokenDto> Handle(VerificaERetornaInformacoesPorTokenQuery request, CancellationToken cancellationToken)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.IssuerSigningKey));
             var validator = new JwtSecurityTokenHandler();
@@ -40,9 +41,12 @@ namespace SME.SERAp.Prova.Aplicacao
                     ClaimsPrincipal principal;
                     principal = validator.ValidateToken(request.Token, validationParameters, out SecurityToken validatedToken);
 
-                    if (principal.HasClaim(c => c.Type == "RA"))
+                    if (principal.HasClaim(c => c.Type == "RA") && principal.HasClaim(c => c.Type == "ANO"))
                     {
-                        return await Task.FromResult(long.Parse(principal.Claims.FirstOrDefault(c => c.Type == "RA").Value));
+                        var ra = long.Parse(principal.Claims.FirstOrDefault(c => c.Type == "RA").Value);
+                        var ano = int.Parse(principal.Claims.FirstOrDefault(c => c.Type == "ANO").Value);
+                        return await Task.FromResult(new InformacoesTokenDto(ra,ano));
+                        
                     }
                     else throw new NaoAutorizadoException("Token inválido");
                 }
