@@ -22,9 +22,8 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
-
-            SentrySdk.CaptureMessage($"ano:{alunoLogadoAno} - data:{DateTime.Now}");
-            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Now));
+                        
+            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
