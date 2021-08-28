@@ -23,14 +23,14 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
                         
-            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
+            var provas = await mediator.Send(new ObterProvasPorAnoQuery(1, DateTime.Today));
             if (provas.Any())
             {
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
                 foreach (var prova in provas)
                 {
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim, prova.Id));
                 }
 
                 return provasParaRetornar;
