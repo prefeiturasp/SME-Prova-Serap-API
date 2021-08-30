@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> ObterArquivosProvas(long provaId)
         {
             var arquivos = new List<long>() {
-                1,2,3,4
+                1,2,3
             };
             return Ok(arquivos);
         }
@@ -31,8 +31,7 @@ namespace SME.SERAp.Prova.Api.Controllers
             var arquivos = new List<ArquivoDto>() {
                 new ArquivoDto("Teste 1", "https://images.unsplash.com/photo-1604263439201-171fb8c0fddc?rnd=", 1),
                 new ArquivoDto("Teste 2", "https://images.unsplash.com/photo-1604164388977-1b6250ef26f3?rnd=", 2),
-                new ArquivoDto("Teste PDF", "https://dev-sr-relatorios.sme.prefeitura.sp.gov.br/api/v1/downloads/sgp/pdf/Ata%20de%20resultados%20finais.pdf/0073ea5f-201e-45e0-aef7-86b82fc4c37e", 3),
-                new ArquivoDto("Teste Vídeo", "https://vod-progressive.akamaized.net/exp=1630003739~acl=%2Fvimeo-prod-skyfire-std-us%2F01%2F4009%2F22%2F570048572%2F2694683164.mp4~hmac=f88b30d37c916fc6c8f8e08fdb98fe1bf7a5fbcfcfb22482e881c08961145710/vimeo-prod-skyfire-std-us/01/4009/22/570048572/2694683164.mp4?filename=Eye+-+79545.mp4", 4),
+                new ArquivoDto("Teste PDF", "https://dev-sr-relatorios.sme.prefeitura.sp.gov.br/api/v1/downloads/sgp/pdf/Ata%20de%20resultados%20finais.pdf/0073ea5f-201e-45e0-aef7-86b82fc4c37e", 3)
             };
             return Ok(arquivos.FirstOrDefault(a => a.Id == arquivoId));
         }

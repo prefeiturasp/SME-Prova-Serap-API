@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
                         
-            var provas = await mediator.Send(new ObterProvasPorAnoQuery(1, DateTime.Today));
+            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
