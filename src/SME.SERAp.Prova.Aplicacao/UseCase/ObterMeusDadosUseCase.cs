@@ -20,7 +20,9 @@ namespace SME.SERAp.Prova.Aplicacao
 
             if (alunoDetalhes != null)
             {
-                return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal());
+                var anoUsuarioLogado = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
+
+                return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado);
             }
             else throw new NegocioException($"Não foi possível localizar os dados do aluno {usuarioLogadoRa}");
         }
