@@ -10,6 +10,7 @@ namespace SME.SERAp.Prova.Dados
             FluentMapper.Initialize(config =>
             {
                 config.AddMap(new ProvaMap());
+                config.AddMap(new UsuarioDispositivoMap());
                 config.ForDommel();
             });
         }

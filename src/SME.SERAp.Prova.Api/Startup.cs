@@ -42,7 +42,7 @@ namespace SME.SERAp.Prova.Api
 
             var gitHubOptions = new GithubOptions();
             Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(gitHubOptions);
+            services.AddSingleton(gitHubOptions);        
 
             var logOptions = new LogOptions();
             Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);

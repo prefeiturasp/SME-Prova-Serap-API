@@ -11,5 +11,7 @@ namespace SME.SERAp.Prova.Infra
         [Required(ErrorMessage = "É necessário informar a senha.")]
         [MinLength(3, ErrorMessage = "A senha deve conter no mínimo 3 caracteres.")]
         public string Senha { get; set; }
+
+        public string Dispositivo { get; set; }
     }
 }

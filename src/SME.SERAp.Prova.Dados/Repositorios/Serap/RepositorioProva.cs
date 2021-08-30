@@ -24,11 +24,7 @@ namespace SME.SERAp.Prova.Dados
                                 and pa.ano = @ano";
 
                 return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia });
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            }            
             finally
             {
                 conn.Close();
@@ -44,10 +40,6 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select * from prova where prova_legado_id = @id";
 
                 return await conn.QueryFirstOrDefaultAsync<Dominio.Prova>(query, new { id });
-            }
-            catch (System.Exception)
-            {
-                throw;
             }
             finally
             {
