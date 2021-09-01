@@ -25,7 +25,7 @@ namespace SME.SERAp.Prova.Dados
                                 and pa.ano = @ano";
 
                 return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia });
-            }
+            }            
             finally
             {
                 conn.Close();

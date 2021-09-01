@@ -32,6 +32,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioQuestao, RepositorioQuestao>();
             services.TryAddScoped<IRepositorioAlternativa, RepositorioAlternativa>();
             services.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
+            services.TryAddScoped<IRepositorioUsuarioDispositivo, RepositorioUsuarioDispositivo>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
