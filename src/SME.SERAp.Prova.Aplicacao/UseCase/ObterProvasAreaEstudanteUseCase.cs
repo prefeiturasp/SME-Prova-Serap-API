@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 foreach (var prova in provas)
                 {
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim, prova.Id));
                 }
 
                 return provasParaRetornar;
