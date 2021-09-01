@@ -30,6 +30,11 @@ namespace SME.SERAp.Prova.Aplicacao
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
 
+                if (!string.IsNullOrEmpty(autenticacaoDto.Dispositivo))
+                {
+                    await mediator.Send(new IncluirUsuarioDispositivoCommand(autenticacaoDto.Login, autenticacaoDto.Dispositivo, aluno.Ano));
+                }
+
             } else throw new NaoAutorizadoException("Código EOL inválido", 411);
 
             return retornoDto;
