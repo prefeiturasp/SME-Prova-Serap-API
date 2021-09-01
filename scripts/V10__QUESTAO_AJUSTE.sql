@@ -1,4 +1,4 @@
-drop table public.questao;
+drop table public.questao cascade;
 
 create table if not exists public.questao
 (
