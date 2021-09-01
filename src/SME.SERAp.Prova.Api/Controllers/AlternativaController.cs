@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
 using System.Threading.Tasks;
