@@ -20,5 +20,14 @@ namespace SME.SERAp.Prova.Api.Controllers
 
             return Ok(await obterArquivoPorIdUseCase.Executar(id));
         }
+        [HttpGet("{id}/legado")]
+        [ProducesResponseType(typeof(ArquivoRetornoDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterPorIdLegado(long id, [FromServices] IObterArquivoPorIdLegadoUseCase obterArquivoPorIdLegadoUseCase)
+        {
+
+            return Ok(await obterArquivoPorIdLegadoUseCase.Executar(id));
+        }
     }
 }

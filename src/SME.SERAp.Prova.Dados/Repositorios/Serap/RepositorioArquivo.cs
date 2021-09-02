@@ -32,5 +32,22 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        public async Task<Arquivo> ObterPorIdLegadoAsync(long id)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select * from arquivo 	                            
+                            where
+	                            legado_id = @id";
+
+                return await conn.QueryFirstOrDefaultAsync<Arquivo>(query, new { id });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
