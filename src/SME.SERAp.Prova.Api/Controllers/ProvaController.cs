@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+        //[Authorize("Bearer")]
         public async Task<IActionResult> ObterDetalhesResumido(long id, [FromServices] IObterProvaDetalhesResumidoUseCase obterProvaDetalhesResumidoUseCase)
         {
             return Ok(await obterProvaDetalhesResumidoUseCase.Executar(id));

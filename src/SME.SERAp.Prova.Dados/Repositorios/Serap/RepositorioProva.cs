@@ -56,7 +56,7 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select
 	                            q.id  as questaoId,
 	                            alt.id as alternativaId,
-	                            arq.id as arquivoId,
+	                            arq.legado_id as arquivoId,
 	                            arq.tamanho_bytes as arquivo_tamanho		
                             from
 	                            prova p
