@@ -64,11 +64,11 @@ jobs:
   #            docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
   deploy-development:
-    runs-on: serap
+    runs-on: sonar
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
-    needs: [ build ]
+    #needs: [ build ]
     steps:
       - uses: actions/checkout@v2
       - name: Executando Scripts
