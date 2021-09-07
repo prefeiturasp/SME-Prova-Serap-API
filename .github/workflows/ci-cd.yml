@@ -11,60 +11,59 @@ on:
 
 jobs:
    
-  # sonar-dev:
-  #   runs-on: sonar
-  #   if: ${{ github.ref == 'refs/heads/development' }}
-  #   steps:
-  #     - uses: actions/checkout@v2
+  sonar-dev:
+    runs-on: sonar
+    if: ${{ github.ref == 'refs/heads/development' }}
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Setup dotnet
-  #       uses: actions/setup-dotnet@v1
-  #       with:
-  #         dotnet-version: '5.0.x'
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
 
-  #     - name: Install dependencies
-  #       run: dotnet restore SME.SERAp.Prova.Api.sln
+      - name: Install dependencies
+        run: dotnet restore SME.SERAp.Prova.Api.sln
 
-  #     - name: Sonarqube Begin
-  #       run: | 
-  #         [ ! -e "/runner/.dotnet/tools/dotnet-sonarscanner" ] && dotnet tool install --global dotnet-sonarscanner
-  #         export PATH="$PATH:/runner/.dotnet/tools"          
-  #         dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
+      - name: Sonarqube Begin
+        run: | 
+          [ ! -e "/runner/.dotnet/tools/dotnet-sonarscanner" ] && dotnet tool install --global dotnet-sonarscanner
+          export PATH="$PATH:/runner/.dotnet/tools"          
+          dotnet sonarscanner begin  /k:${{ secrets.SONAR_PROJECT_KEY }} /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url="http://sonar.sme.prefeitura.sp.gov.br/" /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs"
 
-  #     - name: Build
-  #       run: dotnet build SME.SERAp.Prova.Api.sln
+      - name: Build
+        run: dotnet build SME.SERAp.Prova.Api.sln
 
-  #     - name: Test with the dotnet CLI
-  #       run: dotnet test SME.SERAp.Prova.Api.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-  #       env:
-  #         ASPNETCORE_ENVIRONMENT: Development
+      - name: Test with the dotnet CLI
+        run: dotnet test SME.SERAp.Prova.Api.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
 
-  #     - name: Sonarqube end
-  #       run: | 
-  #         export PATH="$PATH:/runner/.dotnet/tools"  
-  #         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"    
+      - name: Sonarqube end
+        run: | 
+          export PATH="$PATH:/runner/.dotnet/tools"  
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"    
 
-  # build:
+  build:
 
-  #   runs-on: sonar
+    runs-on: sonar
 
-  #   steps:
-  #     - uses: actions/checkout@v2     
-  #     -  name: Login to registry
-  #        uses: docker/login-action@v1
-  #        with:
-  #         registry: ${{ secrets.REGISTRY_HOST }}
-  #         username: ${{ secrets.REGISTRY_USER }}
-  #         password: ${{ secrets.REGISTRY_PWD }}
+    steps:
+      - uses: actions/checkout@v2     
+      -  name: Login to registry
+         uses: docker/login-action@v1
+         with:
+          registry: ${{ secrets.REGISTRY_HOST }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PWD }}
 
     
-  #     - name: Build the Docker image    
-  #       run: | 
-  #            docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
-  #            docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+      - name: Build the Docker image    
+        run: | 
+             docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
+             docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
   deploy-development:
-    name: teste
     runs-on: sonar
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
@@ -79,40 +78,40 @@ jobs:
           URL_DB: ${{ secrets.URL_DB }}
         run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
       
-  #     - name: Run an adjust of kubernetes dev
-  #       env: # Ou como uma variável de ambiente
-  #         RANCHER_URL: ${{ secrets.RANCHER_URL }}
-  #         RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-  #       run: |
-  #         sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
-  #     - 
-  #      name: Change Images
-  #      run: |
-  #        kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante           
-  #        rm -f /runner/.kube/config      
+      - name: Run an adjust of kubernetes dev
+        env: # Ou como uma variável de ambiente
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+        run: |
+          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
+      - 
+       name: Change Images
+       run: |
+         kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante           
+         rm -f /runner/.kube/config      
   
-  # deploy-release:
-  #   runs-on: serap
-  #   if: ${{ github.ref == 'refs/heads/release' }}        
-  #   environment:
-  #     name: release
-  #   needs: [ build ]
-  #   steps:
-  #     - name: Executando Scripts
-  #       env:
-  #         USER_DB: ${{ secrets.USER_DB }}
-  #         PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
-  #         URL_DB: ${{ secrets.URL_DB }}
-  #       run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
+  deploy-release:
+    runs-on: serap
+    if: ${{ github.ref == 'refs/heads/release' }}        
+    environment:
+      name: release
+    needs: [ build ]
+    steps:
+      - name: Executando Scripts
+        env:
+          USER_DB: ${{ secrets.USER_DB }}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+          URL_DB: ${{ secrets.URL_DB }}
+        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
 
-  #     - name: Run an adjust of kubernetes dev
-  #       env: # Ou como uma variável de ambiente
-  #         RANCHER_URL: ${{ secrets.RANCHER_URL }}
-  #         RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-  #       run: |
-  #         sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
-  #     - 
-  #      name: Change Images
-  #      run: |
-  #        kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante           
-  #        rm -f /runner/.kube/config   
+      - name: Run an adjust of kubernetes dev
+        env: # Ou como uma variável de ambiente
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+        run: |
+          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
+      - 
+       name: Change Images
+       run: |
+         kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante           
+         rm -f /runner/.kube/config   
