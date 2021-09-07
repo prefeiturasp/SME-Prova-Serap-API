@@ -68,7 +68,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
-    #needs: [ build ]
+    needs: [ build ]
     steps:
       - uses: actions/checkout@v2
       - name: Executando Scripts
