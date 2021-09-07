@@ -64,6 +64,7 @@ jobs:
   #            docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
 
   deploy-development:
+    name: teste
     runs-on: sonar
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
