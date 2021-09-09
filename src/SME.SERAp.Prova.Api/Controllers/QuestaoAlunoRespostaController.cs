@@ -24,5 +24,17 @@ namespace SME.SERAp.Prova.Api.Controllers
 
             return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto.QuestaoId, questaoAlunoRespostaIncluirDto.AlternativaId, questaoAlunoRespostaIncluirDto.Resposta, horaDataResposta));
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(QuestaoAlunoRespostaConsultarDto), 200)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        [Route("/api/v1/questoes/{questaoId}/respostas")]
+        [ValidaDto]
+        public async Task<IActionResult> ObterRespostaPorQuestaoAluno(long questaoId, [FromServices] IObterQuestaoAlunoRespostaPorQuestaoIdUseCase obterQuestaoAlunoRespostaPorQuestaoIdUseCase)
+        {
+            return Ok(await obterQuestaoAlunoRespostaPorQuestaoIdUseCase.Executar(questaoId));
+        }
     }
 }
