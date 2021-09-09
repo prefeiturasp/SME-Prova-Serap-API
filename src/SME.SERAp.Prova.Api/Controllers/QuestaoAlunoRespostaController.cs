@@ -30,8 +30,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        [Route("/api/v1/questoes/{questaoId}/respostas")]
-        [ValidaDto]
+        [Route("/api/v1/questoes/{questaoId}/respostas")]        
         public async Task<IActionResult> ObterRespostaPorQuestaoAluno(long questaoId, [FromServices] IObterQuestaoAlunoRespostaPorQuestaoIdUseCase obterQuestaoAlunoRespostaPorQuestaoIdUseCase)
         {
             return Ok(await obterQuestaoAlunoRespostaPorQuestaoIdUseCase.Executar(questaoId));
