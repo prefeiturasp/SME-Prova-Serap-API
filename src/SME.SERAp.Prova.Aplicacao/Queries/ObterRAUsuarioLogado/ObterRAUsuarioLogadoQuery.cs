@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterRAUsuarioLogadoQuery : IRequest<string>
+    public class ObterRAUsuarioLogadoQuery : IRequest<long>
     {
     }
 }
