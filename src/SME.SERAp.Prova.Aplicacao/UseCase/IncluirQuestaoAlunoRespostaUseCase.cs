@@ -16,7 +16,20 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta));
+            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(questaoId, alunoRa));
+
+            if (questaoRespondida == null)
+            {
+                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta));
+            } else if (questaoRespondida.CriadoEm > horaResposta) 
+            {
+                return false;
+            }else
+            {
+                await mediator.Send(new ExcluirQuestaoAlunoRespostaPorIdCommand(questaoRespondida));
+                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta));
+            }
+
         }
     }
 }
