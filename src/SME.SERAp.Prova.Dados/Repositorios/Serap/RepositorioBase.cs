@@ -1,4 +1,5 @@
-﻿using Dommel;
+﻿using Dapper;
+using Dommel;
 using Npgsql;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
@@ -106,7 +107,23 @@ namespace SME.SERAp.Prova.Dados
                 conexao.Close();
                 conexao.Dispose();
             }
-
+        }
+        public virtual async Task<bool> RemoverFisicamenteAsync(T entidade)
+        {
+            var conexao = ObterConexao();            
+            try
+            {
+                return await conexao.DeleteAsync(entidade);                
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                conexao.Close();
+                conexao.Dispose();
+            }
         }
     }
 }

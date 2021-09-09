@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<MeusDadosRetornoDto> Executar()
         {
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            var alunoDetalhes = await mediator.Send(new ObterAlunoDadosPorRaQuery(long.Parse(usuarioLogadoRa)));
+            var alunoDetalhes = await mediator.Send(new ObterAlunoDadosPorRaQuery(usuarioLogadoRa));
 
             if (alunoDetalhes != null)
             {
