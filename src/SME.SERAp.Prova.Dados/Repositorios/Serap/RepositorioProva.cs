@@ -57,7 +57,7 @@ namespace SME.SERAp.Prova.Dados
 	                            q.id  as questaoId,
 	                            alt.id as alternativaId,
 	                            arq.legado_id as arquivoId,
-	                            arq.tamanho_bytes as arquivo_tamanho		
+	                            arq.tamanho_bytes as arquivoTamanho		
                             from
 	                            prova p
                             inner join questao q on

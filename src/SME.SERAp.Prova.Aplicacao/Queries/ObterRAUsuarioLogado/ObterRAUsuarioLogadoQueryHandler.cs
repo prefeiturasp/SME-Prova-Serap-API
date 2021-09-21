@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterRAUsuarioLogadoQueryHandler : IRequestHandler<ObterRAUsuarioLogadoQuery , string>
+    public class ObterRAUsuarioLogadoQueryHandler : IRequestHandler<ObterRAUsuarioLogadoQuery , long>
     {
         private readonly IHttpContextAccessor httpContextAccessor;
 
@@ -14,9 +14,10 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new System.ArgumentNullException(nameof(httpContextAccessor));
         }
-        public async Task<string> Handle(ObterRAUsuarioLogadoQuery request, CancellationToken cancellationToken)
+        public async Task<long> Handle(ObterRAUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "RA")?.Value ?? string.Empty);
+            var ra = httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "RA").Value ?? string.Empty;
+            return await Task.FromResult(string.IsNullOrEmpty(ra)? 0: long.Parse(ra));
         }
     }
 }
