@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,10 +23,28 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        //[Authorize("Bearer")]
+        [Authorize("Bearer")]
         public async Task<IActionResult> ObterDetalhesResumido(long id, [FromServices] IObterProvaDetalhesResumidoUseCase obterProvaDetalhesResumidoUseCase)
         {
             return Ok(await obterProvaDetalhesResumidoUseCase.Executar(id));
+        }
+
+        [HttpGet("{provaId}/status-aluno")]
+        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterProvaStatusDoAluno(long provaId, [FromServices] IObterProvaAlunoUseCase obterProvaAlunoUseCase)
+        {
+            return Ok(await obterProvaAlunoUseCase.Executar(provaId));
+        }
+
+        [HttpPost("{provaId}/status-aluno")]
+        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, int status, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
+        {
+            return Ok(await incluirProvaAlunoUseCase.Executar(provaId, status));
         }
     }
 }

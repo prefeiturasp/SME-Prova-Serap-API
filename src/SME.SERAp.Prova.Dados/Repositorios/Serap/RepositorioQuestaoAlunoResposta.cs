@@ -17,7 +17,9 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexao();
             try
             {
-                var query = @"select * from questao_aluno_resposta where questao_id = @questaoId and aluno_ra = @alunoRa";
+                var query = @"select * from questao_aluno_resposta 
+                        where questao_id = @questaoId and 
+                        aluno_ra = @alunoRa";
 
                 return await conn.QueryFirstOrDefaultAsync<QuestaoAlunoResposta>(query, new { questaoId, alunoRa });
             }
