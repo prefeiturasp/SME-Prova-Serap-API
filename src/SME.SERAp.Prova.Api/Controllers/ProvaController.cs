@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpGet("{provaId}/status-aluno")]
-        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(ProvaAlunoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvaStatusDoAluno(long provaId, [FromServices] IObterProvaAlunoUseCase obterProvaAlunoUseCase)
@@ -39,7 +39,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpPost("{provaId}/status-aluno")]
-        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, int status, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
