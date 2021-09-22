@@ -9,13 +9,13 @@ namespace SME.SERAp.Prova.Dominio
             CriadoEm = DateTime.Now;
         }
 
-        public QuestaoAlunoResposta(long questaoId, long alunoRa, long? alternativaId, string resposta)
+        public QuestaoAlunoResposta(long questaoId, long alunoRa, long? alternativaId, string resposta, DateTime criadoEm)
         {
             QuestaoId = questaoId;
             AlunoRa = alunoRa;
             AlternativaId = alternativaId;
             Resposta = resposta;
-            CriadoEm = DateTime.Now;
+            CriadoEm = criadoEm;
         }
 
         public long QuestaoId { get; set; }

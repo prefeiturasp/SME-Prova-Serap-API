@@ -21,7 +21,8 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 
             var query = @"SELECT top 1
 	                            aluno.cd_aluno CodigoAluno,
-	                            se.sg_resumida_serie as Ano
+	                            se.sg_resumida_serie as Ano,
+                                turesc.cd_tipo_turno as TipoTurno
                             FROM
 	                            v_matricula_cotic matricula
                             INNER JOIN v_aluno_cotic aluno ON

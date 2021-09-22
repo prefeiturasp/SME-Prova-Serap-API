@@ -4,5 +4,6 @@
     {
         public long CodigoAluno { get; set; }
         public int Ano { get; set; }
+        public int TipoTurno { get; set; }
     }
 }

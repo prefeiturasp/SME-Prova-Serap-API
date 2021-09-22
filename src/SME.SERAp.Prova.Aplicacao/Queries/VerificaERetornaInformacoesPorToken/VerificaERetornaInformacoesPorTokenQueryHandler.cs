@@ -41,11 +41,12 @@ namespace SME.SERAp.Prova.Aplicacao
                     ClaimsPrincipal principal;
                     principal = validator.ValidateToken(request.Token, validationParameters, out SecurityToken validatedToken);
 
-                    if (principal.HasClaim(c => c.Type == "RA") && principal.HasClaim(c => c.Type == "ANO"))
+                    if (principal.HasClaim(c => c.Type == "RA") && principal.HasClaim(c => c.Type == "ANO") && principal.HasClaim(c => c.Type == "TIPOTURNO"))
                     {
                         var ra = long.Parse(principal.Claims.FirstOrDefault(c => c.Type == "RA").Value);
                         var ano = int.Parse(principal.Claims.FirstOrDefault(c => c.Type == "ANO").Value);
-                        return await Task.FromResult(new InformacoesTokenDto(ra,ano));
+                        var tipoTurno = int.Parse(principal.Claims.FirstOrDefault(c => c.Type == "TIPOTURNO").Value);
+                        return await Task.FromResult(new InformacoesTokenDto(ra,ano, tipoTurno));
                         
                     }
                     else throw new NaoAutorizadoException("Token inválido");
