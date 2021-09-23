@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, System.DateTime.Now);
+            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, DateTime.Now);
             
             return await repositorioProvaAluno.SalvarAsync(entidade) > 0;            
         }
