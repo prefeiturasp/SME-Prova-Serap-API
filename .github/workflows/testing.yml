@@ -12,7 +12,7 @@ on:
 jobs:
    
   deploy-development:
-    runs-on: serap-api
+    runs-on: master
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
