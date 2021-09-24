@@ -1,0 +1,31 @@
+name: Docker Image Testing
+ 
+on:
+
+  push:
+    branches: [ _development_ ]
+    paths-ignore:
+    - ".github/workflows/**"  
+  
+  workflow_dispatch:
+
+jobs:
+   
+  deploy-development:
+    runs-on: sonar-api
+    if: ${{ github.ref == 'refs/heads/development' }}        
+    environment:
+      name: development
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Redeploy
+        uses: luizhpriotto/action_images@kubectl-v1
+        with:
+          deployment: sme-prova-serap-api
+          namespace: 'sme-serap-estudante
+          
+        env: 
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}     
