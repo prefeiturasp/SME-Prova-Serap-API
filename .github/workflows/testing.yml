@@ -24,8 +24,7 @@ jobs:
         uses: luizhpriotto/action_images@kubectl-v1
         with:
           deployment: sme-prova-serap-api
-          namespace: 'sme-serap-estudante
-          
+          namespace: sme-serap-estudante          
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}     
