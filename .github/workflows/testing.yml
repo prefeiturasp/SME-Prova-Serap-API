@@ -26,5 +26,5 @@ jobs:
           deployment: sme-prova-serap-api
           namespace: sme-serap-estudante          
         env: 
-          RANCHER_URL: ${{ secrets.RANCHER_URL }}
-          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}     
+          RANCHER_URL: dominio.local
+          RANCHER_TOKEN: token-123    
