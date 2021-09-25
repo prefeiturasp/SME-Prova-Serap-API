@@ -25,6 +25,6 @@ jobs:
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          WORKLOAD: sme-prova-serap-api
+          #WORKLOAD: sme-prova-serap-api
           NAMESPACE: sme-serap-estudante
 
