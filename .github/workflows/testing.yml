@@ -27,4 +27,5 @@ jobs:
           namespace: sme-serap-estudante          
         env: 
           RANCHER_URL: dominio.local
-          RANCHER_TOKEN: token-123    
+          RANCHER_TOKEN: token-123
+          KUNECONFIG: /runner/.kube/config
