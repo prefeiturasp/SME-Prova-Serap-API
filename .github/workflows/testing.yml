@@ -21,10 +21,10 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Redeploy
-        uses: luizhpriotto/action_images@kubectl-v1.1.1      
+        uses: luizhpriotto/action_images@kubectl-v1.0
         env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          #WORKLOAD: sme-prova-serap-api
+          WORKLOAD: sme-prova-serap-api
           NAMESPACE: sme-serap-estudante
 
