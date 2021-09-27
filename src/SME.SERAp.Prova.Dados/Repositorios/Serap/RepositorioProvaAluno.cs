@@ -29,5 +29,21 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<ProvaAluno> ObterPorProvaIdRaStatusAsync(long provaId, long alunoRa, int status)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select distinct pa.* from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa and pa.status = @status";
+
+                return await conn.QueryFirstOrDefaultAsync<ProvaAluno>(query, new { provaId, alunoRa, status });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

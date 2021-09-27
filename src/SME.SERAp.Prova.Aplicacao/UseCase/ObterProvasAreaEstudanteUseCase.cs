@@ -35,6 +35,9 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     var provaAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(prova.Id, alunoRa));
 
+                    if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
+                        continue;
+
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
                         status = provaAluno.Status;
