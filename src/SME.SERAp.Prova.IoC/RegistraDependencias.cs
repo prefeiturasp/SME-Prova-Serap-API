@@ -35,6 +35,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioUsuarioDispositivo, RepositorioUsuarioDispositivo>();
             services.TryAddScoped<IRepositorioQuestaoAlunoResposta, RepositorioQuestaoAlunoResposta>();
             services.TryAddScoped<IRepositorioProvaAluno, RepositorioProvaAluno>();
+            services.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();          
 
         }
 
