@@ -6,9 +6,9 @@ namespace SME.SERAp.Prova.Dominio
     public enum QuestaoTipo
     {
         [Display(Name = "Multipla escolha")]
-        MultiplaEscolha = 1,
+        MultiplaEscolha = 0,
 
         [Display(Name = "Resposta construída")]
-        RespostaConstruida = 2,
+        RespostaConstruida = 1,
     }
 }
