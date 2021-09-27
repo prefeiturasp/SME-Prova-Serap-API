@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -16,8 +17,10 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<QuestaoDetalheRetornoDto> Executar(long id)
         {
             var questao = await mediator.Send(new ObterQuestaoPorIdQuery(id));
+            if(questao == null)
+                throw new NegocioException("Questão não encontrada");
 
-            return new QuestaoDetalheRetornoDto(questao.Id, questao.Enunciado, questao.Pergunta, questao.Ordem);
+            return new QuestaoDetalheRetornoDto(questao.Id, questao.Enunciado, questao.Pergunta, questao.Ordem, (int)questao.Tipo);
         }
     }
 }
