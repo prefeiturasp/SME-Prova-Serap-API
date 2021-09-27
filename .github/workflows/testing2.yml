@@ -28,5 +28,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST: http://sonar.sme.prefeitura.sp.gov.br/
           SONAR_EXTRA_ARG: >
-            /d:sonar.cs.opencover.reportsPaths="teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml,teste/SME.SERAp.Dominio.Test/coverage.opencover.xml
-            /d:sonar.coverage.exclusions="**Test*.cs"
+            /d:sonar.cs.opencover.reportsPaths='"teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml","teste/SME.SERAp.Dominio.Test/coverage.opencover.xml"'
+            /d:sonar.coverage.exclusions='"**Test*.cs"'
