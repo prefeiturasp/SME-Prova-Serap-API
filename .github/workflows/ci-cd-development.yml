@@ -1,9 +1,9 @@
-name: Docker Image CI Actions
+name: Docker Image CI Development
  
 on:
 
   push:
-    branches: [ development, release ]
+    branches: [ development ]
     paths-ignore:
     - ".github/workflows/**"  
   
@@ -11,7 +11,7 @@ on:
 
 jobs:
    
-  sonar-dev:
+  sonar:
   
     runs-on: master
     if: ${{ github.ref == 'refs/heads/development' }}
@@ -33,7 +33,8 @@ jobs:
   build:
 
     runs-on: master
-    needs: [ sonar-dev ]
+    if: ${{ github.ref == 'refs/heads/development' }}
+    needs: [ sonar ]
     steps:
       - uses: actions/checkout@v2     
       -  name: Login to registry
@@ -47,8 +48,8 @@ jobs:
         run: | 
              docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
-             
-  deploy-development:
+  
+  flyway:
   
     runs-on: master
     needs: [ build ]
@@ -58,26 +59,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Redeploy
-        uses: luizhpriotto/action_images@kubectl-v1.0
-        env: 
-          RANCHER_URL: ${{ secrets.RANCHER_URL }}
-          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-          WORKLOAD: sme-prova-serap-api
-          NAMESPACE: sme-serap-estudante  
-  
-  deploy-release:
+        
+      - name: Executando Scripts
+        env:
+          USER_DB: ${{ secrets.USER_DB }}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+          URL_DB: ${{ secrets.URL_DB }}
+        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
+             
+  deploy:
   
     runs-on: master
-    needs: [ build ]
-    if: ${{ github.ref == 'refs/heads/release' }}        
+    needs: [ flyway ]
+    if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
       - name: Redeploy
         uses: luizhpriotto/action_images@kubectl-v1.0
         env: 
