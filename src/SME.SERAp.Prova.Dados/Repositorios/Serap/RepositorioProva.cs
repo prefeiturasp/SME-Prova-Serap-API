@@ -62,9 +62,9 @@ namespace SME.SERAp.Prova.Dados
 	                            prova p
                             inner join questao q on
 	                            q.prova_id = p.id
-                            inner join alternativa alt on
+                            left join alternativa alt on
 	                            alt.questao_id = q.id
-                            inner join questao_arquivo qa on
+                            left join questao_arquivo qa on
 	                            qa.questao_id = q.id
                             inner join arquivo arq on
 	                            qa.arquivo_id = arq.id
