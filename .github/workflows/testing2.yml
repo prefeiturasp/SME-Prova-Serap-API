@@ -13,7 +13,9 @@ jobs:
    
   deploy-development:
     runs-on: master
-    if: ${{ github.ref == 'refs/heads/development' }}        
+    if: ${{ github.ref == 'refs/heads/development' }} 
+    environment:
+       name: development
     steps:
       - name: Checkout
         uses: actions/checkout@v2
