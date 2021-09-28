@@ -33,7 +33,6 @@ jobs:
   build:
 
     runs-on: master
-    needs: [ sonar-dev ]
     steps:
       - uses: actions/checkout@v2     
       -  name: Login to registry
