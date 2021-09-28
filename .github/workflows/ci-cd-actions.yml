@@ -33,7 +33,6 @@ jobs:
   build:
 
     runs-on: master
-    needs: [ sonar-dev ]
 
     steps:
       - uses: actions/checkout@v2     
@@ -52,6 +51,7 @@ jobs:
   deploy-development:
   
     runs-on: master
+    needs: [ build ]
     if: ${{ github.ref == 'refs/heads/development' }}        
     environment:
       name: development
@@ -70,6 +70,7 @@ jobs:
   deploy-release:
   
     runs-on: master
+    needs: [ build ]
     if: ${{ github.ref == 'refs/heads/release' }}        
     environment:
       name: development
