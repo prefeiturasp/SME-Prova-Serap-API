@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Aplicacao
             else
             {
                 if (provaStatus.Status == Dominio.ProvaStatus.Finalizado)
-                    throw new NaoAutorizadoException("Esta prova já foi finalizada", 411);
+                    throw new NegocioException("Esta prova já foi finalizada", 411);
                 
                 await mediator.Send(new ExcluirProvaAlunoPorIdCommand(provaStatus));
                 return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)status));
