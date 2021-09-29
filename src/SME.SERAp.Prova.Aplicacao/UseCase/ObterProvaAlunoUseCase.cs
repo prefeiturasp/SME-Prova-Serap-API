@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
