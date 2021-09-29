@@ -36,7 +36,7 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa 
-                                inner join questao q on pa.id = q.prova_id 
+                                inner join questao q on pa.prova_id = q.prova_id 
                                 where q.id = @questaoId and pa.aluno_ra = @alunoRa";
 
                 return await conn.QueryFirstOrDefaultAsync<ProvaAluno>(query, new { questaoId, alunoRa });
