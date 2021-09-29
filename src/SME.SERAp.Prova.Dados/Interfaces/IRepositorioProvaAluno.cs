@@ -7,5 +7,7 @@ namespace SME.SERAp.Prova.Dados
     {
         Task<ProvaAluno> ObterPorProvaIdRaAsync(long provaId, long alunoRa);
         Task<ProvaAluno> ObterPorProvaIdRaStatusAsync(long provaId, long alunoRa, int status);
+        Task<ProvaAluno> ObterPorQuestaoIdRaAsync(long questaoId, long alunoRa);
+        
     }
 }

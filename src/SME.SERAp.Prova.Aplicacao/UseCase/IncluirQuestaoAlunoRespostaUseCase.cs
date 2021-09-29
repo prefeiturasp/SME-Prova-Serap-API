@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -16,8 +17,13 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(questaoId, alunoRa));
+            var provaStatus = await mediator.Send(new ObterProvaAlunoPorQuestaoIdRaQuery(questaoId, alunoRa));
 
+            if (provaStatus.Status == Dominio.ProvaStatus.Finalizado)
+                throw new NegocioException("Esta prova já foi finalizada", 411);
+
+            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(questaoId, alunoRa));
+                      
             if (questaoRespondida == null)
             {
                 return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta));

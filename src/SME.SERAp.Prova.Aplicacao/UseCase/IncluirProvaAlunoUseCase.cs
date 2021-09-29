@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -26,6 +27,9 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             else
             {
+                if (provaStatus.Status == Dominio.ProvaStatus.Finalizado)
+                    throw new NegocioException("Esta prova já foi finalizada", 411);
+                
                 await mediator.Send(new ExcluirProvaAlunoPorIdCommand(provaStatus));
                 return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)status));
             }
