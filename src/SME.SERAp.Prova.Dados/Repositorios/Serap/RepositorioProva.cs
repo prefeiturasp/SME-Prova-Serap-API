@@ -66,7 +66,7 @@ namespace SME.SERAp.Prova.Dados
 	                            alt.questao_id = q.id
                             left join questao_arquivo qa on
 	                            qa.questao_id = q.id
-                            inner join arquivo arq on
+                            left join arquivo arq on
 	                            qa.arquivo_id = arq.id
                             where
 	                            p.id = @id";
