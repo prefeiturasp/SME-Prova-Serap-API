@@ -59,3 +59,4 @@ jobs:
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
           WORKLOAD: sme-prova-serap-api
           NAMESPACE: sme-serap-estudante
+          
