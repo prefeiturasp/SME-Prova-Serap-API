@@ -30,6 +30,12 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
 
+            var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
+
+            int tempoExtra = 600;
+            if (parametroTempoExtra != null)
+                tempoExtra = int.Parse(parametroTempoExtra.Valor);
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -48,7 +54,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra));
                 }
 
                 return provasParaRetornar;
@@ -56,18 +62,15 @@ namespace SME.SERAp.Prova.Aplicacao
             else return default;
         }
 
-        public TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
+        private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
         {
-            switch ((TipoTurno)int.Parse(tipoTurnoAluno))
+            return (TipoTurno)int.Parse(tipoTurnoAluno) switch
             {
-                case TipoTurno.Manha:
-                    return TipoParametroSistema.InicioProvaTurnoManhaIntegral;
-                case TipoTurno.Tarde:
-                    return TipoParametroSistema.InicioProvaTurnoTarde;
-                case TipoTurno.Noturno:
-                    return TipoParametroSistema.InicioProvaTurnoNoite;
-                default: return default;
-            }
+                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
+                TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
+                TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
+                _ => default,
+            };
         }
     }
 }
