@@ -23,7 +23,13 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
-                        
+
+            var alunoLogadoTurno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
+            if (string.IsNullOrEmpty(alunoLogadoTurno))
+                throw new NegocioException("Turno do aluno logado não localizado");
+
+            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -42,12 +48,26 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao));
                 }
 
                 return provasParaRetornar;
             }
             else return default;
+        }
+
+        public TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
+        {
+            switch ((TipoTurno)int.Parse(tipoTurnoAluno))
+            {
+                case TipoTurno.Manha:
+                    return TipoParametroSistema.InicioProvaTurnoManhaIntegral;
+                case TipoTurno.Tarde:
+                    return TipoParametroSistema.InicioProvaTurnoTarde;
+                case TipoTurno.Noturno:
+                    return TipoParametroSistema.InicioProvaTurnoNoite;
+                default: return default;
+            }
         }
     }
 }
