@@ -5,6 +5,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IIncluirProvaAlunoUseCase
     {
-        Task<bool> Executar(long provaId, int status);
+        Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto);
     }
 }

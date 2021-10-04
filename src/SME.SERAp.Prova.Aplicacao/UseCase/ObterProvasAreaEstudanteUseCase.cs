@@ -54,7 +54,8 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra));
+                    TimeSpan tempoTotal = provaAluno.CriadoEm - DateTime.Now;
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, (int)tempoTotal.TotalSeconds));
                 }
 
                 return provasParaRetornar;
