@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SME.SERAp.Prova.Dominio
 {
-    public enum ProvaStatus {
+    public enum ProvaStatus
+    {
         [Display(Name = "Não Iniciado")]
         NaoIniciado = 0,
 

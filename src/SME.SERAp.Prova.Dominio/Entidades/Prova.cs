@@ -22,6 +22,7 @@ namespace SME.SERAp.Prova.Dominio
         public string Descricao { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Fim { get; set; }
+        public int TempoExecucao { get; set; }
         public DateTime Inclusao { get; set; }
         public int TotalItens { get; set; }
         public long LegadoId { get; set; }

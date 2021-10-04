@@ -4,11 +4,12 @@ namespace SME.SERAp.Prova.Infra
 {
     public class ObterProvasRetornoDto
     {
-        public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime dataInicio, DateTime? dataFim, long id)
+        public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime dataInicio, DateTime? dataFim, long id, int tempoExecucao)
         {
             Id = id;
             Descricao = descricao;
             ItensQuantidade = itensQuantidade;
+            TempoExecucao = tempoExecucao;
             Status = status;
             DataInicio = dataInicio;
             DataFim = dataFim;
@@ -17,6 +18,7 @@ namespace SME.SERAp.Prova.Infra
         public long Id { get; set; }
         public string Descricao { get; set; }
         public int ItensQuantidade { get; set; }
+        public int TempoExecucao { get; set; }
         public int Status { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
