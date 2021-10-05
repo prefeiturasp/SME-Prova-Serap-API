@@ -23,7 +23,19 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
-                        
+
+            var alunoLogadoTurno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
+            if (string.IsNullOrEmpty(alunoLogadoTurno))
+                throw new NegocioException("Turno do aluno logado não localizado");
+
+            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
+
+            var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
+
+            int tempoExtra = 600;
+            if (parametroTempoExtra != null)
+                tempoExtra = int.Parse(parametroTempoExtra.Valor);
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -42,12 +54,24 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id));
+                    TimeSpan tempoTotal = provaAluno.CriadoEm - DateTime.Now;
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, (int)tempoTotal.TotalSeconds));
                 }
 
                 return provasParaRetornar;
             }
             else return default;
+        }
+
+        private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
+        {
+            return (TipoTurno)int.Parse(tipoTurnoAluno) switch
+            {
+                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
+                TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
+                TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
+                _ => default,
+            };
         }
     }
 }
