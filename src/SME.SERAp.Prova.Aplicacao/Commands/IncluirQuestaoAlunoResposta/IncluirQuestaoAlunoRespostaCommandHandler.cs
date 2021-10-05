@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirQuestaoAlunoRespostaCommand request, CancellationToken cancellationToken)
         {
-            var entidade = new QuestaoAlunoResposta(request.QuestaoId, request.AlunoRa, request.AlternativaId, request.Resposta, request.CriadoEm);
+            var entidade = new QuestaoAlunoResposta(request.QuestaoId, request.AlunoRa, request.AlternativaId, request.Resposta, request.CriadoEm, request.TempoRespostaAluno);
             
             return await repositorioQuestaoAlunoResposta.SalvarAsync(entidade) > 0;            
         }
