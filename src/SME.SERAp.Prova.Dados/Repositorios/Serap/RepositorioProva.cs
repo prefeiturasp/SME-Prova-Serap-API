@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,11 +25,7 @@ namespace SME.SERAp.Prova.Dados
                                 and pa.ano = @ano";
 
                 return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia });
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            }            
             finally
             {
                 conn.Close();
@@ -45,9 +42,36 @@ namespace SME.SERAp.Prova.Dados
 
                 return await conn.QueryFirstOrDefaultAsync<Dominio.Prova>(query, new { id });
             }
-            catch (System.Exception)
+            finally
             {
-                throw;
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+        public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select
+	                            q.id  as questaoId,
+	                            alt.id as alternativaId,
+	                            arq.legado_id as arquivoId,
+	                            arq.tamanho_bytes as arquivoTamanho		
+                            from
+	                            prova p
+                            inner join questao q on
+	                            q.prova_id = p.id
+                            left join alternativa alt on
+	                            alt.questao_id = q.id
+                            left join questao_arquivo qa on
+	                            qa.questao_id = q.id
+                            left join arquivo arq on
+	                            qa.arquivo_id = arq.id
+                            where
+	                            p.id = @id";
+
+                return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { id });
             }
             finally
             {

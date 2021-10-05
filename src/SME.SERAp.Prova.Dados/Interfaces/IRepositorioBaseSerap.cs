@@ -9,5 +9,6 @@ namespace SME.SERAp.Prova.Dados
         Task<T> ObterPorIdAsync(long id);
         Task<long> IncluirAsync(T entidade);
         Task<long> UpdateAsync(T entidade);
+        Task<bool> RemoverFisicamenteAsync(T entidade);
     }
 }

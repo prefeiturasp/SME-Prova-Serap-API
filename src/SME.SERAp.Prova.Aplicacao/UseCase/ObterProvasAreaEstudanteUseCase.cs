@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Sentry;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
@@ -26,11 +27,22 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
+                var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
                 foreach (var prova in provas)
                 {
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, prova.Inicio, prova.Fim));
+                    var provaAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(prova.Id, alunoRa));
+
+                    if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
+                        continue;
+
+                    ProvaStatus status = ProvaStatus.NaoIniciado;
+                    if (provaAluno != null)
+                        status = provaAluno.Status;
+
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id));
                 }
 
                 return provasParaRetornar;

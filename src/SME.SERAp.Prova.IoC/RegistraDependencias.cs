@@ -29,6 +29,14 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
             services.TryAddScoped<IRepositorioAluno, RepositorioAluno>();
             services.TryAddScoped<IRepositorioProva, RepositorioProva>();
+            services.TryAddScoped<IRepositorioQuestao, RepositorioQuestao>();
+            services.TryAddScoped<IRepositorioAlternativa, RepositorioAlternativa>();
+            services.TryAddScoped<IRepositorioArquivo, RepositorioArquivo>();
+            services.TryAddScoped<IRepositorioUsuarioDispositivo, RepositorioUsuarioDispositivo>();
+            services.TryAddScoped<IRepositorioQuestaoAlunoResposta, RepositorioQuestaoAlunoResposta>();
+            services.TryAddScoped<IRepositorioProvaAluno, RepositorioProvaAluno>();
+            services.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();          
+
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -44,6 +52,15 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRevalidaTokenJwtUseCase, RevalidaTokenJwtUseCase>();
             services.TryAddScoped<IObterMeusDadosUseCase, ObterMeusDadosUseCase>();
             services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();
+            services.TryAddScoped<IObterProvaDetalhesResumidoUseCase, ObterProvaDetalhesResumidoUseCase>();
+            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
+            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
+            services.TryAddScoped<IIncluirQuestaoAlunoRespostaUseCase, IncluirQuestaoAlunoRespostaUseCase>();
+            services.TryAddScoped<IIncluirProvaAlunoUseCase, IncluirProvaAlunoUseCase>();            
+            services.TryAddScoped<IObterQuestaoAlunoRespostaPorQuestaoIdUseCase, ObterQuestaoAlunoRespostaPorQuestaoIdUseCase>();
+            services.TryAddScoped<IObterProvaAlunoUseCase, ObterProvaAlunoUseCase>();
         }
     }
 }
