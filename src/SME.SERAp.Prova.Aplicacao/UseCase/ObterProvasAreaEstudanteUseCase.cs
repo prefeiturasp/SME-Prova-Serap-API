@@ -54,13 +54,23 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    TimeSpan tempoTotal = provaAluno.CriadoEm - DateTime.Now;
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, (int)tempoTotal.TotalSeconds));
+                    
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, ObterTempoTotal(provaAluno)));
                 }
 
                 return provasParaRetornar;
             }
             else return default;
+        }
+
+        private static int ObterTempoTotal(ProvaAluno provaAluno)
+        {
+            if(provaAluno != null)
+            {
+                TimeSpan tempoTotal = DateTime.Now - provaAluno.CriadoEm;
+                return (int)tempoTotal.TotalSeconds;
+            }
+            return 0;
         }
 
         private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
