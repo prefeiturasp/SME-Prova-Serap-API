@@ -31,9 +31,6 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> AplicarAES(string senha)
         {
-            var key = Encoding.UTF8.GetBytes(cryptographyOptions.Key);
-            var iv = Encoding.UTF8.GetBytes(cryptographyOptions.IV);
-
             var byteResult = cryptographyOptions.EncryptStringToBytes_Aes(senha, cryptographyOptions.KeyBytes, cryptographyOptions.IVBytes);
             var value = cryptographyOptions.DecryptStringFromBytes_Aes(byteResult, cryptographyOptions.KeyBytes, cryptographyOptions.IVBytes);
             return Ok(new { senha = senha, cifrada = cryptographyOptions.ByteArrayToString(byteResult), comparacao = value });
