@@ -13,7 +13,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task<bool> Executar(long questaoId, long? alternativaId, string resposta, DateTime horaResposta)
+        public async Task<bool> Executar(long questaoId, long? alternativaId, string resposta, DateTime horaResposta,int tempoRespostaAluno)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
@@ -26,14 +26,16 @@ namespace SME.SERAp.Prova.Aplicacao
                       
             if (questaoRespondida == null)
             {
-                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta));
+                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta, tempoRespostaAluno));
             } else if (questaoRespondida.CriadoEm > horaResposta) 
             {
                 return false;
             }else
             {
-                await mediator.Send(new ExcluirQuestaoAlunoRespostaPorIdCommand(questaoRespondida));
-                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta));
+                questaoRespondida.Resposta = resposta;
+                questaoRespondida.TempoRespostaAluno += tempoRespostaAluno;
+
+                return await mediator.Send(new AtualizarQuestaoAlunoRespostaCommand(questaoRespondida));
             }
 
         }
