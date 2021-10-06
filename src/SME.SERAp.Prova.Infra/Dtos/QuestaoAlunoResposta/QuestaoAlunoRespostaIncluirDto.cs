@@ -11,5 +11,6 @@ namespace SME.SERAp.Prova.Infra
         [Required(ErrorMessage ="É necessário informar a data da resposta em ticks")]
         [Range(1, long.MaxValue, ErrorMessage = "A data em ticks deve ser maior do que {1}")]
         public long DataHoraRespostaTicks { get; set; }
+        public int TempoRespostaAluno { get; set; }
     }
 }

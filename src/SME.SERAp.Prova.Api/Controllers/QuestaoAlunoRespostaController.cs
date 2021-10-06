@@ -22,7 +22,11 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             DateTime horaDataResposta = new(questaoAlunoRespostaIncluirDto.DataHoraRespostaTicks);
 
-            return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto.QuestaoId, questaoAlunoRespostaIncluirDto.AlternativaId, questaoAlunoRespostaIncluirDto.Resposta, horaDataResposta));
+            return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(
+                questaoAlunoRespostaIncluirDto.QuestaoId,
+                questaoAlunoRespostaIncluirDto.AlternativaId,
+                questaoAlunoRespostaIncluirDto.Resposta, horaDataResposta,
+                questaoAlunoRespostaIncluirDto.TempoRespostaAluno));
         }
 
         [HttpGet]
