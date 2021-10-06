@@ -11,30 +11,30 @@ on:
 
 jobs:
    
-  # sonar:
+  sonar:
   
-  #   runs-on: master
-  #   if: ${{ github.ref == 'refs/heads/development' }}
-  #   steps:
-  #     - uses: actions/checkout@v2
+    runs-on: master
+    if: ${{ github.ref == 'refs/heads/development' }}
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Sonar
-  #       uses: luizhpriotto/action_images@sonarscanner-v1.0
-  #       env:
-  #         ASPNETCORE_ENVIRONMENT: Development
-  #         DOTNET_PROJECT: SME.SERAp.Prova.Api.sln
-  #         SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #         SONAR_HOST: http://sonar.sme.prefeitura.sp.gov.br/
-  #         SONAR_EXTRA_ARG: >
-  #           /d:sonar.cs.opencover.reportsPaths='"teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml","teste/SME.SERAp.Dominio.Test/coverage.opencover.xml"'
-  #           /d:sonar.coverage.exclusions='"**Test*.cs"'
+      - name: Sonar
+        uses: luizhpriotto/action_images@sonarscanner-v1.0
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+          DOTNET_PROJECT: SME.SERAp.Prova.Api.sln
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST: http://sonar.sme.prefeitura.sp.gov.br/
+          SONAR_EXTRA_ARG: >
+            /d:sonar.cs.opencover.reportsPaths='"teste/SME.SERAp.Aplicacao.Test/coverage.opencover.xml","teste/SME.SERAp.Dominio.Test/coverage.opencover.xml"'
+            /d:sonar.coverage.exclusions='"**Test*.cs"'
  
   build:
 
     runs-on: master
     if: ${{ github.ref == 'refs/heads/development' }}
-    # needs: [ sonar ]
+    needs: [ sonar ]
     steps:
       - uses: actions/checkout@v2     
       -  name: Login to registry
