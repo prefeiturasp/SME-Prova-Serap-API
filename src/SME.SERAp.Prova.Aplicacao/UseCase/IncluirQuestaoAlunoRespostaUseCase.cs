@@ -34,6 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 questaoRespondida.Resposta = resposta;
                 questaoRespondida.TempoRespostaAluno += tempoRespostaAluno;
+                questaoRespondida.CriadoEm = horaResposta;
 
                 return await mediator.Send(new AtualizarQuestaoAlunoRespostaCommand(questaoRespondida));
             }
