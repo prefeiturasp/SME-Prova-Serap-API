@@ -17,6 +17,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Inclusao).ToColumn("inclusao");
             Map(c => c.TotalItens).ToColumn("total_itens");
             Map(c => c.TempoExecucao).ToColumn("tempo_execucao");
+            Map(c => c.Senha).ToColumn("senha");
         }
     }
 }

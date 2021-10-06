@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterProvasAreaEstudanteUseCase.Executar());
         }
+
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ProvaDetalheResumidoRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]

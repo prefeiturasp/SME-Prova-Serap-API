@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
@@ -55,7 +54,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         status = provaAluno.Status;
 
                     
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, ObterTempoTotal(provaAluno)));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, ObterTempoTotal(provaAluno), prova.Senha));
                 }
 
                 return provasParaRetornar;
