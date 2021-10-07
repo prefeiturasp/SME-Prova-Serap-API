@@ -36,6 +36,12 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoExtra != null)
                 tempoExtra = int.Parse(parametroTempoExtra.Valor);
 
+            var parametroTempoAlerta = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoAlertaProva, DateTime.Now.Year));
+
+            int tempoAlerta = 300;
+            if (parametroTempoAlerta != null)
+                tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -54,13 +60,26 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    TimeSpan tempoTotal = provaAluno.CriadoEm - DateTime.Now;
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, (int)tempoTotal.TotalSeconds));
+                    
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, 
+                        prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, 
+                        tempoExtra, tempoAlerta,
+                        ObterTempoTotal(provaAluno)));
                 }
 
                 return provasParaRetornar;
             }
             else return default;
+        }
+
+        private static int ObterTempoTotal(ProvaAluno provaAluno)
+        {
+            if(provaAluno != null)
+            {
+                TimeSpan tempoTotal = DateTime.Now - provaAluno.CriadoEm;
+                return (int)tempoTotal.TotalSeconds;
+            }
+            return 0;
         }
 
         private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)

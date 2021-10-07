@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -13,27 +14,31 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task<bool> Executar(long questaoId, long? alternativaId, string resposta, DateTime horaResposta)
+        public async Task<bool> Executar(QuestaoAlunoRespostaIncluirDto dto)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-
-            var provaStatus = await mediator.Send(new ObterProvaAlunoPorQuestaoIdRaQuery(questaoId, alunoRa));
+            DateTime horaDataResposta = new(dto.DataHoraRespostaTicks);
+            var provaStatus = await mediator.Send(new ObterProvaAlunoPorQuestaoIdRaQuery(dto.QuestaoId, alunoRa));
 
             if (provaStatus != null && provaStatus.Status == Dominio.ProvaStatus.Finalizado)
                 throw new NegocioException("Esta prova já foi finalizada", 411);
 
-            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(questaoId, alunoRa));
+            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(dto.QuestaoId, alunoRa));
                       
             if (questaoRespondida == null)
             {
-                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta));
-            } else if (questaoRespondida.CriadoEm > horaResposta) 
+                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(dto.QuestaoId, alunoRa, dto.AlternativaId, dto.Resposta, horaDataResposta, dto.TempoRespostaAluno ?? 0));
+            } else if (questaoRespondida.CriadoEm > horaDataResposta) 
             {
                 return false;
             }else
             {
-                await mediator.Send(new ExcluirQuestaoAlunoRespostaPorIdCommand(questaoRespondida));
-                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(questaoId, alunoRa, alternativaId, resposta, horaResposta));
+                questaoRespondida.Resposta = dto.Resposta;
+                questaoRespondida.AlternativaId = dto.AlternativaId;
+                questaoRespondida.TempoRespostaAluno += dto.TempoRespostaAluno ?? 0;
+                questaoRespondida.CriadoEm = horaDataResposta;
+
+                return await mediator.Send(new AtualizarQuestaoAlunoRespostaCommand(questaoRespondida));
             }
 
         }
