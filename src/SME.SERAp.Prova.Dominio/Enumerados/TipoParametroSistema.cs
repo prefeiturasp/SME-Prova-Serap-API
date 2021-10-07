@@ -9,5 +9,6 @@ namespace SME.SERAp.Prova.Dominio
         InicioProvaTurnoTarde = 2,
         InicioProvaTurnoNoite = 3,
         TempoExtraProva = 4,
+        TempoAlertaProva = 5,
     }
 }

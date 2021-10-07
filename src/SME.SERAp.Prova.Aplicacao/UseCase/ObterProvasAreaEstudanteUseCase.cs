@@ -36,6 +36,12 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoExtra != null)
                 tempoExtra = int.Parse(parametroTempoExtra.Valor);
 
+            var parametroTempoAlerta = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoAlertaProva, DateTime.Now.Year));
+
+            int tempoAlerta = 300;
+            if (parametroTempoAlerta != null)
+                tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -55,7 +61,10 @@ namespace SME.SERAp.Prova.Aplicacao
                         status = provaAluno.Status;
 
                     
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, tempoExtra, ObterTempoTotal(provaAluno)));
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, 
+                        prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, 
+                        tempoExtra, tempoAlerta,
+                        ObterTempoTotal(provaAluno)));
                 }
 
                 return provasParaRetornar;
