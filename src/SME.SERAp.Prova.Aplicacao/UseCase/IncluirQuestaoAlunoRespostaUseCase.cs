@@ -37,7 +37,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 questaoRespondida.AlternativaId = dto.AlternativaId;
                 questaoRespondida.TempoRespostaAluno += dto.TempoRespostaAluno ?? 0;
                 questaoRespondida.CriadoEm = horaDataResposta;
-                questaoRespondida.Tentativas += 1;
+                questaoRespondida.Visualizacoes += 1;
 
                 return await mediator.Send(new AtualizarQuestaoAlunoRespostaCommand(questaoRespondida));
             }
