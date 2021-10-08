@@ -1,0 +1,1 @@
+ALTER TABLE  if exists public.prova ADD COLUMN IF NOT EXISTS senha character varying COLLATE pg_catalog."default" NULL;
