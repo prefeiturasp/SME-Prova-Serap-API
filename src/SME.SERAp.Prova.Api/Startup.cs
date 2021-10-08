@@ -49,6 +49,8 @@ namespace SME.SERAp.Prova.Api
             logOptions.SentryDSN = sentryOptions.Dsn;
             services.AddSingleton(logOptions);
 
+            services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
+
             services.AddHttpContextAccessor();
             services.AddMemoryCache();
 
