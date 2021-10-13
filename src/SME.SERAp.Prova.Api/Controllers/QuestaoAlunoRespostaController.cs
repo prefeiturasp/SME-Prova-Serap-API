@@ -20,9 +20,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> SalvarResposta([FromBody] QuestaoAlunoRespostaIncluirDto questaoAlunoRespostaIncluirDto,
             [FromServices] IIncluirQuestaoAlunoRespostaUseCase incluirQuestaoAlunoRespostaUseCase)
         {
-            DateTime horaDataResposta = new(questaoAlunoRespostaIncluirDto.DataHoraRespostaTicks);
-
-            return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto.QuestaoId, questaoAlunoRespostaIncluirDto.AlternativaId, questaoAlunoRespostaIncluirDto.Resposta, horaDataResposta));
+            return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto));
         }
 
         [HttpGet]

@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SME.SERAp.Prova.Aplicacao;
-using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
+using System;
+using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -12,6 +17,10 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/provas")]
     public class ProvaController : ControllerBase
     {
+        public ProvaController()
+        {
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
@@ -20,6 +29,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterProvasAreaEstudanteUseCase.Executar());
         }
+
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ProvaDetalheResumidoRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
@@ -44,7 +54,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
         {
-            return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto.Status));
+            return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));
         }
     }
 }

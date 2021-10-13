@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
@@ -23,7 +22,25 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
-                        
+
+            var alunoLogadoTurno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
+            if (string.IsNullOrEmpty(alunoLogadoTurno))
+                throw new NegocioException("Turno do aluno logado não localizado");
+
+            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
+
+            var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
+
+            int tempoExtra = 600;
+            if (parametroTempoExtra != null)
+                tempoExtra = int.Parse(parametroTempoExtra.Valor);
+
+            var parametroTempoAlerta = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoAlertaProva, DateTime.Now.Year));
+
+            int tempoAlerta = 300;
+            if (parametroTempoAlerta != null)
+                tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
+
             var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
             if (provas.Any())
             {
@@ -42,12 +59,35 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id));
+                    
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, 
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha));
                 }
 
                 return provasParaRetornar;
             }
             else return default;
+        }
+
+        private static int ObterTempoTotal(ProvaAluno provaAluno)
+        {
+            if(provaAluno != null)
+            {
+                TimeSpan tempoTotal = DateTime.Now - provaAluno.CriadoEm;
+                return (int)tempoTotal.TotalSeconds;
+            }
+            return 0;
+        }
+
+        private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
+        {
+            return (TipoTurno)int.Parse(tipoTurnoAluno) switch
+            {
+                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
+                TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
+                TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
+                _ => default,
+            };
         }
     }
 }
