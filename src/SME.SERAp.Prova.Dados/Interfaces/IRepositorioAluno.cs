@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
 {
-    public interface IRepositorioAluno
+    public interface IRepositorioAluno : IRepositorioBase<Aluno>
     {
-        Task<ObterAlunoAtivoRetornoDto> ObterAlunoAtivoAsync(long alunoRA);
-        Task<AlunoEol> ObterAlunoDetalhePorRa(long alunoRA);
+        Task<Aluno> ObterPorRA(long ra);
     }
 }

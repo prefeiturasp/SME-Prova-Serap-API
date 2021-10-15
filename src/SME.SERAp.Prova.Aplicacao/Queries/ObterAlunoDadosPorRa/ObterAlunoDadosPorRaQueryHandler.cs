@@ -8,15 +8,15 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterAlunoDadosPorRaQueryHandler : IRequestHandler<ObterAlunoDadosPorRaQuery, AlunoEol>
     {
-        private readonly IRepositorioAluno repositorioAluno;
+        private readonly IRepositorioAlunoEol repositorioAlunoEol;
 
-        public ObterAlunoDadosPorRaQueryHandler(IRepositorioAluno repositorioAluno)
+        public ObterAlunoDadosPorRaQueryHandler(IRepositorioAlunoEol repositorioAlunoEol)
         {
-            this.repositorioAluno = repositorioAluno ?? throw new System.ArgumentNullException(nameof(repositorioAluno));
+            this.repositorioAlunoEol = repositorioAlunoEol ?? throw new System.ArgumentNullException(nameof(repositorioAlunoEol));
         }
         public async Task<AlunoEol> Handle(ObterAlunoDadosPorRaQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioAluno.ObterAlunoDetalhePorRa(request.AlunoRa);
+            return await repositorioAlunoEol.ObterAlunoDetalhePorRa(request.AlunoRa);
         }
     }
 }
