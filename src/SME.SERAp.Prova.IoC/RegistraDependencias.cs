@@ -27,6 +27,7 @@ namespace SME.SERAp.Prova.IoC
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
+            services.TryAddScoped<IRepositorioAlunoEol, RepositorioAlunoEol>();
             services.TryAddScoped<IRepositorioAluno, RepositorioAluno>();
             services.TryAddScoped<IRepositorioProva, RepositorioProva>();
             services.TryAddScoped<IRepositorioQuestao, RepositorioQuestao>();

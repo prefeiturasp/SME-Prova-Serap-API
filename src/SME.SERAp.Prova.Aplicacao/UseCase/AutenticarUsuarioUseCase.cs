@@ -14,28 +14,45 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<UsuarioAutenticacaoDto> Executar(AutenticacaoDto autenticacaoDto)
         {
-            var retornoDto = new UsuarioAutenticacaoDto();            
+            var retornoDto = new UsuarioAutenticacaoDto();
 
-            var aluno = await mediator.Send(new ObterAlunoAtivoQuery(autenticacaoDto.Login));
+            var aluno = await mediator.Send(new ObterAlunoAtivoEolQuery(autenticacaoDto.Login));
             if (aluno != null)
             {
-                var podeGerarToken = await mediator.Send(new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
+                var podeGerarToken =
+                    await mediator.Send(
+                        new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
                 if (podeGerarToken)
                 {
-                    var tokenDtExpiracao = await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno));
-                    retornoDto.Token = tokenDtExpiracao.Item1 ; 
+                    var tokenDtExpiracao =
+                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno));
+                    retornoDto.Token = tokenDtExpiracao.Item1;
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
 
                 if (!string.IsNullOrEmpty(autenticacaoDto.Dispositivo))
                 {
-                    await mediator.Send(new IncluirUsuarioDispositivoCommand(autenticacaoDto.Login, autenticacaoDto.Dispositivo, aluno.Ano));
+                    await mediator.Send(new IncluirUsuarioDispositivoCommand(autenticacaoDto.Login,
+                        autenticacaoDto.Dispositivo, aluno.Ano));
                 }
 
-            } else throw new NaoAutorizadoException("Código EOL inválido", 411);
+                var verificaAluno = await mediator.Send(new ObterAlunoPorRaQuery(aluno.CodigoAluno));
+
+                if (verificaAluno == null)
+                {
+                    await mediator.Send(new IncluirAlunoCommand(autenticacaoDto.Login, ""));
+                } else
+                {
+                    verificaAluno.AtualizaUltimoLogin();
+                    await mediator.Send(new AtualizarAlunoCommand(verificaAluno));
+                    retornoDto.UltimoLogin = verificaAluno.UltimoLogin;
+                }
+            }
+            else throw new NaoAutorizadoException("Código EOL inválido", 411);
 
             return retornoDto;
         }

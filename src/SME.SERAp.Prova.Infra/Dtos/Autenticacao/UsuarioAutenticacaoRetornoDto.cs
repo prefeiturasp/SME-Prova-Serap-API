@@ -16,5 +16,6 @@ namespace SME.SERAp.Prova.Infra
 
         public string Token { get; set; }
         public DateTime DataHoraExpiracao { get; set; }
+        public DateTime? UltimoLogin { get; set; }
     }
 }
