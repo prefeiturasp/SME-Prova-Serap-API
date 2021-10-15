@@ -44,7 +44,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 if (verificaUsuario == null)
                 {
-                    await mediator.Send(new IncluirAlunoCommand(autenticacaoDto.Login, ""));
+                    await mediator.Send(new IncluirUsuarioCommand(autenticacaoDto.Login, ""));
                 } else
                 {
                     verificaUsuario.AtualizaUltimoLogin();
