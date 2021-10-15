@@ -19,6 +19,7 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new ParametroSistemaMap());
                 config.AddMap(new TelaBoasVindasMap());
                 config.AddMap(new AlunoMap());
+                config.AddMap(new UsuarioMap());
                 config.ForDommel();
             });
         }

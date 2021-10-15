@@ -40,16 +40,16 @@ namespace SME.SERAp.Prova.Aplicacao
                         autenticacaoDto.Dispositivo, aluno.Ano));
                 }
 
-                var verificaAluno = await mediator.Send(new ObterAlunoPorRaQuery(aluno.CodigoAluno));
+                var verificaUsuario = await mediator.Send(new ObterUsuarioPorLoginQuery(aluno.CodigoAluno));
 
-                if (verificaAluno == null)
+                if (verificaUsuario == null)
                 {
                     await mediator.Send(new IncluirAlunoCommand(autenticacaoDto.Login, ""));
                 } else
                 {
-                    verificaAluno.AtualizaUltimoLogin();
-                    await mediator.Send(new AtualizarAlunoCommand(verificaAluno));
-                    retornoDto.UltimoLogin = verificaAluno.UltimoLogin;
+                    verificaUsuario.AtualizaUltimoLogin();
+                    await mediator.Send(new AtualizarUsuarioCommand(verificaUsuario));
+                    retornoDto.UltimoLogin = verificaUsuario.UltimoLogin;
                 }
             }
             else throw new NaoAutorizadoException("Código EOL inválido", 411);

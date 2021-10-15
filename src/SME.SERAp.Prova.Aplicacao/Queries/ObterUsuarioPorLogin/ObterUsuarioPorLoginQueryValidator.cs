@@ -4,11 +4,11 @@ using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterAlunoPorRaQueryValidator : AbstractValidator<ObterAlunoPorRaQuery>
+    public class ObterUsuarioPorLoginQueryValidator : AbstractValidator<ObterUsuarioPorLoginQuery>
     {
-        public ObterAlunoPorRaQueryValidator()
+        public ObterUsuarioPorLoginQueryValidator()
         {
-            RuleFor(a => a.AlunoRA)
+            RuleFor(a => a.Login)
                 .NotEmpty()
                 .WithMessage("O RA do aluno é obrigatório.");
         }
