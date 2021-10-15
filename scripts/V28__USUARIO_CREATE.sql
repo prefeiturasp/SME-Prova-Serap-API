@@ -4,6 +4,7 @@ create table if not exists public.usuario
 	nome varchar(200) null,
     login int8 not null,
     ultimo_login timestamp without time zone not null,
+	criado_em timestamp without time zone not null,
 	CONSTRAINT usuario_pk PRIMARY KEY (id)
 );
 
