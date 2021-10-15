@@ -9,9 +9,9 @@ namespace SME.SERAp.Prova.Dados
 {
     public class RepositorioTelaBoasVindas : RepositorioBase<Dominio.TelaBoasVindas>, IRepositorioTelaBoasVindas
     {
-        public RepositorioTelaBoasVindas(ConnectionStringOptions connectionStringOptions) : base(connectionStringOptions)
+        public RepositorioTelaBoasVindas(ConnectionStringOptions connectionStringOptions) : base(
+            connectionStringOptions)
         {
-
         }
 
         public async Task<IEnumerable<TelaBoasVindas>> ObterAtivosAsync()
@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexao();
             try
             {
-                var query = @"select * from configuracao_tela_boas_vindas where ativo order by ordem";
+                const string query = @"select * from configuracao_tela_boas_vindas where ativo order by ordem";
 
                 return await conn.QueryAsync<Dominio.TelaBoasVindas>(query);
             }
