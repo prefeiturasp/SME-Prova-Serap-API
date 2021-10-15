@@ -6,7 +6,6 @@ namespace SME.SERAp.Prova.Dominio
     {
         public string Nome { get; set; }
         public long RA { get; set; }
-        public DateTime UltimoLogin { get; set; }
 
         public Aluno()
         {
@@ -17,12 +16,6 @@ namespace SME.SERAp.Prova.Dominio
         {
             Nome = nome;
             RA = ra;
-            UltimoLogin = DateTime.Now;
-        }
-
-        public void AtualizaUltimoLogin()
-        {
-            UltimoLogin = DateTime.Now;
         }
     }
 }
