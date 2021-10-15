@@ -35,7 +35,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioUsuarioDispositivo, RepositorioUsuarioDispositivo>();
             services.TryAddScoped<IRepositorioQuestaoAlunoResposta, RepositorioQuestaoAlunoResposta>();
             services.TryAddScoped<IRepositorioProvaAluno, RepositorioProvaAluno>();
-            services.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();          
+            services.TryAddScoped<IRepositorioParametroSistema, RepositorioParametroSistema>();
+            services.AddScoped<IRepositorioTelaBoasVindas, RepositorioTelaBoasVindas>();
+
 
         }
 
@@ -54,6 +56,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();
             services.TryAddScoped<IObterProvaDetalhesResumidoUseCase, ObterProvaDetalhesResumidoUseCase>();
             services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
+            services.TryAddScoped<IObterTelasBoasVindasUseCase, ObterTelasBoasVindasUseCase>();
             services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
             services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
             services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
