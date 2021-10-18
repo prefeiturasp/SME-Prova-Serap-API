@@ -3,8 +3,8 @@
     public class Questao : EntidadeBase
     {
         public int Ordem { get; set; }
-        public string Pergunta { get; set; }
-        public string Enunciado { get; set; }
+        public string Titulo { get; set; }
+        public string Descricao { get; set; }
         public long QuestaoLegadoId { get; set; }
         public long ProvaId { get; set; }
         public QuestaoTipo Tipo { get; set; }
@@ -15,11 +15,11 @@
         {
         }
 
-        public Questao(string pergunta, long questaoLegadoId, string enunciado, int ordem, long provaId, QuestaoTipo tipo)
+        public Questao(string titulo, long questaoLegadoId, string descricao, int ordem, long provaId, QuestaoTipo tipo)
         {
             Ordem = ordem;
-            Pergunta = pergunta;
-            Enunciado = enunciado;
+            Titulo = titulo;
+            Descricao = descricao;
             QuestaoLegadoId = questaoLegadoId;
             ProvaId = provaId;
             Tipo = tipo;
