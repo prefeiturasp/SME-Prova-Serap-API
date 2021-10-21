@@ -10,4 +10,8 @@
     <PackageReference Include="Sentry.AspNetCore" Version="3.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SME.SERAp.Prova.Dominio\SME.SERAp.Prova.Dominio.csproj" />
+  </ItemGroup>
+
 </Project>

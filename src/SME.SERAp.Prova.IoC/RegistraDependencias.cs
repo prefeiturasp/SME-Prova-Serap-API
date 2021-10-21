@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.IoC
             RegistrarRepositorios(services);
             RegistrarServicos(services);
             RegistrarCasosDeUso(services);
-            RegistrarMapeamentos.Registrar();
+            RegistraMapeamentos.Registrar();
         }
 
 
@@ -66,6 +66,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IIncluirProvaAlunoUseCase, IncluirProvaAlunoUseCase>();            
             services.TryAddScoped<IObterQuestaoAlunoRespostaPorQuestaoIdUseCase, ObterQuestaoAlunoRespostaPorQuestaoIdUseCase>();
             services.TryAddScoped<IObterProvaAlunoUseCase, ObterProvaAlunoUseCase>();
+            services.TryAddScoped<IIncluirPreferenciasUsuarioUseCase, IncluirPreferenciasUsuarioUseCase>();
         }
     }
 }

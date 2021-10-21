@@ -6,6 +6,7 @@ namespace SME.SERAp.Prova.Dados
 {
     public interface IRepositorioPreferenciasUsuario : IRepositorioBase<PreferenciasUsuario>
     {
-        
+        Task<PreferenciasUsuario> ObterPorUsuarioId(long usuarioId);
+        Task<PreferenciasUsuario> ObterPorLogin(long login);
     }
 }

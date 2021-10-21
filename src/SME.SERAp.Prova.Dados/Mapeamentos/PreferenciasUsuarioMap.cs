@@ -10,6 +10,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Id).ToColumn("id").IsKey();
             Map(c => c.UsuarioId).ToColumn("usuario_id");
             Map(c => c.TamanhoFonte).ToColumn("tamanho_fonte");
+            Map(c => c.FamiliaFonte).ToColumn("familia_fonte");
         }
     }
 }
