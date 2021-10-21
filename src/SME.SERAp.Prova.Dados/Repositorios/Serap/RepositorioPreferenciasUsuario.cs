@@ -36,7 +36,7 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 const string query =
-                    @"select pu.* from preferencias_usuario pu inner join usuario u pu.usuario_id = u.id on  where login = @login;";
+                    @"select pu.* from preferencias_usuario pu inner join usuario u on pu.usuario_id = u.id where login = @login;";
 
                 return await conn.QueryFirstOrDefaultAsync<PreferenciasUsuario>(query, new {login});
             }
