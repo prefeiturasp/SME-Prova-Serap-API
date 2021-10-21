@@ -5,9 +5,7 @@ namespace SME.SERAp.Prova.Dados.Interfaces
 {
     public interface IRepositorioCache
     {
-        string Obter(string nomeChave, bool utilizarGZip = false);
-
-        Task<T> Obter<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720, bool utilizarGZip = false);
+        string Obter(string nomeChave, bool utilizarGZip = false);        
 
         Task<string> ObterAsync(string nomeChave, bool utilizarGZip = false);
 

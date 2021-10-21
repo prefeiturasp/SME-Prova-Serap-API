@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Sentry;
+using SME.SERAp.Prova.Api.Filtros;
 using SME.SERAp.Prova.Api.Middlewares;
 
 namespace SME.SERAp.Prova.Api.Configuracoes
 {
-    public static class RegistrarMvc
+    public static class RegistraMvc
     {
         public static void Registrar(IServiceCollection services, SentryOptions sentryOptions)
         {
@@ -16,8 +17,10 @@ namespace SME.SERAp.Prova.Api.Configuracoes
 
             services.AddMvc(options =>
             {
-                options.EnableEndpointRouting = true;
+                options.EnableEndpointRouting = true;                
+                options.Filters.Add(new ValidaDtoAttribute());
                 options.Filters.Add(new FiltroExcecoesAttribute(sentryOptions));
+                
 
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);

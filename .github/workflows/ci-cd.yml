@@ -1,81 +1,62 @@
 name: Docker Image CI
  
 on:
+
   push:
-    branches: [ development, release ]
+    branches: [ main, master, release ]
+    paths-ignore:
+    - ".github/workflows/**"  
   
+  workflow_dispatch:
 
 jobs:
-
+    
   build:
 
-    runs-on: serap
-
+    runs-on: master
     steps:
-      - uses: actions/checkout@v2
-      -
-         name: Login to registry
+      - uses: actions/checkout@v2     
+      -  name: Login to registry
          uses: docker/login-action@v1
          with:
           registry: ${{ secrets.REGISTRY_HOST }}
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PWD }}
-
     
       - name: Build the Docker image    
         run: | 
              docker build . --file src/SME.SERAp.Prova.Api/Dockerfile --tag ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
              docker push ${{ secrets.REGISTRY_HOST }}/${GITHUB_REF##*/}/sme-prova-serap-api
-
-  deploy-development:
-    runs-on: serap
-    if: ${{ github.ref == 'refs/heads/development' }}        
-    environment:
-      name: development
-    needs: [ build ]
-    steps:
-      - name: Executando Scripts
-        env:
-          USER_DB: ${{ secrets.USER_DB }}
-          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
-          URL_DB: ${{ secrets.URL_DB }}
-        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
-      
-      - name: Run an adjust of kubernetes dev
-        env: # Ou como uma variável de ambiente
-          RANCHER_URL: ${{ secrets.RANCHER_URL }}
-          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-        run: |
-          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
-      - 
-       name: Change Images
-       run: |
-         kubectl rollout restart deployment/sme-prova-serap-front -n sme-serap-estudante           
-         rm -f /runner/.kube/config      
   
-  deploy-release:
-    runs-on: serap
-    if: ${{ github.ref == 'refs/heads/release' }}        
+  flyway-release:
+  
+    runs-on: master
+    needs: [ build ]       
     environment:
       name: release
-    needs: [ build ]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
       - name: Executando Scripts
         env:
           USER_DB: ${{ secrets.USER_DB }}
           PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
           URL_DB: ${{ secrets.URL_DB }}
         run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
-
-      - name: Run an adjust of kubernetes dev
-        env: # Ou como uma variável de ambiente
+             
+  deploy-release:
+  
+    runs-on: master
+    needs: [ flyway-release ]    
+    environment:
+      name: release
+    steps:
+      - name: Redeploy
+        uses: luizhpriotto/action_images@kubectl-v1.0
+        env: 
           RANCHER_URL: ${{ secrets.RANCHER_URL }}
           RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
-        run: |
-          sed -e "s/\${RANCHER_URL}/$RANCHER_URL/" -e "s/\${RANCHER_TOKEN}/$RANCHER_TOKEN/" /runner/config_template > /runner/.kube/config                
-      - 
-       name: Change Images
-       run: |
-         kubectl rollout restart deployment/sme-prova-serap-front -n sme-serap-estudante           
-         rm -f /runner/.kube/config  
- 
+          WORKLOAD: sme-prova-serap-api
+          NAMESPACE: sme-serap-estudante
+          

@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
-    public class ValidacaoException : Exception
+    public class ValidacaoException : Exception, ISerializable
     {
         public readonly IEnumerable<ValidationFailure> Erros;
 
