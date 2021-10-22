@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Infra
     public class PreferenciaUsuarioDto
     {
         public int TamanhoFonte { get; set; }
-        public FamiliaFonte FamiliaFonte { get; set; }
+        public int FamiliaFonte { get; set; }
     }
 }

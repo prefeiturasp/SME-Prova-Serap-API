@@ -31,7 +31,9 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado, turnoUsuarioLogado,
                     preferenciasUsuario?.TamanhoFonte ?? 16,
-                    preferenciasUsuario?.FamiliaFonte.ObterNome() ?? FamiliaFonte.Poppins.ObterNome());
+                    preferenciasUsuario != null
+                        ? (int) preferenciasUsuario.FamiliaFonte
+                        : (int) FamiliaFonte.Poppins);
             }
             else throw new NegocioException($"Não foi possível localizar os dados do aluno {usuarioLogadoRa}");
         }
