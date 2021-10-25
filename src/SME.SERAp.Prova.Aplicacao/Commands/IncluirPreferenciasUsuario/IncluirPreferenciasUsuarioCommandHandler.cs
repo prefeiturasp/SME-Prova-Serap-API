@@ -11,7 +11,7 @@ namespace SME.SERAp.Prova.Aplicacao
     {
         private readonly IRepositorioPreferenciasUsuario repositorioPreferenciasUsuario;
 
-        public IncluirPreferenciasUsuarioCommandHandler(IRepositorioProvaAluno repositorioProvaAluno)
+        public IncluirPreferenciasUsuarioCommandHandler(IRepositorioPreferenciasUsuario repositorioPreferenciasUsuario)
         {
             this.repositorioPreferenciasUsuario = repositorioPreferenciasUsuario ??
                                                   throw new System.ArgumentNullException(
