@@ -16,8 +16,9 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]        
-        public async Task<IActionResult> Autenticar(AutenticacaoDto autenticacaoDto, [FromServices] IAutenticarUsuarioUseCase autenticarUsuarioUseCase)
+        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]
+        public async Task<IActionResult> Autenticar(AutenticacaoDto autenticacaoDto,
+            [FromServices] IAutenticarUsuarioUseCase autenticarUsuarioUseCase)
         {
             return Ok(await autenticarUsuarioUseCase.Executar(autenticacaoDto));
         }
@@ -27,19 +28,20 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]        
-        public async Task<IActionResult> RevalidarToken([FromServices] IRevalidaTokenJwtUseCase revalidaTokenJwtUseCase,[FromBody] RevalidaTokenDto revalidaTokenDto)
+        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]
+        public async Task<IActionResult> RevalidarToken([FromServices] IRevalidaTokenJwtUseCase revalidaTokenJwtUseCase,
+            [FromBody] RevalidaTokenDto revalidaTokenDto)
         {
             return Ok(await revalidaTokenJwtUseCase.Executar(revalidaTokenDto));
         }
-        
+
         [Authorize("Bearer")]
         [HttpGet("meus-dados")]
-        [ValidaDto]        
+        [ValidaDto]
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [ProducesResponseType(typeof(MeusDadosRetornoDto), 200)]        
+        [ProducesResponseType(typeof(MeusDadosRetornoDto), 200)]
         public async Task<IActionResult> Meusdados([FromServices] IObterMeusDadosUseCase obterMeusDadosUseCase)
         {
             return Ok(await obterMeusDadosUseCase.Executar());

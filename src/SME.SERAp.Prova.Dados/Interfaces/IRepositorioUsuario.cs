@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
 {
-    public interface IRepositorioAluno : IRepositorioBase<Aluno>
+    public interface IRepositorioUsuario : IRepositorioBase<Usuario>
     {
-        Task<Aluno> ObterPorRA(long ra);
+        Task<Usuario> ObterPorLogin(long login);
     }
 }
