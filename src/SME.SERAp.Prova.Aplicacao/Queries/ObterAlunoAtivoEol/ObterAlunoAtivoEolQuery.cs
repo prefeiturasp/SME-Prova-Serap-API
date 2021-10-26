@@ -4,18 +4,18 @@ using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterAlunoAtivoQuery : IRequest<ObterAlunoAtivoRetornoDto>
+    public class ObterAlunoAtivoEolQuery : IRequest<ObterAlunoAtivoEolRetornoDto>
     {
-        public ObterAlunoAtivoQuery(long alunoRA)
+        public ObterAlunoAtivoEolQuery(long alunoRA)
         {
             AlunoRA = alunoRA;
         }
 
         public long AlunoRA { get; set; }
     }
-    public class VerificaUsuarioAtivoQueryValidator : AbstractValidator<ObterAlunoAtivoQuery>
+    public class ObterAlunoAtivoEolQueryValidator : AbstractValidator<ObterAlunoAtivoEolQuery>
     {
-        public VerificaUsuarioAtivoQueryValidator()
+        public ObterAlunoAtivoEolQueryValidator()
         {
             RuleFor(a => a.AlunoRA)
                 .NotEmpty()

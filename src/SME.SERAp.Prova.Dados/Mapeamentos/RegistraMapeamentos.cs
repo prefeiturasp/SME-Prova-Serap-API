@@ -3,7 +3,7 @@ using Dapper.FluentMap.Dommel;
 
 namespace SME.SERAp.Prova.Dados
 {
-    public static class RegistrarMapeamentos
+    public static class RegistraMapeamentos
     {
         public static void Registrar()
         {
@@ -17,6 +17,10 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new QuestaoAlunoRespostaMap());
                 config.AddMap(new ProvaAlunoMap());
                 config.AddMap(new ParametroSistemaMap());
+                config.AddMap(new TelaBoasVindasMap());
+                config.AddMap(new AlunoMap());
+                config.AddMap(new UsuarioMap());
+                config.AddMap(new PreferenciasUsuarioMap());
                 config.ForDommel();
             });
         }

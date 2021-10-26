@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ObterAlunoAtivoRetornoDto
+    public class ObterAlunoAtivoEolRetornoDto
     {
         public long CodigoAluno { get; set; }
         public int Ano { get; set; }
