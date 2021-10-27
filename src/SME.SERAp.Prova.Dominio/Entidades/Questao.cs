@@ -16,7 +16,7 @@
         {
         }
 
-        public Questao(string pergunta, long questaoLegadoId, string enunciado, int ordem, long provaId, QuestaoTipo tipo, string caderno)
+        public Questao(string titulo, long questaoLegadoId, string descricao, int ordem, long provaId, QuestaoTipo tipo, string caderno)
         {
             Ordem = ordem;
             Titulo = titulo;
