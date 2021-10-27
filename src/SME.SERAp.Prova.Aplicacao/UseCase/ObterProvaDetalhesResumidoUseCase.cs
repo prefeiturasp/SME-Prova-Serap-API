@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +16,15 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<ProvaDetalheResumidoRetornoDto> Executar(long provaId)
         {
-            var detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoQuery(provaId));
+            IEnumerable<ProvaDetalheResumidoBaseDadosDto> detalhesDaProva;
+
+            var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
+
+            if(prova.PossuiBIB)
+                detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoBIBQuery(provaId, usuarioLogadoRa));
+            else
+                detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoQuery(provaId));
 
             if (detalhesDaProva.Any())
             {
