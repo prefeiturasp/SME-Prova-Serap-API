@@ -10,5 +10,6 @@ namespace SME.SERAp.Prova.Dados
         Task<Dominio.Prova> ObterPorIdLegadoAsync(long id);
         Task<IEnumerable<Dominio.Prova>> ObterPorAnoData(int ano, DateTime dataReferenia);
         Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id);
+        Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoBIBPorIdERaAsync(long provaId, long alunoRA);
     }
 }
