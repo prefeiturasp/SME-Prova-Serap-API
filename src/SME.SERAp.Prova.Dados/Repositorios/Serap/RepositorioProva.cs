@@ -79,5 +79,41 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoBIBPorIdERaAsync(long provaId, long alunoRA)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select
+	                            q.id  as questaoId,
+	                            alt.id as alternativaId,
+	                            arq.legado_id as arquivoId,
+	                            arq.tamanho_bytes as arquivoTamanho		
+                            from
+	                            prova p
+                            inner join caderno_aluno ca on 
+                                p.id = ca.prova_id
+                            inner join aluno a on 
+                                ca.aluno_id = a.id
+                            inner join questao q on
+	                            q.prova_id = p.id and ca.caderno = q.caderno
+                            left join alternativa alt on
+	                            alt.questao_id = q.id
+                            left join questao_arquivo qa on
+	                            qa.questao_id = q.id
+                            left join arquivo arq on
+	                            qa.arquivo_id = arq.id
+                            where
+	                            p.id = @provaId and a.ra = @alunoRA ";
+
+                return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { provaId, alunoRA });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
