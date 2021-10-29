@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 {
-    public class RepositorioAluno : IRepositorioAluno
+    public class RepositorioAlunoEol : IRepositorioAlunoEol
     {
         private readonly ConnectionStringOptions connectionStringOptions;
 
-        public RepositorioAluno(ConnectionStringOptions connectionStringOptions)
+        public RepositorioAlunoEol(ConnectionStringOptions connectionStringOptions)
         {
             this.connectionStringOptions = connectionStringOptions ?? throw new ArgumentNullException(nameof(connectionStringOptions));
         }
-        public async Task<ObterAlunoAtivoRetornoDto> ObterAlunoAtivoAsync(long alunoRA)
+        public async Task<ObterAlunoAtivoEolRetornoDto> ObterAlunoAtivoAsync(long alunoRA)
         {
 
             var query = @"SELECT top 1
@@ -43,7 +43,7 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 	                            AND e.tp_escola IN (1, 3, 4, 16)";
 
             using var conn = new SqlConnection(connectionStringOptions.Eol);
-            return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoRetornoDto>(query, new { alunoRA });
+            return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoEolRetornoDto>(query, new { alunoRA });
 
         }
         public async Task<AlunoEol> ObterAlunoDetalhePorRa(long alunoRA)
