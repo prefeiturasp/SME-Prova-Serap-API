@@ -68,7 +68,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     needs: [ build ]       
     environment:
-      name: master
+      name: production
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -86,7 +86,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     needs: [ flyway-master ]    
     environment:
-      name: master
+      name: production
     steps:
       - name: Redeploy
         uses: luizhpriotto/action_images@kubectl-v1.0
