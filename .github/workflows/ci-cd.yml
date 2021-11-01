@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI - Others
  
 on:
 
@@ -31,6 +31,7 @@ jobs:
   flyway-release:
   
     runs-on: master
+    if: ${{ github.ref == 'refs/heads/release' }}
     needs: [ build ]       
     environment:
       name: release
@@ -48,9 +49,44 @@ jobs:
   deploy-release:
   
     runs-on: master
+    if: ${{ github.ref == 'refs/heads/release' }}
     needs: [ flyway-release ]    
     environment:
       name: release
+    steps:
+      - name: Redeploy
+        uses: luizhpriotto/action_images@kubectl-v1.0
+        env: 
+          RANCHER_URL: ${{ secrets.RANCHER_URL }}
+          RANCHER_TOKEN: ${{ secrets.RANCHER_TOKEN }}
+          WORKLOAD: sme-prova-serap-api
+          NAMESPACE: sme-serap-estudante
+          
+  flyway-master:
+  
+    runs-on: master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [ build ]       
+    environment:
+      name: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Executando Scripts
+        env:
+          USER_DB: ${{ secrets.USER_DB }}
+          PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
+          URL_DB: ${{ secrets.URL_DB }}
+        run: docker run --rm -v $PWD/scripts:/flyway/sql boxfuse/flyway:5.2.4 -user=$USER_DB -password=$PASSWORD_DB -url=$URL_DB -outOfOrder=true migrate
+             
+  deploy-master:
+  
+    runs-on: master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: [ flyway-master ]    
+    environment:
+      name: production
     steps:
       - name: Redeploy
         uses: luizhpriotto/action_images@kubectl-v1.0
