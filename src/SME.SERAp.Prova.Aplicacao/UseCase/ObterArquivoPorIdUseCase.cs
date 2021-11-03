@@ -17,7 +17,9 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var arquivo = await mediator.Send(new ObterArquivoPorIdQuery(id));
 
-            return new ArquivoRetornoDto(arquivo.Id, arquivo.Caminho);
+            var questaoArquivo = await mediator.Send(new ObterQuestaoArquivoPorArquivoIdQuery(arquivo.Id));
+
+            return new ArquivoRetornoDto(arquivo.Id, arquivo.Caminho, questaoArquivo.QuestaoId);
         }
 
     }
