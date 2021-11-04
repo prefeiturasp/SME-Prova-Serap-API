@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -17,7 +18,15 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var arquivo = await mediator.Send(new ObterArquivoPorIdLegadoQuery(id));
 
-            return new ArquivoRetornoDto(arquivo.LegadoId, arquivo.Caminho);
+            if (arquivo == null)
+                throw new NegocioException("O Arquivo não foi encontrado");
+
+            var questaoArquivo = await mediator.Send(new ObterQuestaoArquivoPorArquivoIdQuery(arquivo.Id));
+
+            if(questaoArquivo == null)
+                throw new NegocioException("O Arquivo da Questão não foi encontrado");
+
+            return new ArquivoRetornoDto(arquivo.LegadoId, arquivo.Caminho, questaoArquivo.QuestaoId);
         }
 
     }
