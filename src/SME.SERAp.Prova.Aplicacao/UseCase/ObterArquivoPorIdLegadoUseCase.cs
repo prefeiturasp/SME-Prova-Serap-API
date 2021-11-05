@@ -21,12 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (arquivo == null)
                 throw new NegocioException("O Arquivo não foi encontrado");
 
-            var questaoArquivo = await mediator.Send(new ObterQuestaoArquivoPorArquivoIdQuery(arquivo.Id));
-
-            if(questaoArquivo == null)
-                throw new NegocioException("O Arquivo da Questão não foi encontrado");
-
-            return new ArquivoRetornoDto(arquivo.LegadoId, arquivo.Caminho, questaoArquivo.QuestaoId);
+            return new ArquivoRetornoDto(arquivo.LegadoId, arquivo.Caminho);
         }
 
     }
