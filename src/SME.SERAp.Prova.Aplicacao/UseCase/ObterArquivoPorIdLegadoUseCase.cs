@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
 
@@ -16,6 +17,9 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<ArquivoRetornoDto> Executar(long id)
         {
             var arquivo = await mediator.Send(new ObterArquivoPorIdLegadoQuery(id));
+
+            if (arquivo == null)
+                throw new NegocioException("O Arquivo não foi encontrado");
 
             return new ArquivoRetornoDto(arquivo.LegadoId, arquivo.Caminho);
         }
