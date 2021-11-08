@@ -21,9 +21,12 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var contextoProva = await mediator.Send(new ObterContextoProvaPorIdQuery(id));
 
-            return new ContextoProvaDto(contextoProva.Id, contextoProva.ProvaId, 
-                contextoProva.Titulo, contextoProva.Texto, contextoProva.Imagem, 
-                contextoProva.Posicionamento, contextoProva.Ordem);
+            if (contextoProva == null)
+                throw new NegocioException("Contexto da prova não encontrado");
+
+            return new ContextoProvaDto(contextoProva.Id, contextoProva.ProvaId,
+        contextoProva.Titulo, contextoProva.Texto, contextoProva.Imagem,
+        contextoProva.Posicionamento, contextoProva.Ordem);
         }
     }
 }
