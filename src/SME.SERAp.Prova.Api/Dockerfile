@@ -24,5 +24,9 @@ RUN dotnet publish "SME.SERAp.Prova.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+RUN apt-get update \
+    && apt-get install -yq tzdata locales -y \
+    && dpkg-reconfigure --frontend noninteractive tzdata \ 
+	  && locale-gen en_US.UTF-8
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SME.SERAp.Prova.Api.dll"]
