@@ -24,6 +24,9 @@ RUN dotnet publish "SME.SERAp.Prova.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+
+ENV TZ=America/Sao_Paulo
+
 RUN apt-get update \
     && apt-get install -yq tzdata locales -y \
     && dpkg-reconfigure --frontend noninteractive tzdata \ 
