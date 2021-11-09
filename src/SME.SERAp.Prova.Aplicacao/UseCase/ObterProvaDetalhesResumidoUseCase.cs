@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var questoesId = detalhesDaProva.Select(a => a.QuestaoId).Where(b => b > 0).Distinct().ToArray();
                 var arquivosId = detalhesDaProva.Select(a => a.ArquivoId).Where(b => b > 0).Distinct().ToArray();
-                var alternativasId = detalhesDaProva.Select(a => a.AlternativaId).Where(b => b > 0).Distinct().ToArray();
+                var alternativasId = detalhesDaProva.Select(a => a.AlternativaId).Distinct().ToArray();
                 var arquivosParaSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.ArquivoTamanho, Id = a.ArquivoId }).Distinct();
                 var tamanhoTotalArquivos = arquivosParaSomarTamanho.Sum(a => a.TamanhoInBytes);
 
