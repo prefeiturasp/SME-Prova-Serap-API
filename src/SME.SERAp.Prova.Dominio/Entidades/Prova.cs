@@ -30,5 +30,6 @@ namespace SME.SERAp.Prova.Dominio
         public long LegadoId { get; set; }
         public string Senha { get; set; }
         public bool PossuiBIB { get; set; }
+        public Modalidade Modalidade { get; set; }
     }
 }
