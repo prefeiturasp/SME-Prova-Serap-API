@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select distinct p.* from prova p 
                                 inner join prova_ano pa 
                                 on pa.prova_id = p.id 
-                                where @dataReferenia between p.inicio and p.fim 
+                                where @dataReferenia between p.inicio_download and p.fim 
                                 and pa.ano = @ano";
 
                 return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia });
