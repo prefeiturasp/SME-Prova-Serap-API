@@ -34,7 +34,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 var arquivosParaSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.ArquivoTamanho, Id = a.ArquivoId }).Distinct();
                 var tamanhoTotalArquivos = arquivosParaSomarTamanho.Sum(a => a.TamanhoInBytes);
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId, alternativasId, tamanhoTotalArquivos);
+                var contextoProva = await mediator.Send(new ObterContextosProvasPorProvaIdQuery(provaId));
+                long[] contextoProvaIds = System.Array.Empty<long>();
+                if (contextoProva.Any())
+                    contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
+
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId, alternativasId, tamanhoTotalArquivos, contextoProvaIds);
 
             }
             else return default;
