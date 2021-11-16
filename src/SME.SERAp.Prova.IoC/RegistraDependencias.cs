@@ -41,6 +41,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
             services.TryAddScoped<IRepositorioPreferenciasUsuario, RepositorioPreferenciasUsuario>();
             services.TryAddScoped<IRepositorioQuestaoArquivo, RepositorioQuestaoArquivo>();
+            services.TryAddScoped<IRepositorioContextoProva, RepositorioContextoProva>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -67,6 +68,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterQuestaoAlunoRespostaPorQuestaoIdUseCase, ObterQuestaoAlunoRespostaPorQuestaoIdUseCase>();
             services.TryAddScoped<IObterProvaAlunoUseCase, ObterProvaAlunoUseCase>();
             services.TryAddScoped<IIncluirPreferenciasUsuarioUseCase, IncluirPreferenciasUsuarioUseCase>();
+            services.TryAddScoped<IObterContextoProvaPorIdUseCase, ObterContextoProvaPorIdUseCase>();
+            services.TryAddScoped<IObterContextosProvasPorProvaIdUseCase, ObterContextosProvasPorProvaIdUseCase>();
+            
         }
     }
 }
