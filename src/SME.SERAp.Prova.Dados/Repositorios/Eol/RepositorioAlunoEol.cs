@@ -22,7 +22,20 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
             var query = @"SELECT top 1
 	                            aluno.cd_aluno CodigoAluno,
 	                            se.sg_resumida_serie as Ano,
-                                turesc.cd_tipo_turno as TipoTurno
+                                turesc.cd_tipo_turno as TipoTurno,
+                                CASE
+									WHEN se.cd_etapa_ensino IN (1,10) 
+										or (turesc.cd_tipo_turma <> 1 AND e.tp_escola IN (10,11,12,14,15,18,26)) 
+										or (turesc.cd_tipo_turma <> 1 AND e.tp_escola IN (2,17,28,30,31)) THEN --Infantil
+				                    1
+				                    WHEN se.cd_etapa_ensino IN ( 2, 3, 7, 11 ) THEN --eja
+				                    3 
+				                    WHEN se.cd_etapa_ensino IN ( 4, 5, 12, 13 ) THEN --fundamental
+				                    5 
+				                    WHEN se.cd_etapa_ensino IN ( 6, 7, 8, 17, 14 ) THEN --médio
+				                    6
+									else 0
+				                END AS Modalidade
                             FROM
 	                            v_matricula_cotic matricula
                             INNER JOIN v_aluno_cotic aluno ON
@@ -40,7 +53,7 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
                             WHERE
 	                            aluno.cd_aluno = @alunoRA
 	                            AND matrTurma.cd_situacao_aluno IN (1, 6, 10, 13)
-	                            AND e.tp_escola IN (1, 3, 4, 16)";
+	                            AND e.tp_escola IN (1, 3, 4, 13, 16)";
 
             using var conn = new SqlConnection(connectionStringOptions.Eol);
             return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoEolRetornoDto>(query, new { alunoRA });
