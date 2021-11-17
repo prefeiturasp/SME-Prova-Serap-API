@@ -10,17 +10,31 @@ namespace SME.SERAp.Prova.Dominio
         InicioProvaTurnoNoite = 3,
         TempoExtraProva = 4,
         TempoAlertaProva = 5,
+        FimProvaTurnoManhaIntegral = 6,
+        FimProvaTurnoTarde = 7,
+        FimProvaTurnoNoite = 8,
     }
 
     public static class TipoParametroSistemaExtension
     {
-        public static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
+        public static TipoParametroSistema ObterParametroTurnoInicio(string tipoTurnoAluno)
         {
             return (TipoTurno)int.Parse(tipoTurnoAluno) switch
             {
                 TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
                 TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
                 TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
+                _ => default,
+            };
+        }
+
+        public static TipoParametroSistema ObterParametroTurnoFim(string tipoTurnoAluno)
+        {
+            return (TipoTurno)int.Parse(tipoTurnoAluno) switch
+            {
+                TipoTurno.Manha => TipoParametroSistema.FimProvaTurnoManhaIntegral,
+                TipoTurno.Tarde => TipoParametroSistema.FimProvaTurnoTarde,
+                TipoTurno.Noturno => TipoParametroSistema.FimProvaTurnoNoite,
                 _ => default,
             };
         }

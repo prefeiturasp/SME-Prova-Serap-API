@@ -33,13 +33,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 var preferenciasUsuario =
                     await mediator.Send(new ObterPreferenciasUsuarioPorLoginQuery(usuarioLogadoRa));
 
-                var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurno(turnoUsuarioLogado), DateTime.Now.Year));
+                var turnoInicio = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
+                var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoFim(turnoUsuarioLogado), DateTime.Now.Year));
 
                 return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado, turnoUsuarioLogado,
                     preferenciasUsuario?.TamanhoFonte ?? 16,
                     preferenciasUsuario != null
                         ? (int) preferenciasUsuario.FamiliaFonte
-                        : (int) FamiliaFonte.Poppins, (Modalidade)Enum.Parse(typeof(Modalidade), modalidadeUsuarioLogado), int.Parse(horarioTurno.Valor));
+                        : (int) FamiliaFonte.Poppins, (Modalidade)Enum.Parse(typeof(Modalidade), modalidadeUsuarioLogado), int.Parse(turnoInicio.Valor), int.Parse(turnoFim.Valor));
             }
             else throw new NegocioException($"Não foi possível localizar os dados do aluno {usuarioLogadoRa}");
         }
