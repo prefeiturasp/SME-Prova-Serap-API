@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (podeGerarToken)
                 {
                     var tokenDtExpiracao =
-                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno));
+                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno, (int)aluno.Modalidade));
                     retornoDto.Token = tokenDtExpiracao.Item1;
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }

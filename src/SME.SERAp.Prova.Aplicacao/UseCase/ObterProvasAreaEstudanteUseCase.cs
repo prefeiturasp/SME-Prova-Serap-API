@@ -27,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoTurno))
                 throw new NegocioException("Turno do aluno logado não localizado");
 
-            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
+            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
 
             var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
 
