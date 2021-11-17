@@ -27,7 +27,9 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoTurno))
                 throw new NegocioException("Turno do aluno logado não localizado");
 
-            var horarioTurno = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurno(alunoLogadoTurno), DateTime.Now.Year));
+            var alunoLogadoModalidade = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("MODALIDADE"));
+            if (string.IsNullOrEmpty(alunoLogadoModalidade))
+                throw new NegocioException("Modalidade do aluno logado não localizado");
 
             var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
 
@@ -41,7 +43,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
-            var provas = await mediator.Send(new ObterProvasPorAnoQuery(int.Parse(alunoLogadoAno), DateTime.Today));
+            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(int.Parse(alunoLogadoAno), DateTime.Today, int.Parse(alunoLogadoModalidade)));
             if (provas.Any())
             {
                 var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
