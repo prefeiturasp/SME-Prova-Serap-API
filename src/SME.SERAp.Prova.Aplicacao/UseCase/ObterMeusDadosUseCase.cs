@@ -34,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     await mediator.Send(new ObterPreferenciasUsuarioPorLoginQuery(usuarioLogadoRa));
 
                 var turnoInicio = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
-                var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
+                var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoFim(turnoUsuarioLogado), DateTime.Now.Year));
 
                 return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado, turnoUsuarioLogado,
                     preferenciasUsuario?.TamanhoFonte ?? 16,

@@ -2,7 +2,7 @@ insert
     into 
     public.parametro_sistema (nome,descricao,valor,ano,criado_em,tipo)
 select
-	'InicioProvaTurnoManhaIntegral','Início da prova no turno da manhã/integral','7','2021',now(),1
+	'FimProvaTurnoManhaIntegral','Fim da prova no turno da manhã/integral','17','2021',now(),6
 where
 	not exists(
 	select
@@ -10,14 +10,14 @@ where
 	from
 		public.parametro_sistema
 	where
-		tipo = 1 and ano = '2021' );
+		tipo = 6 and ano = '2021' );
 
 
 insert 
     into 
     public.parametro_sistema (nome,descricao,valor,ano,criado_em,tipo)
 select
-	'InicioProvaTurnoTarde','Início da prova no turno da tarde','13','2021',now(),2
+	'FimProvaTurnoTarde','Fim da prova no turno da tarde','18','2021',now(),7
 where
 	not exists(
 	select
@@ -25,14 +25,14 @@ where
 	from
 		public.parametro_sistema
 	where
-		tipo = 2 and ano = '2021' );
+		tipo = 7 and ano = '2021' );
 
 
 insert 
     into 
     public.parametro_sistema (nome,descricao,valor,ano,criado_em,tipo)
 select
-	'InicioProvaTurnoNoite','Início da prova no turno da noite','19','2021',now(),3
+	'FimProvaTurnoNoite','Fim da prova no turno da noite','0','2021',now(),8
 where
 	not exists(
 	select
@@ -40,4 +40,4 @@ where
 	from
 		public.parametro_sistema
 	where
-		tipo = 3 and ano = '2021' );
+		tipo = 8 and ano = '2021' );
