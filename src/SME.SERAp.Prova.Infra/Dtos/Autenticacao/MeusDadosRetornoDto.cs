@@ -4,7 +4,7 @@ namespace SME.SERAp.Prova.Infra
 {
     public class MeusDadosRetornoDto
     {
-        public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno)
+        public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno)
         {
             Nome = nome;
             Ano = ano;
@@ -13,6 +13,7 @@ namespace SME.SERAp.Prova.Infra
             FamiliaFonte = familiaFonte;
             Modalidade = modalidade;
             InicioTurno = inicioTurno;
+            FimTurno = fimTurno;
         }
 
         public string Nome { get; set; }
@@ -22,5 +23,6 @@ namespace SME.SERAp.Prova.Infra
         public Modalidade Modalidade { get; set; }
         public int FamiliaFonte { get; set; }
         public int InicioTurno { get; set; }
+        public int FimTurno { get; set; }
     }
 }
