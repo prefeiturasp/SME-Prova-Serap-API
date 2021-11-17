@@ -64,7 +64,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, 
                         prova.InicioDownload, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, 
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha));
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
                 }
 
                 return provasParaRetornar;
