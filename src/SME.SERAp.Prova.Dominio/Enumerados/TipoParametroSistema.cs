@@ -5,14 +5,20 @@ namespace SME.SERAp.Prova.Dominio
 {
     public enum TipoParametroSistema
     {
-        InicioProvaTurnoManhaIntegral = 1,
-        InicioProvaTurnoTarde = 2,
-        InicioProvaTurnoNoite = 3,
+        InicioProvaTurnoManha = 1,
+        InicioProvaTurnoIntermediario = 2,
+        InicioProvaTurnoTarde = 3,
         TempoExtraProva = 4,
         TempoAlertaProva = 5,
-        FimProvaTurnoManhaIntegral = 6,
-        FimProvaTurnoTarde = 7,
-        FimProvaTurnoNoite = 8,
+        FimProvaTurnoManha = 6,
+        FimProvaTurnoIntermediario = 7,
+        FimProvaTurnoTarde = 8,
+        InicioProvaTurnoVespertino = 9,
+        InicioProvaTurnoNoite = 10,
+        InicioProvaTurnoIntegral = 11,
+        FimProvaTurnoVespertino = 9,
+        FimProvaTurnoNoite = 10,
+        FimProvaTurnoIntegral = 11,
     }
 
     public static class TipoParametroSistemaExtension
@@ -21,9 +27,12 @@ namespace SME.SERAp.Prova.Dominio
         {
             return (TipoTurno)int.Parse(tipoTurnoAluno) switch
             {
-                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
+                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManha,
+                TipoTurno.Intermediario => TipoParametroSistema.InicioProvaTurnoIntermediario,
                 TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
-                TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
+                TipoTurno.Vespertino => TipoParametroSistema.InicioProvaTurnoVespertino,
+                TipoTurno.Noite => TipoParametroSistema.InicioProvaTurnoNoite,
+                TipoTurno.Integral => TipoParametroSistema.InicioProvaTurnoIntegral,
                 _ => default,
             };
         }
@@ -32,9 +41,12 @@ namespace SME.SERAp.Prova.Dominio
         {
             return (TipoTurno)int.Parse(tipoTurnoAluno) switch
             {
-                TipoTurno.Manha => TipoParametroSistema.FimProvaTurnoManhaIntegral,
+                TipoTurno.Manha => TipoParametroSistema.FimProvaTurnoManha,
+                TipoTurno.Intermediario => TipoParametroSistema.FimProvaTurnoIntermediario,
                 TipoTurno.Tarde => TipoParametroSistema.FimProvaTurnoTarde,
-                TipoTurno.Noturno => TipoParametroSistema.FimProvaTurnoNoite,
+                TipoTurno.Vespertino => TipoParametroSistema.FimProvaTurnoVespertino,
+                TipoTurno.Noite => TipoParametroSistema.FimProvaTurnoNoite,
+                TipoTurno.Integral => TipoParametroSistema.FimProvaTurnoIntegral,
                 _ => default,
             };
         }

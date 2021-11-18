@@ -81,16 +81,5 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             return 0;
         }
-
-        private static TipoParametroSistema ObterParametroTurno(string tipoTurnoAluno)
-        {
-            return (TipoTurno)int.Parse(tipoTurnoAluno) switch
-            {
-                TipoTurno.Manha => TipoParametroSistema.InicioProvaTurnoManhaIntegral,
-                TipoTurno.Tarde => TipoParametroSistema.InicioProvaTurnoTarde,
-                TipoTurno.Noturno => TipoParametroSistema.InicioProvaTurnoNoite,
-                _ => default,
-            };
-        }
     }
 }
