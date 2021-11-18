@@ -16,9 +16,9 @@ namespace SME.SERAp.Prova.Dominio
         InicioProvaTurnoVespertino = 9,
         InicioProvaTurnoNoite = 10,
         InicioProvaTurnoIntegral = 11,
-        FimProvaTurnoVespertino = 9,
-        FimProvaTurnoNoite = 10,
-        FimProvaTurnoIntegral = 11,
+        FimProvaTurnoVespertino = 12,
+        FimProvaTurnoNoite = 13,
+        FimProvaTurnoIntegral = 14,
     }
 
     public static class TipoParametroSistemaExtension
