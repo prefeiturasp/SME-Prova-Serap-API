@@ -2,13 +2,14 @@
 {
     public class QuestaoDetalheRetornoDto
     {
-        public QuestaoDetalheRetornoDto(long id, string titulo, string descricao, int ordem, int tipo)
+        public QuestaoDetalheRetornoDto(long id, string titulo, string descricao, int ordem, int tipo, int quantidadeAlternativas)
         {
             Id = id;
             Titulo = titulo;
             Descricao = descricao;
             Ordem = ordem;
             Tipo = tipo;
+            QuantidadeAlternativas = quantidadeAlternativas;
         }
 
         public long Id { get; set; }
@@ -16,6 +17,7 @@
         public string Descricao { get; set; }
         public int Ordem { get; set; }
         public int Tipo { get; set; }
+        public int QuantidadeAlternativas { get; set; }
 
     }
 }
