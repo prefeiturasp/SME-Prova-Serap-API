@@ -9,6 +9,7 @@
         public long ProvaId { get; set; }
         public QuestaoTipo Tipo { get; set; }
         public string Caderno { get; set; }
+        public int QuantidadeAlternativas { get; set; }
 
 
 
@@ -16,7 +17,7 @@
         {
         }
 
-        public Questao(string titulo, long questaoLegadoId, string descricao, int ordem, long provaId, QuestaoTipo tipo, string caderno)
+        public Questao(string titulo, long questaoLegadoId, string descricao, int ordem, long provaId, QuestaoTipo tipo, string caderno, int quantidadeAlternativas)
         {
             Ordem = ordem;
             Titulo = titulo;
@@ -25,6 +26,7 @@
             ProvaId = provaId;
             Tipo = tipo;
             Caderno = caderno;
+            QuantidadeAlternativas = quantidadeAlternativas;
         }
     }
 }
