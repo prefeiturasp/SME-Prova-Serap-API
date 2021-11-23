@@ -11,6 +11,7 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Dominio.Prova>> ObterPorAnoData(int ano, DateTime dataReferenia);
         Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id);
         Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoBIBPorIdERaAsync(long provaId, long alunoRA);
+        Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA);
         Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(int ano, DateTime dataReferenia, int modalidade);
     }
 }

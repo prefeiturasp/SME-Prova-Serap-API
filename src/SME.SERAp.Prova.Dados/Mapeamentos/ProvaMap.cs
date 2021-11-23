@@ -20,6 +20,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.TempoExecucao).ToColumn("tempo_execucao");
             Map(c => c.Senha).ToColumn("senha");
             Map(c => c.PossuiBIB).ToColumn("possui_bib");
+            Map(c => c.TotalCadernos).ToColumn("total_cadernos");
         }
     }
 }
