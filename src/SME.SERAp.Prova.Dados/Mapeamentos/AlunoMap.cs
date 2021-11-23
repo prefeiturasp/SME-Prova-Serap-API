@@ -12,6 +12,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.RA).ToColumn("ra");
             Map(c => c.Situacao).ToColumn("situacao");
             Map(c => c.TurmaId).ToColumn("turma_id");
+            Map(c => c.DataAtualizacao).ToColumn("data_atualizacao");
         }
     }
 }
