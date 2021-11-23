@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Api.Filtros;
+using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
 using System;
@@ -21,6 +22,18 @@ namespace SME.SERAp.Prova.Api.Controllers
             [FromServices] IIncluirQuestaoAlunoRespostaUseCase incluirQuestaoAlunoRespostaUseCase)
         {
             return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto));
+        }
+
+        [HttpPost]
+        [ChaveAutenticacaoApi]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [ValidaDto]
+        [Route("sincronizar")]
+        public async Task<IActionResult> SincronizarResposta([FromBody] QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, 
+            [FromServices] ISincronizarQuestaoAlunoRespostaUseCase sincronizarQuestaoAlunoRespostaUseCase)
+        {
+            return Ok(await sincronizarQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaSincronizarDto));
         }
 
         [HttpGet]
