@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
+
+            if (prova == null)
+                throw new NegocioException("A prova infomada não foi encontrada");
 
             if(prova.PossuiBIB)
             {
