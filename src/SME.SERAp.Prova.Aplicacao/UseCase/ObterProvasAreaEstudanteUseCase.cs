@@ -43,7 +43,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
-            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(int.Parse(alunoLogadoAno), DateTime.Today, int.Parse(alunoLogadoModalidade)));
+            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
             if (provas.Any())
             {
                 var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());

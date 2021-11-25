@@ -116,7 +116,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(int ano, System.DateTime dataReferenia, int modalidade)
+        public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(string ano, System.DateTime dataReferenia, int modalidade)
         {
             using var conn = ObterConexao();
             try
@@ -127,7 +127,7 @@ namespace SME.SERAp.Prova.Dados
                                 where @dataReferenia between p.inicio_download and p.fim 
                                 and pa.ano = @ano and p.modalidade = @modalidade";
 
-                return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia, modalidade });
+                return await conn.QueryAsync<Dominio.Prova>(query, new { ano, dataReferenia, modalidade });
             }
             finally
             {
