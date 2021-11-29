@@ -18,10 +18,6 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             DateTime horaDataResposta = new(dto.DataHoraRespostaTicks);
-            var provaStatus = await mediator.Send(new ObterProvaAlunoPorQuestaoIdRaQuery(dto.QuestaoId, alunoRa));
-
-            if (provaStatus != null && provaStatus.Status == Dominio.ProvaStatus.Finalizado)
-                throw new NegocioException("Esta prova já foi finalizada", 411);
 
             var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(dto.QuestaoId, alunoRa));
                       
