@@ -18,11 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<bool> Executar(QuestaoAlunoRespostaSincronizarDto dto)
         {
             DateTime horaDataResposta = new(dto.DataHoraRespostaTicks);
-            var provaStatus = await mediator.Send(new ObterProvaAlunoPorQuestaoIdRaQuery(dto.QuestaoId, dto.AlunoRa));
-
-            if (provaStatus != null && provaStatus.Status == Dominio.ProvaStatus.Finalizado)
-                throw new NegocioException("Esta prova já foi finalizada", 411);
-
+                        
             var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(dto.QuestaoId, dto.AlunoRa));
 
             if (questaoRespondida == null)
