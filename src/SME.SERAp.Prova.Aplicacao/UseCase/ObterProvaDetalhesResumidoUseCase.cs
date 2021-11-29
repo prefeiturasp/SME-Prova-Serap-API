@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,8 +23,26 @@ namespace SME.SERAp.Prova.Aplicacao
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
 
+            if (prova == null)
+                throw new NegocioException("A prova infomada não foi encontrada");
+
             if(prova.PossuiBIB)
+            {
+                var caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(provaId, usuarioLogadoRa));
+                if(string.IsNullOrEmpty(caderno))
+                {
+                    var aluno = await mediator.Send(new ObterAlunoSerapPorRaQuery(usuarioLogadoRa));
+                    if(aluno != null)
+                    {
+                        var totalCadernos = prova.TotalCadernos;
+                        Random sortear = new Random();
+                        var cadernoSorteado = sortear.Next(1, totalCadernos).ToString();
+                        await mediator.Send(new IncluirCadernoAlunoCommand(aluno.Id, provaId, cadernoSorteado));
+                    }
+                }
                 detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoBIBQuery(provaId, usuarioLogadoRa));
+            }
+                
             else
                 detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoQuery(provaId));
 

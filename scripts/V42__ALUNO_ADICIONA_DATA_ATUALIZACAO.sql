@@ -1,0 +1,1 @@
+ALTER TABLE  if exists public.aluno ADD COLUMN IF NOT EXISTS data_atualizacao timestamp not NULL default now();

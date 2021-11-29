@@ -116,7 +116,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(int ano, System.DateTime dataReferenia, int modalidade)
+        public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(string ano, System.DateTime dataReferenia, int modalidade)
         {
             using var conn = ObterConexao();
             try
@@ -127,7 +127,40 @@ namespace SME.SERAp.Prova.Dados
                                 where @dataReferenia between p.inicio_download and p.fim 
                                 and pa.ano = @ano and p.modalidade = @modalidade";
 
-                return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia, modalidade });
+                return await conn.QueryAsync<Dominio.Prova>(query, new { ano, dataReferenia, modalidade });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select
+	                            distinct ca.caderno		
+                            from
+	                            prova p
+                            inner join caderno_aluno ca on 
+                                p.id = ca.prova_id
+                            inner join aluno a on 
+                                ca.aluno_id = a.id
+                            inner join questao q on
+	                            q.prova_id = p.id and ca.caderno = q.caderno
+                            left join alternativa alt on
+	                            alt.questao_id = q.id
+                            left join questao_arquivo qa on
+	                            qa.questao_id = q.id
+                            left join arquivo arq on
+	                            qa.arquivo_id = arq.id
+                            where
+	                            p.id = @provaId and a.ra = @alunoRA ";
+
+                return await conn.QueryFirstOrDefaultAsync<string>(query, new { provaId, alunoRA });
             }
             finally
             {
