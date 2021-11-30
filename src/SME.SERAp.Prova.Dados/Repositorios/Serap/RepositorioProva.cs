@@ -168,5 +168,21 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync()
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select * from prova";
+
+                return await conn.QueryAsync<Dominio.Prova>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
