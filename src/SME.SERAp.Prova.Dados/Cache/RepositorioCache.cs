@@ -67,10 +67,10 @@ namespace SME.SERAp.Prova.Dados.Cache
                     if (utilizarGZip)
                     {
                         stringCache = UtilGZip.Descomprimir(Convert.FromBase64String(stringCache));
-                    }
+                    }                    
                     return JsonSerializer.Deserialize<T>(stringCache);
                 }
-
+                
                 var dados = await buscarDados();
 
                 await SalvarAsync(nomeChave, JsonSerializer.Serialize(dados), minutosParaExpirar, utilizarGZip);
@@ -155,7 +155,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                 memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar));
 
                 timer.Stop();
-                servicoLog.RegistrarDependenciaAppInsights("MemoryCache", nomeChave, "Remover async", inicioOperacao, timer.Elapsed, true);
+                servicoLog.RegistrarDependenciaAppInsights("MemoryCache", nomeChave, "Salvar async", inicioOperacao, timer.Elapsed, true);
 
             }
             catch (Exception ex)
@@ -185,7 +185,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                     await Task.Run(() => memoryCache.Set(nomeChave, valor, TimeSpan.FromMinutes(minutosParaExpirar)));
 
                     timer.Stop();
-                    servicoLog.RegistrarDependenciaAppInsights("MemoryCache", nomeChave, "Remover async", inicioOperacao, timer.Elapsed, true);
+                    servicoLog.RegistrarDependenciaAppInsights("MemoryCache", nomeChave, "Salvar async", inicioOperacao, timer.Elapsed, true);
 
                 }
             }
