@@ -168,5 +168,97 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<ProvaDetalheCompletoBaseDadosDto>> ObterDetalhesCompletoPorIdAsync(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select
+	                            q.id  as questaoId,
+	                            q.texto_base as questaoTextoBase,
+	                            q.enunciado as questaoEnunciado,
+	                            q.ordem as questaoOrdem,
+	                            q.tipo as questaoTipo,
+	                            q.caderno as questaoCaderno,
+	                            q.quantidade_alternativas as questaoQuantidadeAlternativas,
+	                            alt.id as alternativaId,
+	                            alt.descricao as alternativaDescricao,
+	                            alt.ordem as alternativaOrdem,
+	                            alt.numeracao as alternativaNumeracao,
+	                            alt.questao_id as alternativaQuestaoId,
+	                            arq.legado_id as arquivoId,
+	                            arq.caminho as arquivoCaminho,
+	                            arq.legado_id as arquivoLegadoId,
+	                            arq.tamanho_bytes as arquivoTamanho		
+                            from
+	                            prova p
+                            inner join questao q on
+	                            q.prova_id = p.id
+                            left join alternativa alt on
+	                            alt.questao_id = q.id
+                            left join questao_arquivo qa on
+	                            qa.questao_id = q.id
+                            left join arquivo arq on
+	                            qa.arquivo_id = arq.id
+                            where
+	                            p.id = @provaId";
+
+                return await conn.QueryAsync<ProvaDetalheCompletoBaseDadosDto>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<ProvaDetalheCompletoBaseDadosDto>> ObterDetalhesCompletoBIBPorIdERaAsync(long provaId, long alunoRA)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select
+	                            q.id  as questaoId,
+	                            q.texto_base as questaoTextoBase,
+	                            q.enunciado as questaoEnunciado,
+	                            q.ordem as questaoOrdem,
+	                            q.tipo as questaoTipo,
+	                            q.caderno as questaoCaderno,
+	                            q.quantidade_alternativas as questaoQuantidadeAlternativas,
+	                            alt.id as alternativaId,
+	                            alt.descricao as alternativaDescricao,
+	                            alt.ordem as alternativaOrdem,
+	                            alt.numeracao as alternativaNumeracao,
+	                            alt.questao_id as alternativaQuestaoId,
+	                            arq.legado_id as arquivoId,
+	                            arq.caminho as arquivoCaminho,
+	                            arq.legado_id as arquivoLegadoId,
+	                            arq.tamanho_bytes as arquivoTamanho		
+                            from
+	                            prova p
+                            inner join caderno_aluno ca on 
+                                p.id = ca.prova_id
+                            inner join aluno a on 
+                                ca.aluno_id = a.id
+                            inner join questao q on
+	                            q.prova_id = p.id
+                            left join alternativa alt on
+	                            alt.questao_id = q.id
+                            left join questao_arquivo qa on
+	                            qa.questao_id = q.id
+                            left join arquivo arq on
+	                            qa.arquivo_id = arq.id
+                            where
+	                            p.id = @provaId and a.ra = @alunoRA;";
+
+                return await conn.QueryAsync<ProvaDetalheCompletoBaseDadosDto>(query, new { provaId, alunoRA });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

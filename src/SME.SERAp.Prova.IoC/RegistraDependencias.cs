@@ -59,6 +59,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterMeusDadosUseCase, ObterMeusDadosUseCase>();
             services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();
             services.TryAddScoped<IObterProvaDetalhesResumidoUseCase, ObterProvaDetalhesResumidoUseCase>();
+            services.TryAddScoped<IObterProvaDetalhesCompletoUseCase, ObterProvaDetalhesCompletoUseCase>();
             services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
             services.TryAddScoped<IObterTelasBoasVindasUseCase, ObterTelasBoasVindasUseCase>();
             services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
