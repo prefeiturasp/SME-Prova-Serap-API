@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -71,7 +72,11 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
-           services.AddStartupTask<WarmUpCacheTask>();
+            var serviceProvider = services.BuildServiceProvider();
+            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+            DapperExtensionMethods.Init(clientTelemetry);
+
+            services.AddStartupTask<WarmUpCacheTask>();
            
         }
 
