@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -42,6 +43,22 @@ namespace SME.SERAp.Prova.Dados
 	                            legado_id = @id";
 
                 return await conn.QueryFirstOrDefaultAsync<Arquivo>(query, new { id });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<Arquivo>> ObterTodosParaCacheAsync()
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select * from arquivo";
+
+                return await conn.QueryAsync<Arquivo>(query);
             }
             finally
             {

@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -7,9 +8,12 @@ using Microsoft.Extensions.Hosting;
 using Prometheus;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
+using SME.SERAp.Prova.Aplicacao;
+using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api
 {
@@ -68,10 +72,15 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
+            var serviceProvider = services.BuildServiceProvider();
+            var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
+            DapperExtensionMethods.Init(clientTelemetry);
 
+            services.AddStartupTask<WarmUpCacheTask>();
+           
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -103,6 +112,6 @@ namespace SME.SERAp.Prova.Api
             {
                 endpoints.MapControllers();
             });
-        }
+        }     
     }
 }
