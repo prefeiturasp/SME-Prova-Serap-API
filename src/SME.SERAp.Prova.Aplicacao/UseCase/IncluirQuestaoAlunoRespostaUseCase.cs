@@ -17,27 +17,18 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<bool> Executar(QuestaoAlunoRespostaIncluirDto dto)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            DateTime horaDataResposta = new(dto.DataHoraRespostaTicks);
 
-            var questaoRespondida = await mediator.Send(new ObterQuestaoAlunoRespostaPorIdRaQuery(dto.QuestaoId, alunoRa));
-                      
-            if (questaoRespondida == null)
+            QuestaoAlunoRespostaSincronizarDto mensagem = new()
             {
-                return await mediator.Send(new IncluirQuestaoAlunoRespostaCommand(dto.QuestaoId, alunoRa, dto.AlternativaId, dto.Resposta, horaDataResposta, dto.TempoRespostaAluno ?? 0));
-            } else if (questaoRespondida.CriadoEm > horaDataResposta) 
-            {
-                return false;
-            }else
-            {
-                questaoRespondida.Resposta = dto.Resposta;
-                questaoRespondida.AlternativaId = dto.AlternativaId;
-                questaoRespondida.TempoRespostaAluno += dto.TempoRespostaAluno ?? 0;
-                questaoRespondida.CriadoEm = horaDataResposta;
-                questaoRespondida.Visualizacoes += 1;
+                AlunoRa = alunoRa,
+                QuestaoId = dto.QuestaoId,
+                AlternativaId = dto.AlternativaId,
+                Resposta = dto.Resposta,
+                DataHoraRespostaTicks = dto.DataHoraRespostaTicks,
+                TempoRespostaAluno = dto.TempoRespostaAluno,
+            };
 
-                return await mediator.Send(new AtualizarQuestaoAlunoRespostaCommand(questaoRespondida));
-            }
-
+            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, mensagem));
         }
     }
 }

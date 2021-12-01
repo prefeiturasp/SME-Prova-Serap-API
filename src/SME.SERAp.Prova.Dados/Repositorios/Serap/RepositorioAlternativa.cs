@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Alternativa>> ObterTodosParaCacheAsync()
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from alternativa";
