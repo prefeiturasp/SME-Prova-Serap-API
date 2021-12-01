@@ -53,10 +53,11 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
                             WHERE
 	                            aluno.cd_aluno = @alunoRA
 	                            AND matrTurma.cd_situacao_aluno IN (1, 6, 10, 13)
-	                            AND e.tp_escola IN (1, 3, 4, 13, 16)";
+	                            AND e.tp_escola IN (1, 3, 4, 13, 16)
+                                AND matricula.an_letivo = @anoLetivo";
 
             using var conn = new SqlConnection(connectionStringOptions.Eol);
-            return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoEolRetornoDto>(query, new { alunoRA });
+            return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoEolRetornoDto>(query, new { alunoRA, anoLetivo = DateTime.Now.Year });
 
         }
         public async Task<AlunoEol> ObterAlunoDetalhePorRa(long alunoRA)
