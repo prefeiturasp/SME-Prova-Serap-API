@@ -94,7 +94,13 @@ namespace SME.SERAp.Prova.Api
             DapperExtensionMethods.Init(clientTelemetry);
 
             services.AddStartupTask<WarmUpCacheTask>();
-           
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetConnectionString("Redis");
+                options.InstanceName = "SerapEstudantes-";
+            });
+
         }
 
         

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using SME.SERAp.Prova.Dados.Interfaces;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Utils;
@@ -13,12 +14,14 @@ namespace SME.SERAp.Prova.Dados.Cache
 
         private readonly IServicoLog servicoLog;
         private readonly IMemoryCache memoryCache;
+        private readonly IDistributedCache distributedCache;
 
-        public RepositorioCache(IServicoLog servicoLog, IMemoryCache memoryCache)
+        public RepositorioCache(IServicoLog servicoLog, IMemoryCache memoryCache, IDistributedCache distributedCache)
         {
 
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
             this.memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+            this.distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         }
 
         public string Obter(string nomeChave, bool utilizarGZip = false)
@@ -201,5 +204,11 @@ namespace SME.SERAp.Prova.Dados.Cache
         {
             await SalvarAsync(nomeChave, JsonSerializer.Serialize(valor), minutosParaExpirar, utilizarGZip);
         }
+        public async Task SalvarRedisAsync(string nomeChave, object valor, int minutosParaExpirar = 720)
+        {
+            await distributedCache.SetStringAsync(nomeChave, JsonSerializer.Serialize(valor), new DistributedCacheEntryOptions()
+                                                .SetAbsoluteExpiration(TimeSpan.FromMinutes(minutosParaExpirar)));
+        }
+
     }
 }
