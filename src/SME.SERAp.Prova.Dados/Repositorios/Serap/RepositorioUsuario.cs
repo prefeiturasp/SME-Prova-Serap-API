@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<Usuario> ObterPorLogin(long login)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 const string query = @"select * from usuario where login = @login;";

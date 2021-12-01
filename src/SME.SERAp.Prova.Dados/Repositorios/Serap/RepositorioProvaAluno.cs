@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ProvaAluno> ObterPorProvaIdRaAsync(long provaId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa";
@@ -32,7 +32,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ProvaAluno> ObterPorQuestaoIdRaAsync(long questaoId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa 
@@ -50,7 +50,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ProvaAluno> ObterPorProvaIdRaStatusAsync(long provaId, long alunoRa, int status)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa and pa.status = @status";

@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<UsuarioDispositivo>> ObterPorDispositivoRaAsync(string dispositivoId, long ra)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query =

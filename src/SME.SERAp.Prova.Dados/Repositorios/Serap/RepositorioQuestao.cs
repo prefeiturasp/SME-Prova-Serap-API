@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<Questao> ObterPorIdLegadoAsync(long id)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from questao where questao_legado_id = @id";
@@ -31,7 +31,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Questao>> ObterTodasParaCacheAsync()
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from questao";
