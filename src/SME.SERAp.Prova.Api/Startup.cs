@@ -98,7 +98,6 @@ namespace SME.SERAp.Prova.Api
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration.GetConnectionString("Redis");
-                options.InstanceName = "SerapEstudantes-";
             });
 
         }

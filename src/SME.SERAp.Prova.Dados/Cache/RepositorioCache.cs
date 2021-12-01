@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using MessagePack;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using SME.SERAp.Prova.Dados.Interfaces;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Utils;
 using System;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -210,7 +212,7 @@ namespace SME.SERAp.Prova.Dados.Cache
             var inicioOperacao = DateTime.UtcNow;
             var timer = System.Diagnostics.Stopwatch.StartNew();
             {
-                await distributedCache.SetStringAsync(nomeChave, JsonSerializer.Serialize(valor), new DistributedCacheEntryOptions()
+                await distributedCache.SetAsync(nomeChave, MessagePackSerializer.Serialize(valor), new DistributedCacheEntryOptions()
                                                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(minutosParaExpirar)));
 
                 timer.Stop();
@@ -226,16 +228,14 @@ namespace SME.SERAp.Prova.Dados.Cache
 
             try
             {
-
-                var stringCache = await distributedCache.GetStringAsync(nomeChave);
+                var byteCache = await distributedCache.GetAsync(nomeChave);
 
                 timer.Stop();
                 servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Obtendo", inicioOperacao, timer.Elapsed, true);
 
-
-                if (!string.IsNullOrWhiteSpace(stringCache))
+                if (byteCache != null)
                 {
-                    return JsonSerializer.Deserialize<T>(stringCache);
+                    return MessagePackSerializer.Deserialize<T>(byteCache);
                 }
 
                 var dados = await buscarDados();
