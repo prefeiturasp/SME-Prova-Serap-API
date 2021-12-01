@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ParametroSistema> ObterPorTipoEAno(int tipo, int ano)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from parametro_sistema ps 

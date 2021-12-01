@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<TelaBoasVindas>> ObterAtivosAsync()
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 const string query = @"select * from configuracao_tela_boas_vindas where ativo order by ordem";

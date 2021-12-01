@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<QuestaoArquivo> ObterPorArquivoIdAsync(long id)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from questao_arquivo where arquivo_id = @id";

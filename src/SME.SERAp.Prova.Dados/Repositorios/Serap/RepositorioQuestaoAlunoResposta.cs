@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<QuestaoAlunoResposta> ObterPorIdRaAsync(long questaoId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from questao_aluno_resposta 
