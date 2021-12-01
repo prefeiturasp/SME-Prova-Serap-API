@@ -204,10 +204,55 @@ namespace SME.SERAp.Prova.Dados.Cache
         {
             await SalvarAsync(nomeChave, JsonSerializer.Serialize(valor), minutosParaExpirar, utilizarGZip);
         }
+
         public async Task SalvarRedisAsync(string nomeChave, object valor, int minutosParaExpirar = 720)
         {
-            await distributedCache.SetStringAsync(nomeChave, JsonSerializer.Serialize(valor), new DistributedCacheEntryOptions()
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            {
+                await distributedCache.SetStringAsync(nomeChave, JsonSerializer.Serialize(valor), new DistributedCacheEntryOptions()
                                                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(minutosParaExpirar)));
+
+                timer.Stop();
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Salvar Redis Async", inicioOperacao, timer.Elapsed, true);
+            }
+            
+        }
+
+        public async Task<T> ObterRedisAsync<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+
+                var stringCache = await distributedCache.GetStringAsync(nomeChave);
+
+                timer.Stop();
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Obtendo", inicioOperacao, timer.Elapsed, true);
+
+
+                if (!string.IsNullOrWhiteSpace(stringCache))
+                {
+                    return JsonSerializer.Deserialize<T>(stringCache);
+                }
+
+                var dados = await buscarDados();
+
+                await SalvarRedisAsync(nomeChave, dados, minutosParaExpirar);
+
+                return dados;
+
+            }
+            catch (Exception ex)
+            {
+                servicoLog.Registrar(ex);
+                timer.Stop();
+
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, $"Obtendo - Erro {ex.Message}", inicioOperacao, timer.Elapsed, false);
+                return default;
+            }
         }
 
     }

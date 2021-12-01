@@ -4,6 +4,10 @@ namespace SME.SERAp.Prova.Infra
 {
     public class MeusDadosRetornoDto
     {
+        public MeusDadosRetornoDto()
+        {
+
+        }
         public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno)
         {
             Nome = nome;

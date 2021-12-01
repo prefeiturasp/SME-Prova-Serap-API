@@ -1,12 +1,11 @@
 version: "3.1"
 
 services:
-  sme-flyway:
-    container_name: serap-flyway
-    image: boxfuse/flyway:5.2.4
-    command: -url=jdbc:postgresql://sme-db:5432/serap_estudantes?user=postgres&password=postgres -locations='filesystem:/opt/scripts' -outOfOrder=true migrate
-    volumes:
-      - ./scripts:/opt/scripts
+  sme-redis:
+    image: redis:5.0.5-alpine
+    container_name: sme-redis
+    ports:
+      - '6379:6379'
     networks:
       - sme-network
 networks:
