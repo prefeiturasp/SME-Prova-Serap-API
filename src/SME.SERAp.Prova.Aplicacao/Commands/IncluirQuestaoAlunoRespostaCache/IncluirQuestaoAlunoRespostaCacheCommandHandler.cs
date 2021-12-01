@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirQuestaoAlunoRespostaCacheCommand request, CancellationToken cancellationToken)
         {
-            await repositorioCache.SalvarRedisAsync($"qar-{request.Dto.AlunoRa}", request.Dto);
+            await repositorioCache.SalvarRedisAsync($"qar-{request.Dto.AlunoRa}-{request.Dto.QuestaoId}-{request.Dto.DataHoraRespostaTicks}", request.Dto);
             return true;
         }
     }

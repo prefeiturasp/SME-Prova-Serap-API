@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MessagePack;
+using System.ComponentModel.DataAnnotations;
 
 namespace SME.SERAp.Prova.Infra
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class QuestaoAlunoRespostaSincronizarDto
     {
         [Required(ErrorMessage = "É necessário informar o RA do aluno")]
