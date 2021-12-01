@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoData(int ano, System.DateTime dataReferenia)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct p.* from prova p 
@@ -35,7 +35,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<Dominio.Prova> ObterPorIdLegadoAsync(long id)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from prova where prova_legado_id = @id";
@@ -50,7 +50,7 @@ namespace SME.SERAp.Prova.Dados
         }
         public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select
@@ -82,7 +82,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoBIBPorIdERaAsync(long provaId, long alunoRA)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select
@@ -118,7 +118,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(string ano, System.DateTime dataReferenia, int modalidade)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct p.* from prova p 
@@ -138,7 +138,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select
@@ -171,7 +171,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync()
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from prova";

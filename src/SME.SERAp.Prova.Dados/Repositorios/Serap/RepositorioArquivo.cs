@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<bool> RemoverPorIdsAsync(long[] ids)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"delete
@@ -35,7 +35,7 @@ namespace SME.SERAp.Prova.Dados
         }
         public async Task<Arquivo> ObterPorIdLegadoAsync(long id)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from arquivo 	                            
@@ -53,7 +53,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<Arquivo>> ObterTodosParaCacheAsync()
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from arquivo";
