@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prometheus;
+using RabbitMQ.Client;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
 using SME.SERAp.Prova.Aplicacao;
@@ -52,6 +53,22 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);
             logOptions.SentryDSN = sentryOptions.Dsn;
             services.AddSingleton(logOptions);
+
+            var rabbitOptions = new RabbitOptions();
+            Configuration.GetSection("Rabbit").Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(rabbitOptions);
+
+            var factory = new ConnectionFactory
+            {
+                HostName = rabbitOptions.HostName,
+                UserName = rabbitOptions.UserName,
+                Password = rabbitOptions.Password,
+                VirtualHost = rabbitOptions.VirtualHost
+            };
+
+            var conexaoRabbit = factory.CreateConnection();
+
+            services.AddSingleton(conexaoRabbit);
 
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
