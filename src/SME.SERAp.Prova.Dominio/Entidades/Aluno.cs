@@ -15,10 +15,11 @@ namespace SME.SERAp.Prova.Dominio
 
         }
 
-        public Aluno(string nome, long ra)
+        public Aluno(string nome, long ra, long turmaId)
         {
             Nome = nome;
             RA = ra;
+            TurmaId = turmaId;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 	                            aluno.cd_aluno CodigoAluno,
 	                            se.sg_resumida_serie as Ano,
                                 turesc.cd_tipo_turno as TipoTurno,
+                                turesc.cd_turma_escola as TurmaCodigo,
+                                turesc.cd_escola as UeCodigo,
                                 CASE
 									WHEN se.cd_etapa_ensino IN (1,10) 
 										or (turesc.cd_tipo_turma <> 1 AND e.tp_escola IN (10,11,12,14,15,18,26)) 
