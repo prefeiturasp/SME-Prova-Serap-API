@@ -46,5 +46,6 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterQuestaoAlunoRespostaPorQuestaoIdUseCase.Executar(questaoId));
         }
+
     }
 }
