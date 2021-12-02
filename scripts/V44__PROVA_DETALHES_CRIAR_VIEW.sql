@@ -19,9 +19,9 @@ left join arquivo arq on
 	qa.arquivo_id = arq.id;
 
 
-drop MATERIALIZED view if exists v_prova_bib_detalhes;
+drop view if exists v_prova_bib_detalhes;
 
-create MATERIALIZED view v_prova_bib_detalhes as
+create view v_prova_bib_detalhes as
 select
 	p.id as provaId,
     a.ra as alunoRa,
