@@ -46,6 +46,14 @@ namespace SME.SERAp.Prova.Aplicacao
                     await mediator.Send(new AtualizarUsuarioCommand(verificaUsuario));
                     retornoDto.UltimoLogin = verificaUsuario.UltimoLogin;
                 }
+
+                //var verificaAluno = await mediator.Send(new ObterAlunoSerapPorRaQuery(aluno.CodigoAluno));
+                //if (verificaAluno == null)
+                //{
+                //    var turmaId = await mediator.Send();
+                //    await mediator.Send(new IncluirAlunoCommand(aluno.CodigoAluno, aluno.NomeAluno, ));
+                //}
+                    
             }
             else throw new NaoAutorizadoException("Código EOL inválido", 411);
 

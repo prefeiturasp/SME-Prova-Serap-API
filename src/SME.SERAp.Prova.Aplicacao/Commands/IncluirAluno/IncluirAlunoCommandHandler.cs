@@ -16,6 +16,6 @@ namespace SME.SERAp.Prova.Aplicacao
             this.repositorioAluno = repositorioAluno ?? throw new System.ArgumentNullException(nameof(repositorioAluno));
         }
         public async Task<bool> Handle(IncluirAlunoCommand request, CancellationToken cancellationToken)
-            => await repositorioAluno.IncluirAsync(new Dominio.Aluno(request.Nome, request.RA)) > 0;
+            => await repositorioAluno.IncluirAsync(new Dominio.Aluno(request.Nome, request.RA, request.TurmaId)) > 0;
     }
 }
