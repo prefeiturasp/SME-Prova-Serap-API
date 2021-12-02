@@ -1,10 +1,11 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Infra;
 using System;
 using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvasPorAnoEModalidadeQuery : IRequest<IEnumerable<Dominio.Prova>>
+    public class ObterProvasPorAnoEModalidadeQuery : IRequest<IEnumerable<ProvaAnoDto>>
     {
         public ObterProvasPorAnoEModalidadeQuery(string ano, DateTime dataReferenia, int modalidade)
         {

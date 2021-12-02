@@ -27,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 DataHoraRespostaTicks = dto.DataHoraRespostaTicks,
                 TempoRespostaAluno = dto.TempoRespostaAluno,
             };
-
+            //await mediator.Send(new IncluirQuestaoAlunoRespostaCacheCommand(mensagem));
             return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, mensagem));
         }
     }

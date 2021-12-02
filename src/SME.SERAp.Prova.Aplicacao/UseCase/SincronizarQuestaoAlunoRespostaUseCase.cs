@@ -17,6 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Executar(QuestaoAlunoRespostaSincronizarDto dto)
         {
+            //await mediator.Send(new IncluirQuestaoAlunoRespostaCacheCommand(dto));
             return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, dto));
         }
     }

@@ -19,40 +19,55 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<IEnumerable<ObterProvasRetornoDto>> Executar()
         {
-            var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
+
+            var claimsParaBuscar = new string[] { "ANO", "TIPOTURNO", "MODALIDADE", "RA" };
+            var claimsDoUsuario = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery(claimsParaBuscar));
+
+            var alunoLogadoAno = claimsDoUsuario.FirstOrDefault(a => a.Chave == "ANO")?.Valor;
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
 
-            var alunoLogadoTurno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
+            var alunoLogadoTurno = claimsDoUsuario.FirstOrDefault(a => a.Chave == "TIPOTURNO")?.Valor;
             if (string.IsNullOrEmpty(alunoLogadoTurno))
                 throw new NegocioException("Turno do aluno logado não localizado");
 
-            var alunoLogadoModalidade = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("MODALIDADE"));
+            var alunoLogadoModalidade = claimsDoUsuario.FirstOrDefault(a => a.Chave == "MODALIDADE")?.Valor;
             if (string.IsNullOrEmpty(alunoLogadoModalidade))
                 throw new NegocioException("Modalidade do aluno logado não localizado");
 
-            var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
+            var tiposParaBuscar = new int[] {(int)TipoParametroSistema.TempoExtraProva, (int)TipoParametroSistema.TempoAlertaProva};
+            var parametrosParaUtilizar = await mediator.Send(new ObterParametroSistemaPorTiposEAnoQuery(tiposParaBuscar, DateTime.Now.Year));
+
+            var parametroTempoExtra = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoExtraProva);
 
             int tempoExtra = 600;
             if (parametroTempoExtra != null)
                 tempoExtra = int.Parse(parametroTempoExtra.Valor);
 
-            var parametroTempoAlerta = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoAlertaProva, DateTime.Now.Year));
+            var parametroTempoAlerta = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoAlertaProva);
 
             int tempoAlerta = 300;
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
+
             if (provas.Any())
             {
-                var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+                var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
+                
+                if (string.IsNullOrEmpty(alunoRa))
+                    throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
+                var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
+
+                var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, long.Parse(alunoRa)));
+
                 foreach (var prova in provas)
                 {
-                    var provaAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(prova.Id, alunoRa));
+                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
 
                     if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
                         continue;
