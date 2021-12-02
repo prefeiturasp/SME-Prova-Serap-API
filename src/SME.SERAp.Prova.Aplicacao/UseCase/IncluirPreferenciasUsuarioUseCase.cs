@@ -16,25 +16,19 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<bool> Executar(PreferenciaUsuarioDto dto)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            var usuario = await mediator.Send(new ObterUsuarioPorLoginQuery(alunoRa));
-            if (usuario == null)
-                throw new NegocioException("Usuário não encontrado");
-            
-            var preferenciasUsuario = await mediator.Send(new ObterPreferenciasUsuarioPorLoginQuery(alunoRa));
 
-            if (preferenciasUsuario == null)
+            var mensagem = new PreferenciaUsuarioRabbitDto(alunoRa, dto.TamanhoFonte, dto.FamiliaFonte);
+
+            var detalhes = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
+
+            if (detalhes != null)
             {
+                detalhes.FamiliaFonte = dto.FamiliaFonte;
+                detalhes.TamanhoFonte = dto.TamanhoFonte;
+                await mediator.Send(new AtualizarPreferenciasAlunoCacheCommand(detalhes, alunoRa));
+            }
                 
-                return await mediator.Send(new IncluirPreferenciasUsuarioCommand(dto.TamanhoFonte,
-                    (FamiliaFonte) dto.FamiliaFonte, usuario.Id));
-            }
-            else
-            {
-                preferenciasUsuario.FamiliaFonte = (FamiliaFonte) dto.FamiliaFonte;
-                preferenciasUsuario.TamanhoFonte = dto.TamanhoFonte;
-
-                return await mediator.Send(new AtualizarPreferenciasUsuarioCommand(preferenciasUsuario));
-            }
+            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirPreferenciasAluno, mensagem));
         }
     }
 }
