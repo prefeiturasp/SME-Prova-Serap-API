@@ -1,9 +1,15 @@
-﻿using SME.SERAp.Prova.Dominio;
+﻿using MessagePack;
+using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Infra
 {
+    [MessagePackObject (keyAsPropertyName: true)]
     public class MeusDadosRetornoDto
     {
+        public MeusDadosRetornoDto()
+        {
+
+        }
         public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno)
         {
             Nome = nome;
