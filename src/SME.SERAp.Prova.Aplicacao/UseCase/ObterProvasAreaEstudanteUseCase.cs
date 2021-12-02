@@ -19,6 +19,8 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<IEnumerable<ObterProvasRetornoDto>> Executar()
         {
+
+            //TODO: UNIFICAR BUSCA DAS CLAIMS
             var alunoLogadoAno = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
@@ -31,28 +33,36 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoModalidade))
                 throw new NegocioException("Modalidade do aluno logado não localizado");
 
-            var parametroTempoExtra = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoExtraProva, DateTime.Now.Year));
+            var tiposParaBuscar = new int[] {(int)TipoParametroSistema.TempoExtraProva, (int)TipoParametroSistema.TempoAlertaProva};
+            var parametrosParaUtilizar = await mediator.Send(new ObterParametroSistemaPorTiposEAnoQuery(tiposParaBuscar, DateTime.Now.Year));
+
+            var parametroTempoExtra = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoExtraProva);
 
             int tempoExtra = 600;
             if (parametroTempoExtra != null)
                 tempoExtra = int.Parse(parametroTempoExtra.Valor);
 
-            var parametroTempoAlerta = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistema.TempoAlertaProva, DateTime.Now.Year));
+            var parametroTempoAlerta = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoAlertaProva);
 
             int tempoAlerta = 300;
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
+
             if (provas.Any())
             {
                 var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
+                var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
+
+                var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, alunoRa));
+
                 foreach (var prova in provas)
                 {
-                    var provaAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(prova.Id, alunoRa));
+                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
 
                     if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
                         continue;
