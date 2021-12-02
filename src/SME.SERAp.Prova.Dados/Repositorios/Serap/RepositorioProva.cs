@@ -54,22 +54,14 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select
-	                            q.id  as questaoId,
-	                            alt.id as alternativaId,
-	                            arq.legado_id as arquivoId,
-	                            arq.tamanho_bytes as arquivoTamanho		
+	                            questaoId,
+	                            alternativaId,
+	                            arquivoId,
+	                            arquivoTamanho		
                             from
-	                            prova p
-                            inner join questao q on
-	                            q.prova_id = p.id
-                            left join alternativa alt on
-	                            alt.questao_id = q.id
-                            left join questao_arquivo qa on
-	                            qa.questao_id = q.id
-                            left join arquivo arq on
-	                            qa.arquivo_id = arq.id
+	                            v_prova_detalhes p
                             where
-	                            p.id = @id";
+	                            p.provaId = @id";
 
                 return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { id });
             }
@@ -86,26 +78,14 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select
-	                            q.id  as questaoId,
-	                            alt.id as alternativaId,
-	                            arq.legado_id as arquivoId,
-	                            arq.tamanho_bytes as arquivoTamanho		
+	                            questaoId,
+	                            alternativaId,
+	                            arquivoId,
+	                            arquivoTamanho	
                             from
-	                            prova p
-                            inner join caderno_aluno ca on 
-                                p.id = ca.prova_id
-                            inner join aluno a on 
-                                ca.aluno_id = a.id
-                            inner join questao q on
-	                            q.prova_id = p.id and ca.caderno = q.caderno
-                            left join alternativa alt on
-	                            alt.questao_id = q.id
-                            left join questao_arquivo qa on
-	                            qa.questao_id = q.id
-                            left join arquivo arq on
-	                            qa.arquivo_id = arq.id
+	                            v_prova_bib_detalhes p
                             where
-	                            p.id = @provaId and a.ra = @alunoRA ";
+	                            p.provaId = @provaId and p.alunoRa = @alunoRA;";
 
                 return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { provaId, alunoRA });
             }
