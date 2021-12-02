@@ -30,5 +30,21 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<ParametroSistema>> ObterTodosParaCacheAsync()
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select ps.* from parametro_sistema ps";
+
+                return await conn.QueryAsync<ParametroSistema>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

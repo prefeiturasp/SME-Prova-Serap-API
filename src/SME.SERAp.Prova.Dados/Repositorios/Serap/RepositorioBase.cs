@@ -4,6 +4,7 @@ using Npgsql;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -43,7 +44,19 @@ namespace SME.SERAp.Prova.Dados
                 conexao.Dispose();
             }
         }
-
+        public virtual async Task<IEnumerable<T>> ObterTudoAsync()
+        {
+            var conexao = ObterConexaoLeitura();
+            try
+            {
+                return await conexao.GetAllAsync<T>();
+            }
+            finally
+            {
+                conexao.Close();
+                conexao.Dispose();
+            }
+        }
         public virtual async Task<long> SalvarAsync(T entidade)
         {
             var conexao = ObterConexao();

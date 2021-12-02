@@ -115,7 +115,36 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        public async Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync()
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select
+	                            p.descricao,
+	                            p.Id,
+	                            p.total_Itens totalItens,
+	                            p.inicio_download as InicioDownload,
+	                            p.inicio,
+	                            p.fim,
+	                            p.Tempo_Execucao TempoExecucao,
+	                            p.Modalidade,
+	                            p.Senha,
+	                            p.possui_bib PossuiBIB,
+	                            pa.ano
+                            from
+	                            prova p
+                            inner join prova_ano pa 
+                                on pa.prova_id = p.id";
 
+                return await conn.QueryAsync<ProvaAnoDto>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
         public async Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA)
         {
             using var conn = ObterConexaoLeitura();

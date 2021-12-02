@@ -6,7 +6,7 @@ namespace SME.SERAp.Prova.Dados
     {
         public ParametroSistemaMap()
         {
-            ToTable("prova");
+            ToTable("parametro_sistema");
             
             Map(c => c.Id).ToColumn("id").IsKey();
             Map(c => c.Ano).ToColumn("ano");
