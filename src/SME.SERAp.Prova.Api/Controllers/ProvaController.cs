@@ -23,7 +23,15 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterProvasAreaEstudanteUseCase.Executar());
         }
-
+        [HttpGet("{id}/detalhes")]
+        [ProducesResponseType(typeof(IEnumerable<ProvaDetalheResumidoRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterDetalhes(long id, [FromServices] IObterProvaDetalhesResumidoUseCase obterProvaDetalhesResumidoUseCase)
+        {
+            return Ok(await obterProvaDetalhesResumidoUseCase.Executar(id));
+        }
+       
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ProvaDetalheResumidoRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]

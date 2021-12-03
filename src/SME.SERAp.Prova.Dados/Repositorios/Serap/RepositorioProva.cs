@@ -177,7 +177,27 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        //public async Task<IEnumerable<Dominio.Prova>> ObterProvaCompletaAsync(long id)
+        //{
+        //    using var conn = ObterConexaoLeitura();
+        //    try
+        //    {
+        //        var query = @"SELECT *
+        //                           FROM prova p
+        //                             JOIN questao q ON q.prova_id = p.id
+        //                             LEFT JOIN alternativa alt ON alt.questao_id = q.id
+        //                             LEFT JOIN questao_arquivo qa ON qa.questao_id = q.id
+        //                             LEFT JOIN arquivo arq ON qa.arquivo_id = arq.id
+        //                             where p.id = @id";
 
+        //        return await conn.QueryAsync<Prova>(query, new { id });
+        //    }
+        //    finally
+        //    {
+        //        conn.Close();
+        //        conn.Dispose();
+        //    }
+        //}
         public async Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync()
         {
             using var conn = ObterConexaoLeitura();

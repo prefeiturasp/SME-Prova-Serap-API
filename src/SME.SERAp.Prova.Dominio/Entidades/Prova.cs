@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Dominio
 {
@@ -20,6 +21,7 @@ namespace SME.SERAp.Prova.Dominio
             Senha = senha;
             Inclusao = DateTime.Now;
             PossuiBIB = possuiBIB;
+            Questoes = new List<Questao>();
         }
 
         public string Descricao { get; set; }
@@ -34,5 +36,6 @@ namespace SME.SERAp.Prova.Dominio
         public string Senha { get; set; }
         public bool PossuiBIB { get; set; }
         public Modalidade Modalidade { get; set; }
+        public List<Questao> Questoes { get; set; }
     }
 }
