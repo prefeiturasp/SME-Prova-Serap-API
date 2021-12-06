@@ -50,6 +50,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
+            alunoLogadoAno = AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
 
             if (provas.Any())
@@ -96,5 +97,14 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             return 0;
         }
+
+        private static string AjustarAnoAluno(string modalidade, string ano)
+        {
+            var modalidadeAluno = (Modalidade)int.Parse(modalidade);
+            if (modalidadeAluno == Modalidade.EJA || modalidadeAluno == Modalidade.CIEJA)
+                return (int.Parse(ano) * 2).ToString();
+            return ano;
+        }
+
     }
 }
