@@ -24,6 +24,7 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new CadernoAlunoMap());
                 config.AddMap(new QuestaoArquivoMap());
                 config.AddMap(new ContextoProvaMap());
+                config.AddMap(new AlternativaArquivoMap());
                 config.ForDommel();
             });
         }
