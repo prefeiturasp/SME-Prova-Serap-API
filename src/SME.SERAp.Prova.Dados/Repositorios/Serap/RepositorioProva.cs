@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -56,14 +57,20 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select
 	                            questaoId,
 	                            alternativaId,
-	                            arquivoId,
-	                            arquivoTamanho		
+	                            questaoArquivoId,
+                                questaoArquivoTamanho,
+                                alternativaArquivoId,
+                                alternativaArquivoTamanho	
                             from
 	                            v_prova_detalhes p
                             where
 	                            p.provaId = @id";
 
                 return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { id });
+            }
+            catch(Exception ex )
+            {
+                throw ex;
             }
             finally
             {
@@ -80,8 +87,10 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select
 	                            questaoId,
 	                            alternativaId,
-	                            arquivoId,
-	                            arquivoTamanho	
+	                            questaoArquivoId,
+                                questaoArquivoTamanho,
+                                alternativaArquivoId,
+                                alternativaArquivoTamanho
                             from
 	                            v_prova_bib_detalhes p
                             where
