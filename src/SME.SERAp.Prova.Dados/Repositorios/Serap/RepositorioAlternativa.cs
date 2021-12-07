@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from alternativa";
+                var query = @"select * from alternativa a where a.questao_id in (select id from questao)";
 
                 return await conn.QueryAsync<Alternativa>(query);
                 
