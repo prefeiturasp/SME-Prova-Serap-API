@@ -100,6 +100,9 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private static string AjustarAnoAluno(string modalidade, string ano)
         {
+            if (ano.ToUpper() == "S" || String.IsNullOrEmpty(ano))
+                return ano;
+
             var modalidadeAluno = (Modalidade)int.Parse(modalidade);
             if (modalidadeAluno == Modalidade.EJA || modalidadeAluno == Modalidade.CIEJA)
                 return (int.Parse(ano) * 2).ToString();
