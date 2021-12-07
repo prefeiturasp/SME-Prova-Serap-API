@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using SME.SGP.Aplicacao.Pipelines;
+using SME.SERAp.Prova.Aplicacao.Pipelines;
 using System;
 
 namespace SME.SERAp.Prova.IoC

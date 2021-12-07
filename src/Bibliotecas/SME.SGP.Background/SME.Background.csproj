@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Processor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.7.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SME.SERAp.Prova.Aplicacao\SME.SERAp.Prova.Aplicacao.csproj" />
+    <ProjectReference Include="..\..\SME.SERAp.Prova.Infra\SME.SERAp.Prova.Infra.csproj" />
+    <ProjectReference Include="..\SME.Background.Core\SME.Background.Core.csproj" />
+  </ItemGroup>
+
+</Project>
