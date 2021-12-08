@@ -56,7 +56,9 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from arquivo";
+                var query = @"select * from arquivo a where a.id in (select arquivo_id from alternativa_arquivo)
+                                union 
+                              select * from arquivo a where a.id in (select arquivo_id from questao_arquivo)";
 
                 return await conn.QueryAsync<Arquivo>(query);
             }

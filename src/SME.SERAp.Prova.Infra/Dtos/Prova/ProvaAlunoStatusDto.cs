@@ -12,5 +12,10 @@ namespace SME.SERAp.Prova.Infra
 
         public int Status { get; set; }
         public long? DataFim { get; set; }
+
+        public DateTime? DataFimMenos3Horas()
+        {
+            return DataFim.HasValue ? new DateTime(DataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
+        }
     }
 }
