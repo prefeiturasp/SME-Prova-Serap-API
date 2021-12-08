@@ -104,7 +104,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 return ano;
 
             var modalidadeAluno = (Modalidade)int.Parse(modalidade);
-            if (modalidadeAluno == Modalidade.EJA || modalidadeAluno == Modalidade.CIEJA)
+            if ((modalidadeAluno == Modalidade.EJA && ano != "4") || modalidadeAluno == Modalidade.CIEJA)
                 return (int.Parse(ano) * 2).ToString();
             return ano;
         }
