@@ -35,7 +35,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoModalidade))
                 throw new NegocioException("Modalidade do aluno logado não localizado");
 
-            var tiposParaBuscar = new int[] {(int)TipoParametroSistema.TempoExtraProva, (int)TipoParametroSistema.TempoAlertaProva};
+            var tiposParaBuscar = new int[] { (int)TipoParametroSistema.TempoExtraProva, (int)TipoParametroSistema.TempoAlertaProva };
             var parametrosParaUtilizar = await mediator.Send(new ObterParametroSistemaPorTiposEAnoQuery(tiposParaBuscar, DateTime.Now.Year));
 
             var parametroTempoExtra = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoExtraProva);
@@ -56,7 +56,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (provas.Any())
             {
                 var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
-                
+
                 if (string.IsNullOrEmpty(alunoRa))
                     throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
@@ -77,10 +77,15 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (provaAluno != null)
                         status = provaAluno.Status;
 
-                    
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, prova.TotalItens, (int)status, 
-                        prova.InicioDownload, prova.Inicio, prova.Fim, prova.Id, prova.TempoExecucao, 
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.ObterCriadoMenos3Horas(), prova.Senha, prova.Modalidade));
+
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, 
+                        prova.TotalItens, 
+                        (int)status,
+                        prova.ObterDataInicioDownloadMais3Horas(),
+                        prova.ObterDataInicioMais3Horas(),
+                        prova.ObterDataFimMais3Horas(),
+                        prova.Id, prova.TempoExecucao,
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
                 }
 
                 return provasParaRetornar;
@@ -90,7 +95,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private static int ObterTempoTotal(ProvaAluno provaAluno)
         {
-            if(provaAluno != null)
+            if (provaAluno != null)
             {
                 TimeSpan tempoTotal = DateTime.Now - provaAluno.CriadoEm;
                 return (int)tempoTotal.TotalSeconds;

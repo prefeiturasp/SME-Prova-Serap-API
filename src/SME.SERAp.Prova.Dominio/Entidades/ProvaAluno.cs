@@ -24,9 +24,9 @@ namespace SME.SERAp.Prova.Dominio
         public DateTime CriadoEm { get; set; }
         public DateTime? FinalizadoEm { get; set; }
 
-        public DateTime ObterCriadoMenos3Horas ()
+        public DateTime ObterCriadoMais3Horas ()
         {
-            return CriadoEm.AddHours(-3);
+            return CriadoEm.AddHours(3);
         }
     }
 }
