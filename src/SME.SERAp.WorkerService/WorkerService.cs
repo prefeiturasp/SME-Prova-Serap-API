@@ -3,9 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sentry;
 using SME.Background.Core;
-using SME.SERAp.Prova.Api;
 using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Utilitarios;
 using SME.SERAp.Prova.IoC;
 using SME.SERAp.Prova.IoC.Extensions;
@@ -18,7 +16,7 @@ namespace SME.SERAp.Prova.Worker.Service
 {
     public class WorkerService : IHostedService
     {
-        private static Servidor<SME.Background.Hangfire.Worker> HangfireWorkerService;
+        private static Servidor<Background.Hangfire.Worker> HangfireWorkerService;
         private string ipLocal;
 
         protected string IPLocal
@@ -61,7 +59,7 @@ namespace SME.SERAp.Prova.Worker.Service
 
         internal static void Configurar(IConfiguration config, IServiceCollection services)
         {
-            HangfireWorkerService = new Servidor<SME.Background.Hangfire.Worker>(new SME.Background.Hangfire.Worker(config, services, config.GetConnectionString("SGP_Postgres")));
+            HangfireWorkerService = new Servidor<Background.Hangfire.Worker>(new Background.Hangfire.Worker(config, services, config.GetConnectionString("ApiSerap")));
         }
 
         internal static void ConfigurarDependencias(IConfiguration configuration, IServiceCollection services)

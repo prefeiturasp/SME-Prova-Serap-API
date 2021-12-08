@@ -19,13 +19,13 @@ namespace SME.Background.Hangfire
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
-            var paramConnectionString = this.configuration.GetConnectionString("SGP_Postgres");
-            this.connectionString = (!paramConnectionString.EndsWith(';') ? paramConnectionString + ";" : paramConnectionString) + "Application Name=SGP Worker Service Dashboard";
+            var paramConnectionString = this.configuration.GetConnectionString("ApiSerap");
+            this.connectionString = (!paramConnectionString.EndsWith(';') ? paramConnectionString + ";" : paramConnectionString) + "Application Name=SERAp Worker Service Dashboard";
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var filter = new DashboardAuthorizationFilter(new SgpAuthAuthorizationFilterOptions(configuration));
+            var filter = new DashboardAuthorizationFilter(new SerapAuthAuthorizationFilterOptions(configuration));
             app.UseHangfireDashboard("/worker", new DashboardOptions()
             {
                 IsReadOnlyFunc = filter.ReadOnly,

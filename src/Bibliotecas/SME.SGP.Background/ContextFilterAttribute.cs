@@ -7,7 +7,7 @@ using SME.SERAp.Prova.Infra.Contexto;
 using SME.SERAp.Prova.Infra.Escopo;
 using SME.SERAp.Prova.Infra.Interfaces;
 
-namespace SME.SGP.Hangfire
+namespace SME.Hangfire
 {
     public class ContextFilterAttribute : JobFilterAttribute,
     IClientFilter, IServerFilter

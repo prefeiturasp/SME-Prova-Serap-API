@@ -50,7 +50,7 @@ namespace SME.Background.Hangfire
                 {
                     SchemaName = "hangfire"
                 });
-            GlobalJobFilters.Filters.Add(new SGP.Hangfire.ContextFilterAttribute());
+            GlobalJobFilters.Filters.Add(new SME.Hangfire.ContextFilterAttribute());
 
             Registrado = true;
         }

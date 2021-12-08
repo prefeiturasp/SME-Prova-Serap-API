@@ -84,7 +84,8 @@ namespace SME.Background.Hangfire
                     SchemaName = "hangfire"
                 });
 
-            GlobalJobFilters.Filters.Add(new SGP.Hangfire.ContextFilterAttribute());
+            //GlobalJobFilters.Filters.Add(new SGP.Hangfire.ContextFilterAttribute());
+            GlobalJobFilters.Filters.Add(new SME.Hangfire.ContextFilterAttribute());
 
             var workerCount = configuration.GetValue<int>("BackgroundWorkerParallelDegree", 1);
             Console.WriteLine($"SERAp Worker Service - BackgroundWorkerParallelDegree parameter = {workerCount}");

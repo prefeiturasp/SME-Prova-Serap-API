@@ -27,7 +27,7 @@ namespace SME.Background.Hangfire
                 string parameter = Encoding.UTF8.GetString(Convert.FromBase64String(authValues.Parameter));
                 var parts = parameter.Split(':');
 
-                return !string.Equals(parts[0], SgpAuthAuthorizationFilterOptions.AdminUser);
+                return !string.Equals(parts[0], SerapAuthAuthorizationFilterOptions.AdminUser);
             }
 
             return true;

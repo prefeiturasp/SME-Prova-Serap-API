@@ -6,11 +6,11 @@ using System.Text;
 
 namespace SME.Background.Hangfire
 {
-    public class SgpAuthAuthorizationFilterOptions : BasicAuthAuthorizationFilterOptions
+    public class SerapAuthAuthorizationFilterOptions : BasicAuthAuthorizationFilterOptions
     {
         public static string AdminUser;
 
-        public SgpAuthAuthorizationFilterOptions(IConfiguration configuration)
+        public SerapAuthAuthorizationFilterOptions(IConfiguration configuration)
         {
             // Carrega e valida variáveis de ambiente
             var configUserAdminStr = configuration.GetSection("HangfireUser_Admin").Value;
