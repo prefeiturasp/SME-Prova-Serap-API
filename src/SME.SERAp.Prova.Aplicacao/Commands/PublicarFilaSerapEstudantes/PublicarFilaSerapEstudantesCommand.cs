@@ -5,7 +5,7 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class PublicarFilaSerapEstudantesCommand : IRequest<bool>
     {
-        public PublicarFilaSerapEstudantesCommand(string fila, object mensagem)
+        public PublicarFilaSerapEstudantesCommand(string fila, object mensagem = null)
         {
             Fila = fila;
             Mensagem = mensagem;
