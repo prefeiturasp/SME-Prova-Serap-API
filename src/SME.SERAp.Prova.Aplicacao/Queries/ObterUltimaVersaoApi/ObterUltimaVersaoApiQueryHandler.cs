@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Linq;
-using SME.SERAp.Prova.Dados.Interfaces;
+using SME.SERAp.Prova.Dados;
 
 namespace SME.SERAp.Prova.Aplicacao
 {

@@ -16,13 +16,29 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ParametroSistema> ObterPorTipoEAno(int tipo, int ano)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select * from parametro_sistema ps 
                                 where ps.ano = @ano and ps.tipo = @tipo";
 
                 return await conn.QueryFirstOrDefaultAsync<ParametroSistema>(query, new { tipo, ano });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<ParametroSistema>> ObterTodosParaCacheAsync()
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select ps.* from parametro_sistema ps";
+
+                return await conn.QueryAsync<ParametroSistema>(query);
             }
             finally
             {

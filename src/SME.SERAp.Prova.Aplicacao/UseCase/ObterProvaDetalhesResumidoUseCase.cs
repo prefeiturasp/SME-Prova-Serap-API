@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,25 +23,50 @@ namespace SME.SERAp.Prova.Aplicacao
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
 
-            if(prova.PossuiBIB)
+            if (prova == null)
+                throw new NegocioException("A prova infomada não foi encontrada");
+
+            if (prova.PossuiBIB)
+            {
+                var caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(provaId, usuarioLogadoRa));
+                if (string.IsNullOrEmpty(caderno))
+                {
+                    var aluno = await mediator.Send(new ObterAlunoSerapPorRaQuery(usuarioLogadoRa));
+                    if (aluno != null)
+                    {
+                        var totalCadernos = prova.TotalCadernos;
+                        Random sortear = new Random();
+                        var cadernoSorteado = sortear.Next(1, totalCadernos).ToString();
+                        await mediator.Send(new IncluirCadernoAlunoCommand(aluno.Id, provaId, cadernoSorteado));
+                    }
+                }
                 detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoBIBQuery(provaId, usuarioLogadoRa));
+            }
+
             else
                 detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoQuery(provaId));
 
             if (detalhesDaProva.Any())
             {
+                List<long> arquivosId = new();
                 var questoesId = detalhesDaProva.Select(a => a.QuestaoId).Where(b => b > 0).Distinct().ToArray();
-                var arquivosId = detalhesDaProva.Select(a => a.ArquivoId).Where(b => b > 0).Distinct().ToArray();
                 var alternativasId = detalhesDaProva.Select(a => a.AlternativaId).Where(b => b > 0).Distinct().ToArray();
-                var arquivosParaSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.ArquivoTamanho, Id = a.ArquivoId }).Distinct();
-                var tamanhoTotalArquivos = arquivosParaSomarTamanho.Sum(a => a.TamanhoInBytes);
+
+                arquivosId.AddRange(detalhesDaProva.Select(a => a.QuestaoArquivoId).Where(b => b > 0).Distinct().ToArray());
+                arquivosId.AddRange(detalhesDaProva.Select(a => a.AlternativaArquivoId).Where(b => b > 0).Distinct().ToArray());
+
+
+                var questoesArquivoSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.QuestaoArquivoTamanho, Id = a.QuestaoArquivoId }).Distinct();
+                var alternativasArquivoSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.QuestaoArquivoTamanho, Id = a.QuestaoArquivoId }).Distinct();
+
+                var tamanhoTotalArquivos = questoesArquivoSomarTamanho.Sum(a => a.TamanhoInBytes) + alternativasArquivoSomarTamanho.Sum(a => a.TamanhoInBytes);
 
                 var contextoProva = await mediator.Send(new ObterContextosProvasPorProvaIdQuery(provaId));
                 long[] contextoProvaIds = System.Array.Empty<long>();
                 if (contextoProva.Any())
                     contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId, alternativasId, tamanhoTotalArquivos, contextoProvaIds);
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds);
 
             }
             else return default;

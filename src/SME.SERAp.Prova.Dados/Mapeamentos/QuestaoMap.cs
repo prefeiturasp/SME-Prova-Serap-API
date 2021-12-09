@@ -10,9 +10,9 @@ namespace SME.SERAp.Prova.Dados
             
             Map(c => c.Id).ToColumn("id").IsKey();
             
-            Map(c => c.Titulo).ToColumn("titulo");
+            Map(c => c.TextoBase).ToColumn("texto_base");
             Map(c => c.QuestaoLegadoId).ToColumn("questao_legado_id");
-            Map(c => c.Descricao).ToColumn("descricao");
+            Map(c => c.Enunciado).ToColumn("enunciado");
             Map(c => c.Ordem).ToColumn("ordem");
             Map(c => c.ProvaId).ToColumn("prova_id");
             Map(c => c.Caderno).ToColumn("caderno");

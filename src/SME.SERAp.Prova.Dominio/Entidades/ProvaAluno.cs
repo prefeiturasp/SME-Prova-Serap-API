@@ -23,5 +23,10 @@ namespace SME.SERAp.Prova.Dominio
         public ProvaStatus Status { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime? FinalizadoEm { get; set; }
+
+        public DateTime ObterCriadoMais3Horas ()
+        {
+            return CriadoEm.AddHours(3);
+        }
     }
 }

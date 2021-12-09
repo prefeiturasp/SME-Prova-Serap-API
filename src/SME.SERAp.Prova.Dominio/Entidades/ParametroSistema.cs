@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MessagePack;
 
 namespace SME.SERAp.Prova.Dominio
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class ParametroSistema : EntidadeBase
     {
-       
+
         public int? Ano { get; set; }
         public bool Ativo { get; set; }
         public string Descricao { get; set; }
@@ -17,7 +18,7 @@ namespace SME.SERAp.Prova.Dominio
 
         }
 
-        public ParametroSistema(int ano,bool ativo, string descricao, string nome, TipoParametroSistema tipo, string valor)
+        public ParametroSistema(int ano, bool ativo, string descricao, string nome, TipoParametroSistema tipo, string valor)
         {
             Ano = ano;
             Ativo = ativo;
@@ -25,6 +26,6 @@ namespace SME.SERAp.Prova.Dominio
             Nome = nome;
             Tipo = tipo;
             Valor = valor;
-    }
+        }
     }
 }
