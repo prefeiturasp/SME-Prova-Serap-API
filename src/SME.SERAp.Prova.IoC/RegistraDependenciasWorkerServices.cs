@@ -8,6 +8,7 @@ using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Contexto;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.IoC;
+using SME.SERAp.Prova.IoC.Extensions;
 using System;
 
 namespace SME.SERAp.Prova.IoC
@@ -49,40 +50,21 @@ namespace SME.SERAp.Prova.IoC
             services.AddSingleton(canalRabbit);
         }
 
-        private static void RegistrarComandos(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<IComandosPlanoCiclo, ComandosPlanoCiclo>();            
-        }
+        private static void RegistrarComandos(IServiceCollection services){}
 
-        private static void RegistrarConsultas(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<IConsultasPlanoCiclo, ConsultasPlanoCiclo>();            
-        }
+        private static void RegistrarConsultas(IServiceCollection services){}
 
-        private static void RegistrarContextos(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<IContextoAplicacao, WorkerContext>();           
-        }
+        private static void RegistrarContextos(IServiceCollection services){}
 
-        private static void RegistrarRepositorios(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<IRepositorioAbrangencia, RepositorioAbrangencia>();            
-        }
+        private static void RegistrarRepositorios(IServiceCollection services){}
 
-        private static void RegistrarServicos(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<IServicoWorkflowAprovacao, ServicoWorkflowAprovacao>();            
-        }
-
+        private static void RegistrarServicos(IServiceCollection services){}
 
         private static void RegistrarCasosDeUso(IServiceCollection services)
         {
-            //services.TryAddScopedWorkerService<IObterUltimaVersaoUseCase, ObterUltimaVersaoUseCase>();            
+            services.TryAddScopedWorkerService<IIniciarProcessoFinalizarProvasAutomaticamenteUseCase, IniciarProcessoFinalizarProvasAutomaticamenteUseCase>();
         }
 
-        private static void ResgistraDependenciaHttp(IServiceCollection services)
-        {
-            //services.TryAddScopedWorkerService<Microsoft.AspNetCore.Http.IHttpContextAccessor, NoHttpContext>();
-        }
+        private static void ResgistraDependenciaHttp(IServiceCollection services){}
     }
 }
