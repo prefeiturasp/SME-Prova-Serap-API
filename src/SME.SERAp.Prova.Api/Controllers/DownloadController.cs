@@ -24,7 +24,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ExcluidDownloads(int[] ids, [FromServices] IExcluirDownloadProvaAlunoUseCase excluirDownloadsProvaAlunoUseCase)
+        public async Task<IActionResult> ExcluirDownloads(int[] ids, [FromServices] IExcluirDownloadProvaAlunoUseCase excluirDownloadsProvaAlunoUseCase)
         {
             return Ok(await excluirDownloadsProvaAlunoUseCase.Executar(ids));
         }
