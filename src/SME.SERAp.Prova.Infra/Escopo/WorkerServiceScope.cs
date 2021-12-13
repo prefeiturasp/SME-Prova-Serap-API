@@ -50,7 +50,8 @@ namespace SME.SERAp.Prova.Infra.Escopo
                 }
             }
             if (TransientContexts.TryRemove(WorkerContext.ContextIdentifier, out context))
-                context.Dispose();
+                if (context != null)
+                    context.Dispose();
         }
     }
 }

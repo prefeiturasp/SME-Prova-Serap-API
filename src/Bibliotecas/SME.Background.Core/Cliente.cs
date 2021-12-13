@@ -19,7 +19,7 @@ namespace SME.Background.Core
             return Orquestrador.ObterProcessador(tipoProcessamento).Executar<T>(metodo);
         }
 
-        public static void ExecutarPeriodicamente<T>(Expression<Action<T>> metodo, string cron, string nomeFila = "sgp")
+        public static void ExecutarPeriodicamente<T>(Expression<Action<T>> metodo, string cron, string nomeFila = "serap")
         {
             Orquestrador.ObterProcessador(TipoProcessamento.ExecucaoRecorrente).ExecutarPeriodicamente(metodo, cron, nomeFila);
         }

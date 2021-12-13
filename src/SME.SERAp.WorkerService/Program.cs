@@ -3,7 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SME.Background.Core;
+using SME.Background.Hangfire;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.IoC;
+using SME.SGP.Background;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -39,6 +43,12 @@ namespace SME.SERAp.Prova.Worker.Service
                 services.AddApplicationInsightsTelemetryWorkerService(hostContext.Configuration.GetValue<string>("ApplicationInsights__InstrumentationKey"));
 
                 var provider = services.BuildServiceProvider();
+                var serviceProvider = services.BuildServiceProvider();
+
+                Orquestrador.Inicializar(serviceProvider);
+                Orquestrador.Registrar(new Processor(hostContext.Configuration, "ApiSerap"));
+                RegistraDependenciasWorkerServices.Registrar(services);
+                RegistraServicosRecorrentes.Registrar();
 
                 var telemetryConfiguration = new Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration(hostContext.Configuration.GetValue<string>("ApplicationInsights:InstrumentationKey"));
 

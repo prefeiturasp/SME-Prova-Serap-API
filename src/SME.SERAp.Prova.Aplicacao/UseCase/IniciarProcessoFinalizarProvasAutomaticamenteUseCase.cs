@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -9,7 +10,7 @@ namespace SME.SERAp.Prova.Aplicacao
         private readonly IMediator mediator;
         public IniciarProcessoFinalizarProvasAutomaticamenteUseCase(IMediator mediator)
         {
-            this.mediator = mediator;
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Executar()

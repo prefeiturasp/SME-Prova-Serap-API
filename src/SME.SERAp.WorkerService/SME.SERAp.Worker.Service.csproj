@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bibliotecas\SME.Background.Core\SME.Background.Core.csproj" />
     <ProjectReference Include="..\Bibliotecas\SME.Background.Hangfire\SME.Background.Hangfire.csproj" />
+    <ProjectReference Include="..\Bibliotecas\SME.SGP.Background\SME.Background.csproj" />
     <ProjectReference Include="..\SME.SERAp.Prova.Api\SME.SERAp.Prova.Api.csproj" />
     <ProjectReference Include="..\SME.SERAp.Prova.IoC\SME.SERAp.Prova.IoC.csproj" />
   </ItemGroup>

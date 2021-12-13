@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using RabbitMQ.Client;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Aplicacao.Pipelines;
+using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Contexto;
 using SME.SERAp.Prova.Infra.Interfaces;
@@ -26,6 +27,7 @@ namespace SME.SERAp.Prova.IoC
             RegistrarConsultas(services);
             RegistrarServicos(services);
             RegistrarCasosDeUso(services);
+            RegistrarRabbit(services);
         }
 
         private static void RegistrarMediator(IServiceCollection services)
@@ -52,19 +54,26 @@ namespace SME.SERAp.Prova.IoC
 
         private static void RegistrarComandos(IServiceCollection services){}
 
-        private static void RegistrarConsultas(IServiceCollection services){}
+        private static void RegistrarConsultas(IServiceCollection services) {}
 
-        private static void RegistrarContextos(IServiceCollection services){}
+        private static void RegistrarContextos(IServiceCollection services) 
+        {
+            services.TryAddScopedWorkerService<IContextoAplicacao, WorkerContext>();
+            services.TryAddScopedWorkerService<IContextoAplicacao, ContextoBase>();
+        }
 
-        private static void RegistrarRepositorios(IServiceCollection services){}
+        private static void RegistrarRepositorios(IServiceCollection services) 
+        {
+            services.TryAddScopedWorkerService<IRepositorioProva, RepositorioProva>();
+        }
 
-        private static void RegistrarServicos(IServiceCollection services){}
+        private static void RegistrarServicos(IServiceCollection services) { }
 
         private static void RegistrarCasosDeUso(IServiceCollection services)
         {
             services.TryAddScopedWorkerService<IIniciarProcessoFinalizarProvasAutomaticamenteUseCase, IniciarProcessoFinalizarProvasAutomaticamenteUseCase>();
         }
 
-        private static void ResgistraDependenciaHttp(IServiceCollection services){}
+        private static void ResgistraDependenciaHttp(IServiceCollection services) { }
     }
 }
