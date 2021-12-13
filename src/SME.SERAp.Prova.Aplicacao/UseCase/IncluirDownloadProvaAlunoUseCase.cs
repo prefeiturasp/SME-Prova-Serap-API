@@ -1,13 +1,9 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Dominio.Enumerados;
 using SME.SERAp.Prova.Infra;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.SERAp.Prova.Aplicacao.UseCase
+namespace SME.SERAp.Prova.Aplicacao
 {
     public class IncluirDownloadProvaAlunoUseCase : AbstractUseCase, IIncluirDownloadProvaAlunoUseCase
     {

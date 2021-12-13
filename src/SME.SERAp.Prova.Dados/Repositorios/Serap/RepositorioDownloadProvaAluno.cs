@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SME.SERAp.Prova.Dados.Repositorios.Serap
+namespace SME.SERAp.Prova.Dados
 {
     public class RepositorioDownloadProvaAluno : RepositorioBase<DownloadProvaAluno>, IRepositorioDownloadProvaAluno
     {

@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
       
             private readonly IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno;
 
-        public IncluirDownloadProvaCommandHandler(IRepositorioCadernoAluno repositorioCadernoAluno)
+        public IncluirDownloadProvaCommandHandler(IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno)
             {
                 this.repositorioDownloadProvaAluno = repositorioDownloadProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioDownloadProvaAluno));
             }
