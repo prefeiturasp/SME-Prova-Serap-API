@@ -15,6 +15,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Inicio).ToColumn("inicio");
             Map(c => c.InicioDownload).ToColumn("inicio_download");
             Map(c => c.Fim).ToColumn("fim");
+            Map(c => c.Disciplina).ToColumn("disciplina");
             Map(c => c.Inclusao).ToColumn("inclusao");
             Map(c => c.TotalItens).ToColumn("total_itens");
             Map(c => c.TempoExecucao).ToColumn("tempo_execucao");
