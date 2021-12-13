@@ -9,6 +9,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IIncluirDownloadProvaAlunoUseCase 
     {
-        Task<bool> Executar(long provaId, DownloadProvaAlunoDto downloadProvaAlunoDto);
+        Task<long> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto);
     }
 }

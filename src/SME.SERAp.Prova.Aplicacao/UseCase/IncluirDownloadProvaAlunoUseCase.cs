@@ -13,13 +13,11 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<bool> Executar(long provaId, DownloadProvaAlunoDto downloadProvaAlunoDto)
+        public async Task<long> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            await mediator.Send(new IncluirDownloadProvaCommand(provaId, alunoRa, downloadProvaAlunoDto));
-
-            return true;
+            return  await mediator.Send(new IncluirDownloadProvaCommand(alunoRa, downloadProvaAlunoDto));
         }
     }
 }

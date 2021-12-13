@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-   public class IncluirDownloadProvaCommandHandler : IRequestHandler<IncluirDownloadProvaCommand, bool>
+   public class IncluirDownloadProvaCommandHandler : IRequestHandler<IncluirDownloadProvaCommand, long>
     {
       
             private readonly IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno;
@@ -18,8 +18,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 this.repositorioDownloadProvaAluno = repositorioDownloadProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioDownloadProvaAluno));
             }
-        public async Task<bool> Handle(IncluirDownloadProvaCommand request, CancellationToken cancellationToken)
-            => await repositorioDownloadProvaAluno.IncluirAsync(new Dominio.DownloadProvaAluno(request.ProvaId,request.AlunoRa, request.DispositivoId,   request.TipoDispositivo, request.ModeloDispositivo, request.Versao, request.Situacao)) > 0;
+        public async Task<long> Handle(IncluirDownloadProvaCommand request, CancellationToken cancellationToken)
+            => await repositorioDownloadProvaAluno.IncluirAsync(new Dominio.DownloadProvaAluno(request.ProvaId,request.AlunoRa, request.DispositivoId,   request.TipoDispositivo, request.ModeloDispositivo, request.Versao, request.Situacao)) ;
         }
     }
 

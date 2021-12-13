@@ -9,5 +9,6 @@ namespace SME.SERAp.Prova.Dados
 {
    public interface IRepositorioDownloadProvaAluno :IRepositorioBase<DownloadProvaAluno>
     {
+        public  Task<bool> ExcluirDownloadProvaAluno(int[] ids);
     }
 }

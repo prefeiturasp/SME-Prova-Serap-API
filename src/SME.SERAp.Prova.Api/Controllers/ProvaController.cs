@@ -62,14 +62,5 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterRespostasAlunoPorProvaIdUseCase.Executar(provaId));
         }
-
-        [HttpPost("{provaId}/informacoes-download")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-      //  [Authorize("Bearer")]
-        public async Task<IActionResult> IncluirDownloadProvaAluno(long provaId, DownloadProvaAlunoDto downloadProvaAlunoDto, [FromServices] IIncluirDownloadProvaAlunoUseCase incluirDownloadProvaAlunoUseCase)
-        {
-            return Ok(await incluirDownloadProvaAlunoUseCase.Executar(provaId, downloadProvaAlunoDto));
-        }
     }
 }

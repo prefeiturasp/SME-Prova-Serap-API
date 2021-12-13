@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-  public  class IncluirDownloadProvaCommand : IRequest<bool>
+  public  class IncluirDownloadProvaCommand : IRequest<long>
     {
-        public IncluirDownloadProvaCommand(long provaId, long alunoRa, DownloadProvaAlunoDto downloadProvaAlunoDto)
+        public IncluirDownloadProvaCommand(long alunoRa, DownloadProvaAlunoDto downloadProvaAlunoDto)
         {
             AlunoRa = alunoRa;
-            ProvaId = provaId;
+            ProvaId = downloadProvaAlunoDto.ProvaId;
             DispositivoId = downloadProvaAlunoDto.DispositivoId;
             TipoDispositivo = downloadProvaAlunoDto.TipoDispositivo;
             ModeloDispositivo = downloadProvaAlunoDto.ModeloDispositivo;

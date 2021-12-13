@@ -1,4 +1,5 @@
-﻿using SME.SERAp.Prova.Dominio;
+﻿using Dapper;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,23 @@ namespace SME.SERAp.Prova.Dados
     {
         public RepositorioDownloadProvaAluno(ConnectionStringOptions connectionStringOptions) : base(connectionStringOptions)
         {
-            
+          
+        }
+
+        public async Task<bool> ExcluirDownloadProvaAluno(int[] ids)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"update downloads_prova_aluno set situacao = 3 where id = any(@ids)";
+
+                return await conn.ExecuteAsync(query, new { ids } ) > 0;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
         }
     }
 }

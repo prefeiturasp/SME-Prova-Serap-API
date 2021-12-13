@@ -14,5 +14,6 @@ namespace SME.SERAp.Prova.Infra
         public string DispositivoId { get; set; }
         public string ModeloDispositivo { get; set; }
         public string Versao { get; set; }
+        public DateTime DataHora { get; set; }
     }
 }
