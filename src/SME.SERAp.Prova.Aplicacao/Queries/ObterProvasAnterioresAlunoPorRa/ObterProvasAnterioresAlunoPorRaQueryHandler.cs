@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<IEnumerable<ProvaAlunoAnoDto>> Handle(ObterProvasAnterioresAlunoPorRaQuery request, CancellationToken cancellationToken)
         {
-            var provas = await repositorioCache.ObterRedisAsync("pas", async () => await repositorioProvaAluno.ObterProvasAnterioresAlunoPorRaAsync(request.Ra));
+            var provas = await repositorioCache.ObterRedisAsync($"paf-{request.Ra}", async () => await repositorioProvaAluno.ObterProvasAnterioresAlunoPorRaAsync(request.Ra), 10);
             if (provas != null && provas.Any())
             {
                 return provas;

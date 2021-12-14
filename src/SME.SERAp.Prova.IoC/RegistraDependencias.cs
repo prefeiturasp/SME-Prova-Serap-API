@@ -77,6 +77,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IPropagacaoCacheUseCase, PropagacaoCacheUseCase>();
             services.TryAddScoped<IIncluirDownloadProvaAlunoUseCase, IncluirDownloadProvaAlunoUseCase>();
             services.TryAddScoped<IExcluirDownloadProvaAlunoUseCase, ExcluirDownloadProvaAlunoUseCase>();
+            services.TryAddScoped<IObterProvasAnterioresAreaEstudanteUseCase, ObterProvasAnterioresAreaEstudanteUseCase>();
 
         }
     }

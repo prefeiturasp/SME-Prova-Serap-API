@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IObterProvasAnterioresAreaEstudanteUseCase
     {
-        public Task<IEnumerable<ObterProvasRetornoDto>> Executar();
+        public Task<IEnumerable<ObterProvasAnterioresRetornoDto>> Executar();
     }
 }

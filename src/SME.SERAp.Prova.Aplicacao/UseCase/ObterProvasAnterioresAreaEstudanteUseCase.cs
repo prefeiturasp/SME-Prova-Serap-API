@@ -17,44 +17,35 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
-        public async Task<IEnumerable<ObterProvasRetornoDto>> Executar()
+        public async Task<IEnumerable<ObterProvasAnterioresRetornoDto>> Executar()
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());            
             var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));
 
             if (provas.Any())
             {
-
                 if (alunoRa == 0)
                     throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
-                var provasParaRetornar = new List<ObterProvasRetornoDto>();
-
-                foreach (var prova in provas)
-                {
-                    provasParaRetornar.Add(MapearParaDto(prova));
-                }
-
-                return provasParaRetornar;
+                return MapearParaDto(provas.ToList());
             }
             else return default;
         }
 
-        private ObterProvasRetornoDto MapearParaDto(ProvaAlunoAnoDto provaAluno)
+        private List<ObterProvasAnterioresRetornoDto> MapearParaDto(List<ProvaAlunoAnoDto> provasAluno)
         {
-            int tempoExtra = 0;
-            int tempoAlerta = 0;
-            var provaRetornoDto = new ObterProvasRetornoDto(provaAluno.Descricao,
-                        provaAluno.TotalItens,
-                        provaAluno.Status,
-                        provaAluno.InicioDownload,
-                        provaAluno.Inicio,
-                        provaAluno.Fim,
-                        provaAluno.Id, provaAluno.TempoExecucao,
-                        tempoExtra, tempoAlerta, 0, provaAluno.DataInicioProvaAluno, provaAluno.Senha, provaAluno.Modalidade);
-            provaRetornoDto.DataFimProvaAluno = provaAluno.DataFimProvaAluno;
-
-            return provaRetornoDto;
+            return provasAluno.Select(a => new ObterProvasAnterioresRetornoDto
+            {
+                Id = a.Id,
+                Descricao = a.Descricao,
+                ItensQuantidade = a.TotalItens,
+                TempoTotal = 0,
+                Status = a.Status,
+                DataInicio = a.Inicio,
+                DataFim = a.Fim,
+                DataInicioProvaAluno = a.DataInicioProvaAluno,
+                DataFimProvaAluno = a.DataFimProvaAluno,
+            }).ToList();
         }
     }
 }
