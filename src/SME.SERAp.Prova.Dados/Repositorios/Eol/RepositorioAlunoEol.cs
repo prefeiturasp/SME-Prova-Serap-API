@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 								se.cd_serie_ensino = ste.cd_serie_ensino
                             WHERE
 	                            aluno.cd_aluno = @alunoRA
-	                            AND matrTurma.cd_situacao_aluno IN (1, 6, 10, 13)
+	                            AND matrTurma.cd_situacao_aluno IN (1, 5, 6, 10, 13)
 	                            AND e.tp_escola IN (1, 3, 4, 13, 16)
                                 AND matricula.an_letivo = @anoLetivo";
 
