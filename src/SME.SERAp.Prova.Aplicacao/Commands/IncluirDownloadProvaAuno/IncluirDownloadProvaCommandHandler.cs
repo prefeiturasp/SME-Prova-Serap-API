@@ -9,17 +9,24 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-   public class IncluirDownloadProvaCommandHandler : IRequestHandler<IncluirDownloadProvaCommand, long>
+    public class IncluirDownloadProvaCommandHandler : IRequestHandler<IncluirDownloadProvaCommand, long>
     {
-      
-            private readonly IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno;
+
+        private readonly IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno;
 
         public IncluirDownloadProvaCommandHandler(IRepositorioDownloadProvaAluno repositorioDownloadProvaAluno)
-            {
-                this.repositorioDownloadProvaAluno = repositorioDownloadProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioDownloadProvaAluno));
-            }
-        public async Task<long> Handle(IncluirDownloadProvaCommand request, CancellationToken cancellationToken)
-            => await repositorioDownloadProvaAluno.IncluirAsync(new Dominio.DownloadProvaAluno(request.ProvaId,request.AlunoRa, request.DispositivoId,   request.TipoDispositivo, request.ModeloDispositivo, request.Versao, request.Situacao)) ;
+        {
+            this.repositorioDownloadProvaAluno = repositorioDownloadProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioDownloadProvaAluno));
         }
+        public async Task<long> Handle(IncluirDownloadProvaCommand request, CancellationToken cancellationToken)
+            => await repositorioDownloadProvaAluno.IncluirAsync(new Dominio.DownloadProvaAluno(request.DownloadProvaAlunoDto.ProvaId,
+                request.AlunoRa,
+                request.DownloadProvaAlunoDto.DispositivoId,
+                request.DownloadProvaAlunoDto.TipoDispositivo,
+                request.DownloadProvaAlunoDto.ModeloDispositivo,
+                request.DownloadProvaAlunoDto.Versao,
+                request.Situacao)
+                );
     }
+}
 
