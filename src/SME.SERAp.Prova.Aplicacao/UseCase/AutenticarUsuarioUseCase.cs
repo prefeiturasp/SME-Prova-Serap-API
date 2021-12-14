@@ -28,17 +28,11 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (podeGerarToken)
                 {
                     var tokenDtExpiracao =
-                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno));
+                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno, (int)aluno.Modalidade));
                     retornoDto.Token = tokenDtExpiracao.Item1;
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
-
-                if (!string.IsNullOrEmpty(autenticacaoDto.Dispositivo))
-                {
-                    await mediator.Send(new IncluirUsuarioDispositivoCommand(autenticacaoDto.Login,
-                        autenticacaoDto.Dispositivo, aluno.Ano));
-                }
 
                 var verificaUsuario = await mediator.Send(new ObterUsuarioPorLoginQuery(aluno.CodigoAluno));
 

@@ -4,6 +4,7 @@ using Npgsql;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -24,16 +25,18 @@ namespace SME.SERAp.Prova.Dados
             conexao.Open();
             return conexao;
         }
+        protected IDbConnection ObterConexaoLeitura()
+        {
+            var conexao = new NpgsqlConnection(connectionStrings.ApiSerapLeitura);
+            conexao.Open();
+            return conexao;
+        }
         public virtual async Task<T> ObterPorIdAsync(long id)
         {
-            var conexao = ObterConexao();
+            var conexao = ObterConexaoLeitura();
             try
             {
                 return await conexao.GetAsync<T>(id: id);
-            }
-            catch (Exception)
-            {
-                throw;
             }
             finally
             {
@@ -41,7 +44,19 @@ namespace SME.SERAp.Prova.Dados
                 conexao.Dispose();
             }
         }
-
+        public virtual async Task<IEnumerable<T>> ObterTudoAsync()
+        {
+            var conexao = ObterConexaoLeitura();
+            try
+            {
+                return await conexao.GetAllAsync<T>();
+            }
+            finally
+            {
+                conexao.Close();
+                conexao.Dispose();
+            }
+        }
         public virtual async Task<long> SalvarAsync(T entidade)
         {
             var conexao = ObterConexao();
@@ -56,10 +71,6 @@ namespace SME.SERAp.Prova.Dados
                     entidade.Id = (long)await conexao.InsertAsync(entidade);
                 }
                 return entidade.Id;
-            }
-            catch (Exception)
-            {
-                throw;
             }
             finally
             {
@@ -78,10 +89,6 @@ namespace SME.SERAp.Prova.Dados
 
                 return entidade.Id;
             }
-            catch (Exception)
-            {
-                throw;
-            }
             finally
             {
                 conexao.Close();
@@ -98,10 +105,6 @@ namespace SME.SERAp.Prova.Dados
                 entidade.Id = (long)await conexao.InsertAsync(entidade);
                 return entidade.Id;
             }
-            catch (Exception)
-            {
-                throw;
-            }
             finally
             {
                 conexao.Close();
@@ -114,10 +117,6 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 return await conexao.DeleteAsync(entidade);                
-            }
-            catch (Exception)
-            {
-                throw;
             }
             finally
             {

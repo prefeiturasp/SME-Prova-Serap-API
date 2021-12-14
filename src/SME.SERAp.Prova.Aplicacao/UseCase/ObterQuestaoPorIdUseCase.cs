@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if(questao == null)
                 throw new NegocioException("Questão não encontrada");
 
-            return new QuestaoDetalheRetornoDto(questao.Id, questao.Titulo ?? "", questao.Descricao ?? "", questao.Ordem, (int)questao.Tipo);
+            return new QuestaoDetalheRetornoDto(questao.Id, questao.TextoBase ?? "", questao.Enunciado ?? "", questao.Ordem, (int)questao.Tipo, questao.QuantidadeAlternativas);
         }
     }
 }

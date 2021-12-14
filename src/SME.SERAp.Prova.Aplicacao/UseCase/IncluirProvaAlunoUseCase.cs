@@ -32,9 +32,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     throw new NegocioException("Esta prova já foi finalizada", 411);
 
                 provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
-                provaStatus.FinalizadoEm = (ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado && provaAlunoStatusDto.DataFim != null ?
-                    new DateTime(provaAlunoStatusDto.DataFim.Value) :
-                    DateTime.Now;
+                provaStatus.FinalizadoEm = (ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado ? provaAlunoStatusDto.DataFimMenos3Horas() : null;
 
                 return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
             }

@@ -40,7 +40,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioTelaBoasVindas, RepositorioTelaBoasVindas>();
             services.TryAddScoped<IRepositorioUsuario, RepositorioUsuario>();
             services.TryAddScoped<IRepositorioPreferenciasUsuario, RepositorioPreferenciasUsuario>();
+            services.TryAddScoped<IRepositorioCadernoAluno, RepositorioCadernoAluno>();
             services.TryAddScoped<IRepositorioQuestaoArquivo, RepositorioQuestaoArquivo>();
+            services.TryAddScoped<IRepositorioContextoProva, RepositorioContextoProva>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -63,10 +65,16 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
             services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
             services.TryAddScoped<IIncluirQuestaoAlunoRespostaUseCase, IncluirQuestaoAlunoRespostaUseCase>();
-            services.TryAddScoped<IIncluirProvaAlunoUseCase, IncluirProvaAlunoUseCase>();            
+            services.TryAddScoped<IIncluirProvaAlunoUseCase, IncluirProvaAlunoUseCase>();
             services.TryAddScoped<IObterQuestaoAlunoRespostaPorQuestaoIdUseCase, ObterQuestaoAlunoRespostaPorQuestaoIdUseCase>();
+            services.TryAddScoped<IObterRespostasAlunoPorProvaIdUseCase, ObterRespostasAlunoPorProvaIdUseCase>();
             services.TryAddScoped<IObterProvaAlunoUseCase, ObterProvaAlunoUseCase>();
             services.TryAddScoped<IIncluirPreferenciasUsuarioUseCase, IncluirPreferenciasUsuarioUseCase>();
+            services.TryAddScoped<IObterContextoProvaPorIdUseCase, ObterContextoProvaPorIdUseCase>();
+            services.TryAddScoped<IObterContextosProvasPorProvaIdUseCase, ObterContextosProvasPorProvaIdUseCase>();
+            services.TryAddScoped<ISincronizarQuestaoAlunoRespostaUseCase, SincronizarQuestaoAlunoRespostaUseCase>();
+            services.TryAddScoped<IPropagacaoCacheUseCase, PropagacaoCacheUseCase>();
+
         }
     }
 }

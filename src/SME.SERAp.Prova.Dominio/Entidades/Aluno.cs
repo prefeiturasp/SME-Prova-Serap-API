@@ -8,6 +8,7 @@ namespace SME.SERAp.Prova.Dominio
         public long RA { get; set; }
         public int Situacao { get; set; }
         public long TurmaId { get; set; }
+        public DateTime DataAtualizacao { get; set; }
 
         public Aluno()
         {

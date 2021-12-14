@@ -1,6 +1,4 @@
-﻿using Dapper;
-using SME.SERAp.Prova.Dominio;
-using SME.SERAp.Prova.Infra;
+﻿using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,7 +14,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ProvaAluno> ObterPorProvaIdRaAsync(long provaId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa";
@@ -29,10 +27,24 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        public async Task<IEnumerable<ProvaAluno>> ObterPorProvaIdsRaAsync(long[] provaIds, long alunoRa)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct pa.* from v_provas_alunos pa where pa.prova_id = ANY(@provaIds) and pa.aluno_ra = @alunoRa";
 
+                return await conn.QueryAsync<ProvaAluno>(query, new { provaIds, alunoRa });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
         public async Task<ProvaAluno> ObterPorQuestaoIdRaAsync(long questaoId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa 
@@ -50,7 +62,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<ProvaAluno> ObterPorProvaIdRaStatusAsync(long provaId, long alunoRa, int status)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct pa.* from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa and pa.status = @status";

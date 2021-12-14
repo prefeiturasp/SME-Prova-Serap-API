@@ -1,14 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
-using System;
-using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -55,6 +49,18 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
         {
             return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(typeof(QuestaoAlunoRespostaConsultarDto), 200)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        [Route("{provaId}/respostas")]
+        public async Task<IActionResult> ObterRespostaPorProvaAluno(long provaId, [FromServices] IObterRespostasAlunoPorProvaIdUseCase obterRespostasAlunoPorProvaIdUseCase)
+        {
+            return Ok(await obterRespostasAlunoPorProvaIdUseCase.Executar(provaId));
         }
     }
 }

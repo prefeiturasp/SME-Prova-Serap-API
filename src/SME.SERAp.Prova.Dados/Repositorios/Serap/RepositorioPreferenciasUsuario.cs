@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<PreferenciasUsuario> ObterPorUsuarioId(long usuarioId)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 const string query = @"select pu.* from preferencias_usuario pu where pu.usuario_id = @usuarioId;";
@@ -32,7 +32,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<PreferenciasUsuario> ObterPorLogin(long login)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 const string query =
