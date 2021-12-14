@@ -1,0 +1,4 @@
+update BaseText 
+set Description = '<p style="text-align: justify;"><span style="font-size: 14px;"></span>Leia o texto e responda à questão.</p><p>A energia eólica, considerada uma fonte limpa de energia, não emite poluentes e utiliza os ventos por meio da movimentação das massas de ar.</p>
+<p style="text-align: justify;"><span style="font-size: 11px;">(Disponível em: <a href="https://www.sofisica.com.br/conteudos/Mecanica/Dinamica/energia.php" target="black">https://www.sofisica.com.br/conteudos/Mecanica/Dinamica/energia.php</a>. Acesso em: 14.02.2019. Com adaptações)</span><br></p>'
+where id = 11397
