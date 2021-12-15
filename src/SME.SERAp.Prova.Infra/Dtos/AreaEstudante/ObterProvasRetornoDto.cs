@@ -37,6 +37,7 @@ namespace SME.SERAp.Prova.Infra
         public DateTime? DataInicioDownload { get; set; }
         public DateTime? DataFim { get; set; }
         public DateTime? DataInicioProvaAluno { get; set; }
+        public DateTime? DataFimProvaAluno { get; set; }
         public Modalidade Modalidade { get; set; }
 
     }
