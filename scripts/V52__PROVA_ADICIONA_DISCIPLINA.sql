@@ -1,0 +1,1 @@
+ALTER TABLE  if exists public.prova ADD COLUMN IF NOT EXISTS disciplina varchar(50) null;
