@@ -25,7 +25,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpGet("finalizadas")]
-        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ObterProvasAnterioresRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvasAnteriores([FromServices] IObterProvasAnterioresAreaEstudanteUseCase obterProvasAnterioresAreaEstudanteUseCase)

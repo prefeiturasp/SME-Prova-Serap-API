@@ -19,14 +19,14 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<IEnumerable<ObterProvasAnterioresRetornoDto>> Executar()
         {
-            var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());            
+            var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+            if (alunoRa == 0)
+                throw new NegocioException("Não foi possível obter o RA do usuário logado.");
+
             var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));
 
             if (provas.Any())
             {
-                if (alunoRa == 0)
-                    throw new NegocioException("Não foi possível obter o RA do usuário logado.");
-
                 return MapearParaDto(provas.ToList());
             }
             else return default;
