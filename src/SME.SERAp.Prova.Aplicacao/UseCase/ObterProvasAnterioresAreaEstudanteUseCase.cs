@@ -23,9 +23,9 @@ namespace SME.SERAp.Prova.Aplicacao
             if (alunoRa == 0)
                 throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
-            var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));
+            var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));            
 
-            if (provas.Any())
+            if (provas != null)
             {
                 return MapearParaDto(provas.ToList());
             }
