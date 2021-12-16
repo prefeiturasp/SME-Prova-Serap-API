@@ -17,7 +17,8 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Executar(int[] ids)
         {
-            return await mediator.Send(new ExcluirDownloadsProvaAlunoCommand(ids));
+            var dataAlteracao = DateTime.Now.AddHours(3);
+            return await mediator.Send(new ExcluirDownloadsProvaAlunoCommand(ids, dataAlteracao));
         }
     }
   

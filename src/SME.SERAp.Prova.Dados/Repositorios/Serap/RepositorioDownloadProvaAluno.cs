@@ -16,14 +16,14 @@ namespace SME.SERAp.Prova.Dados
           
         }
 
-        public async Task<bool> ExcluirDownloadProvaAluno(int[] ids)
+        public async Task<bool> ExcluirDownloadProvaAluno(int[] ids, DateTime? dataAlteracao)
         {
             using var conn = ObterConexao();
             try
             {
-                var query = @"update downloads_prova_aluno set situacao = 3 where id = any(@ids)";
+                var query = @"update downloads_prova_aluno set situacao = 3, alterado_em = @dataAlteracao  where id = any(@ids)";
 
-                return await conn.ExecuteAsync(query, new { ids } ) > 0;
+                return await conn.ExecuteAsync(query, new { ids, dataAlteracao } ) > 0;
             }
             finally
             {

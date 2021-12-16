@@ -9,11 +9,13 @@ namespace SME.SERAp.Prova.Aplicacao
 {
    public class ExcluirDownloadsProvaAlunoCommand : IRequest<bool>
     {
-        public ExcluirDownloadsProvaAlunoCommand(int[] ids)
+        public ExcluirDownloadsProvaAlunoCommand(int[] ids, DateTime? dataAlteracao)
         {
             Ids = ids;
+            DataAlteracao = dataAlteracao;
         }
 
         public int[] Ids { get; set; }
+        public DateTime? DataAlteracao { get; set; }
     }
 }

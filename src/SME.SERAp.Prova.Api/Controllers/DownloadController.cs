@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost()]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+       [Authorize("Bearer")]
         public async Task<IActionResult> IncluirDownloadProvaAluno(DownloadProvaAlunoDto downloadProvaAlunoDto, [FromServices] IIncluirDownloadProvaAlunoUseCase incluirDownloadProvaAlunoUseCase)
         {
             return Ok(await incluirDownloadProvaAlunoUseCase.Executar(downloadProvaAlunoDto));
@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpDelete()]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+       [Authorize("Bearer")]
         public async Task<IActionResult> ExcluirDownloads(int[] ids, [FromServices] IExcluirDownloadProvaAlunoUseCase excluirDownloadsProvaAlunoUseCase)
         {
             return Ok(await excluirDownloadsProvaAlunoUseCase.Executar(ids));
