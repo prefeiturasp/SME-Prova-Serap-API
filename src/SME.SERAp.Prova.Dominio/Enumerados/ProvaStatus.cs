@@ -12,6 +12,15 @@ namespace SME.SERAp.Prova.Dominio
         Iniciado = 1,
 
         [Display(Name = "Finalizado")]
-        Finalizado = 2
+        Finalizado = 2,
+
+        [Display(Name = "Pendente")]
+        Pendente = 3,
+
+        [Display(Name = "Em Revisão")]
+        EmRevisao = 4,
+
+        [Display(Name = "Finalizado Automaticamente")]
+        FinalizadoAutomaticamente = 5,
     }
 }

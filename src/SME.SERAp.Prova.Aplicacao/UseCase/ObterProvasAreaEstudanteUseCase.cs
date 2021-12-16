@@ -71,7 +71,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
 
-                    if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
+                    if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
                         continue;
 
                     ProvaStatus status = ProvaStatus.NaoIniciado;
