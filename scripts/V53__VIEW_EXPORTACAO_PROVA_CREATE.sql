@@ -51,7 +51,14 @@ select
 		when p.possui_bib then ca.caderno 
 		else ''
 	end as prova_caderno,
-	palu.finalizado_em as prova_data_entregue
+	palu.finalizado_em as prova_data_entregue,
+		case 
+			when palu.frequencia = 0 then 'N'
+			when palu.frequencia = 1 then 'P'
+			when palu.frequencia = 2 then 'A'
+			when palu.frequencia = 3 then 'R'
+			else 'N'
+		end as aluno_frequencia
 from aluno a
 inner join turma t 
 	on a.turma_id = t.id
@@ -62,4 +69,4 @@ inner join dre
 inner join prova_ano pa on t.ano = pa.ano
 inner join prova p on pa.prova_id = p.id 
 left join prova_aluno palu on p.id = palu.prova_id and a.ra = palu.aluno_ra
-left join caderno_aluno ca on p.id = ca.prova_id and a.id = ca.aluno_id;
+left join caderno_aluno ca on p.id = ca.prova_id and a.id = ca.aluno_id ;
