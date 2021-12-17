@@ -51,6 +51,7 @@ select
 		when p.possui_bib then ca.caderno 
 		else ''
 	end as prova_caderno,
+	p.total_itens as prova_quantidade_questoes,
 	palu.finalizado_em as prova_data_entregue,
 		case 
 			when palu.frequencia = 0 then 'N'
