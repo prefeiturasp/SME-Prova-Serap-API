@@ -26,7 +26,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 request.DownloadProvaAlunoDto.ModeloDispositivo,
                 request.DownloadProvaAlunoDto.Versao,
                 request.Situacao,
-                request.DownloadProvaAlunoDto.DataHora)
+                request.DownloadProvaAlunoDto.DataHora.AddHours(3))
                 );
     }
 }
