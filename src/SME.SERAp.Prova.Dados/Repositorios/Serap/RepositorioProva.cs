@@ -144,7 +144,8 @@ namespace SME.SERAp.Prova.Dados
                             from
 	                            prova p
                             inner join prova_ano pa 
-                                on pa.prova_id = p.id";
+                                on pa.prova_id = p.id
+                             where (p.ocultar_prova = false or ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaAnoDto>(query);
             }
