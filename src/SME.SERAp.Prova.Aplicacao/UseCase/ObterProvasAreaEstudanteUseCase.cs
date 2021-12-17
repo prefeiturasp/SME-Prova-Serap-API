@@ -69,10 +69,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 foreach (var prova in provas)
                 {
-                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
-
-                    if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
-                        continue;
+                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);                  
 
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
