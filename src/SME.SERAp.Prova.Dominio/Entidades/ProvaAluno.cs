@@ -23,6 +23,7 @@ namespace SME.SERAp.Prova.Dominio
         public ProvaStatus Status { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime? FinalizadoEm { get; set; }
+        public FrequenciaAluno Frequencia { get; set; }
 
         public DateTime ObterCriadoMais3Horas ()
         {

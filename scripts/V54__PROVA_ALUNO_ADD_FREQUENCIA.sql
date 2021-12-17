@@ -1,0 +1,1 @@
+ALTER TABLE  if exists public.prova_aluno ADD COLUMN IF NOT EXISTS frequencia int null;
