@@ -24,6 +24,15 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await obterProvasAreaEstudanteUseCase.Executar());
         }
 
+        [HttpGet("finalizadas")]
+        [ProducesResponseType(typeof(IEnumerable<ObterProvasAnterioresRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterProvasAnteriores([FromServices] IObterProvasAnterioresAreaEstudanteUseCase obterProvasAnterioresAreaEstudanteUseCase)
+        {
+            return Ok(await obterProvasAnterioresAreaEstudanteUseCase.Executar());
+        }
+
         [HttpGet("{id}/detalhes-resumido")]
         [ProducesResponseType(typeof(IEnumerable<ProvaDetalheResumidoRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]

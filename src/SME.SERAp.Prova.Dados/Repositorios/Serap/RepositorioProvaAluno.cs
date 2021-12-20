@@ -1,4 +1,5 @@
 ﻿using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -75,5 +76,43 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<ProvaAlunoAnoDto>> ObterProvasAnterioresAlunoPorRaAsync(long ra)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select
+                                    p.descricao,
+                                    p.Id,
+                                    p.total_Itens totalItens,
+                                    p.inicio_download as InicioDownload,
+                                    p.inicio,
+                                    p.fim,
+                                    p.Tempo_Execucao TempoExecucao,
+                                    p.Modalidade,
+                                    p.Senha,
+                                    p.possui_bib PossuiBIB,
+                                    pa.ano,
+                                    palu.status,
+                                    palu.criado_em DataInicioProvaAluno,
+                                    palu.finalizado_em DataFimProvaAluno
+                                from
+                                prova p
+                                inner join prova_ano pa
+                                    on pa.prova_id = p.id
+                                inner join prova_aluno palu 
+                                    on p.id = palu.prova_id and palu.status in(2,5)
+                                where palu.aluno_ra = @ra";
+
+                return await conn.QueryAsync<ProvaAlunoAnoDto>(query, new { ra });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
     }
 }
