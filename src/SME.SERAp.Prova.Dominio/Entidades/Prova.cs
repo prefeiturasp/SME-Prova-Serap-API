@@ -30,6 +30,7 @@ namespace SME.SERAp.Prova.Dominio
         public DateTime Inclusao { get; set; }
         public int TotalItens { get; set; }
         public int TotalCadernos { get; set; }
+        public string Disciplina { get; set; }
         public long LegadoId { get; set; }
         public string Senha { get; set; }
         public bool PossuiBIB { get; set; }
