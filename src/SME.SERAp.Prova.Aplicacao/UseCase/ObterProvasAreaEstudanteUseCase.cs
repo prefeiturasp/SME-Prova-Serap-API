@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
+using SME.SERAp.Prova.Infra.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
-            alunoLogadoAno = AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
+            alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
 
             if (provas.Any())
@@ -102,17 +103,5 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             return 0;
         }
-
-        private static string AjustarAnoAluno(string modalidade, string ano)
-        {
-            if (ano.ToUpper() == "S" || String.IsNullOrEmpty(ano))
-                return ano;
-
-            var modalidadeAluno = (Modalidade)int.Parse(modalidade);
-            if ((modalidadeAluno == Modalidade.EJA && ano != "2") || modalidadeAluno == Modalidade.CIEJA)
-                return (int.Parse(ano) * 2).ToString();
-            return ano;
-        }
-
     }
 }
