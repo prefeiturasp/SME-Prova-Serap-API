@@ -18,14 +18,13 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from exportacao_resultado where prova_serap_id = @provaSerapId order by atualizado_em desc;";
-
-                return await conn.QueryFirstOrDefaultAsync(query, new { provaSerapId });
-                
+                var query = @"select id,nome_arquivo,status,criado_em,atualizado_em,prova_serap_id 
+                                from exportacao_resultado where prova_serap_id = @provaSerapId order by atualizado_em desc;";
+                return await conn.QueryFirstOrDefaultAsync<ExportacaoResultado>(query, new { provaSerapId });
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                throw;
             }
             finally
             {

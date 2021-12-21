@@ -11,9 +11,7 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/exportacoes-resultados")]
     public class ExportacaoResultadoController : ControllerBase
     {
-        public ExportacaoResultadoController()
-        {
-        }
+        public ExportacaoResultadoController(){}
 
         [HttpGet("{provaSerapId}/status")]
         [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
@@ -21,6 +19,14 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> ObterStatus(long provaSerapId, [FromServices] IObterExportacaoResultadoStatusUseCase obterExportacaoResultadoStatus)
         {
             return Ok(await obterExportacaoResultadoStatus.Executar(provaSerapId));
+        }
+
+        [HttpGet("{provaSerapId}/exportar")]
+        [ProducesResponseType(typeof(IEnumerable<bool>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        public async Task<IActionResult> IniciarExportacao(long provaSerapId, [FromServices] ISolicitarExportacaoResultadoUseCase solicitarExportacaoResultadoUseCase)
+        {
+            return Ok(await solicitarExportacaoResultadoUseCase.Executar(provaSerapId));
         }
     }
 }
