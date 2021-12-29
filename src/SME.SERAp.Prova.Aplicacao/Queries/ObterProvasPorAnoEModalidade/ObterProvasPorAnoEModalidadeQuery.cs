@@ -7,15 +7,13 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterProvasPorAnoEModalidadeQuery : IRequest<IEnumerable<ProvaAnoDto>>
     {
-        public ObterProvasPorAnoEModalidadeQuery(string ano, DateTime dataReferenia, int modalidade)
+        public ObterProvasPorAnoEModalidadeQuery(string ano, int modalidade)
         {
             Ano = ano;
-            DataReferenia = dataReferenia;
             Modalidade = modalidade;
         }
 
         public string Ano { get; set; }
-        public DateTime DataReferenia { get; set; }
         public int Modalidade { get; set; }
     }
 }
