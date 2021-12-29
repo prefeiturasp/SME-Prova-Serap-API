@@ -25,27 +25,13 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var exportacao = request.ExportacaoResultado;
                 exportacao.Id = await repositorioExportacaoResultado.IncluirAsync(request.ExportacaoResultado);
-                var exportacaoDto = MapearParaDtoCache(exportacao);
-                await repositorioCache.SalvarRedisAsync($"exportacao-{exportacao.Id}-prova-{exportacao.ProvaSerapId}", exportacaoDto);
+                await repositorioCache.SalvarRedisAsync($"exportacao-{exportacao.Id}-prova-{exportacao.ProvaSerapId}-status", (int)exportacao.Status);
                 return exportacao.Id;
             }
             catch(Exception ex)
             {
                 throw new ArgumentException($"Erro ao criar processo de exportação - Erro:{ex.Message}");
             }            
-        }
-
-        private ExportacaoResultadoCacheDto MapearParaDtoCache(ExportacaoResultado exportacao)
-        {
-            return new ExportacaoResultadoCacheDto
-            {
-                Id = exportacao.Id,
-                ProvaSerapId = exportacao.ProvaSerapId,
-                NomeArquivo = exportacao.NomeArquivo,
-                CriadoEm = exportacao.CriadoEm,
-                AtualizadoEm = exportacao.AtualizadoEm,
-                Status = (int)exportacao.Status
-            };
-        }
+        }        
     }
 }

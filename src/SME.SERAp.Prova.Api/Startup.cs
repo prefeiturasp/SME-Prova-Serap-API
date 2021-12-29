@@ -93,7 +93,7 @@ namespace SME.SERAp.Prova.Api
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
             DapperExtensionMethods.Init(clientTelemetry);
 
-            services.AddStartupTask<WarmUpCacheTask>();
+            //services.AddStartupTask<WarmUpCacheTask>();
 
             services.AddStackExchangeRedisCache(options =>
             {

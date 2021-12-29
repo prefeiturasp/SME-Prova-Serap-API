@@ -11,6 +11,7 @@ create table if not exists public.exportacao_resultado
 
 
 CREATE TABLE if not exists public.resultado_prova_consolidado (
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY ,
 	prova_serap_id int8 NULL,
 	prova_serap_estudantes_id int8 NULL,
 	dre_codigo_eol varchar(15) NULL,
