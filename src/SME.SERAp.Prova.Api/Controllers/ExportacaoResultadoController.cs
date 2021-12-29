@@ -22,5 +22,13 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterExportacaoResultadoStatus.Executar(provaSerapId));
         }
+
+        [HttpGet("{dataFim}")]
+        [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        public async Task<IActionResult> ObterExportacaoDeProvasPorDataInicioFimEProvaId(FiltroExportacaoResultadoDto filtroExportacao, [FromServices] IObterExportacaoResultadoProvasPorDataUseCase obterExportacaoResultadoProvasPorData)
+        {
+            return Ok(await obterExportacaoResultadoProvasPorData.Executar(filtroExportacao));
+        }
     }
 }
