@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterExportacaoResultadoProvasPorDataQuery : IRequest<IEnumerable<ProvaExportacaoResultadoDto>>
+    public class ObterExportacaoResultadoProvasPorDataQuery : IRequest<IEnumerable<ExportacaoRetornoSerapDto>>
     {
         public ObterExportacaoResultadoProvasPorDataQuery(FiltroExportacaoResultadoDto filtroExportacao)
         {
@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
-        public long? ProvaSerapId { get; set; }
+        public long ProvaSerapId { get; set; }
 
 
     }

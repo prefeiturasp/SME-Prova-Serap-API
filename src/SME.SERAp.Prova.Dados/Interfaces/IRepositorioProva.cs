@@ -15,5 +15,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(string ano, DateTime dataReferenia, int modalidade);
         Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync();
         Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync();
+        Task<bool> VerificaSeExistePorProvaSerapId(long provaId);
     }
 }

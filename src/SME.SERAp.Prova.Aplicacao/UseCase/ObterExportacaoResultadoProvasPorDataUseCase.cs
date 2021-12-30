@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<ProvaExportacaoResultadoDto>> Executar(FiltroExportacaoResultadoDto filtro)
+        public async Task<IEnumerable<ExportacaoRetornoSerapDto>> Executar(FiltroExportacaoResultadoDto filtro)
         {
             return  await mediator.Send(new ObterExportacaoResultadoProvasPorDataQuery(filtro));
         }

@@ -221,6 +221,24 @@ namespace SME.SERAp.Prova.Dados.Cache
             
         }
 
+        public async Task RemoverRedisAsync(string nomeChave)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                await distributedCache.RemoveAsync(nomeChave);
+
+                timer.Stop();
+            }
+            catch (Exception ex)
+            {
+                timer.Stop();
+                servicoLog.Registrar(ex);
+            }
+        }
+
         public async Task<T> ObterRedisAsync<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720)
         {
             var inicioOperacao = DateTime.UtcNow;

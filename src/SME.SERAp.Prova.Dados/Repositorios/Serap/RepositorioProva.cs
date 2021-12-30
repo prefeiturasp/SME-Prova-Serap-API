@@ -203,5 +203,25 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<bool> VerificaSeExistePorProvaSerapId(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select 1 from prova pa where prova_legado_id = @provaId";
+
+                return await conn.QueryFirstOrDefaultAsync<bool>(query, new { provaId });
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
