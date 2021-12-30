@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IObterExportacaoResultadoProvasPorDataUseCase
     {
-        public Task<IEnumerable<ProvaExportacaoResultadoDto>> Executar(FiltroExportacaoResultadoDto filtro);
+        public Task<IEnumerable<ExportacaoRetornoSerapDto>> Executar(FiltroExportacaoResultadoDto filtro);
     }
 }

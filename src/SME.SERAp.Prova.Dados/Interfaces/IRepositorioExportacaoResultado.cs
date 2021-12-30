@@ -10,6 +10,6 @@ namespace SME.SERAp.Prova.Dados
     {
         Task<ExportacaoResultado> ObterPorProvaSerapIdAsync(long provaSerapId);
 
-        Task<IEnumerable<ProvaExportacaoResultadoDto>> ObterPorFiltroDataAsync(DateTime? dataInicio, DateTime? dataFim, long? provaSerapId);
+        Task<IEnumerable<ProvaExportacaoResultadoDto>> ObterPorFiltroDataAsync(DateTime? dataInicio, DateTime? dataFim, long provaSerapId);
     }
 }
