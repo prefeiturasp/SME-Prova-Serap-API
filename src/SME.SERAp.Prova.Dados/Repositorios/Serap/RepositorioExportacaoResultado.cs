@@ -36,7 +36,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<ProvaExportacaoResultadoDto>> ObterPorFiltroDataAsync(DateTime? dataInicio, DateTime? dataFim, long? provaSerapId)
+        public async Task<IEnumerable<ProvaExportacaoResultadoDto>> ObterPorFiltroDataAsync(DateTime? dataInicio, DateTime? dataFim, long provaSerapId)
         {           
             using var conn = ObterConexaoLeitura();
             try
@@ -46,10 +46,11 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select p.id as  ProvaId, 
                                      p.prova_legado_id as ProvaLegadoId,
                                      p.descricao as Descricao,
-                                     p.inicio as NomeProva, 
+                                     p.descricao as NomeProva,
                                      P.inicio as DataInicio,
-                                     p.fim as DataFim
-                                     case  when  ex.status is null then 0 else ex.status end Status
+                                     p.fim as DataFim,
+                                     case  when  ex.id is null then 0 else ex.id end ProcessoId,
+                                     case  when  ex.status is null then 1 else ex.status end Status
                                  from prova p
                                  left join (select id, prova_serap_id, 
                                     			   status
@@ -68,7 +69,7 @@ namespace SME.SERAp.Prova.Dados
                     sql.AppendLine(" and p.inicio >= @DataInicio");
                 if (dataFim != null)
                     sql.AppendLine(" and p.fim <= @DataFim");
-                if (provaSerapId != null)
+                if (provaSerapId > 0)
                     sql.AppendLine(" and p.prova_legado_id = @ProvaSerapId");
 
                

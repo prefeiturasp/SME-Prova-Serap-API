@@ -11,6 +11,7 @@ namespace SME.SERAp.Prova.Infra
     {
         public long ProvaId { get; set; }
         public long ProvaLegadoId { get; set; }
+        public long ProcessoId { get; set; }
         public string Descricao { get; set; }
         public string NomeProva { get; set; }
         public DateTime DataInicio { get; set; }
