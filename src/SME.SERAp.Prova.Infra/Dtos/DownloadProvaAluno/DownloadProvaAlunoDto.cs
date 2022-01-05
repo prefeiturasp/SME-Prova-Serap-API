@@ -1,9 +1,5 @@
-﻿using SME.SERAp.Prova.Dominio.Enumerados;
+﻿using SME.SERAp.Prova.Dominio;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Infra
 {

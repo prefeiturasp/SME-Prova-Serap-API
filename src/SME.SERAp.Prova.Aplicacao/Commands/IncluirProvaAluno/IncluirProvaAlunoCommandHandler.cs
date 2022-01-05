@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, DateTime.Now, request.FinalizadoEm);
+            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, DateTime.Now, request.FinalizadoEm, TipoDispositivo.NaoCadastrado);
             
             return await repositorioProvaAluno.SalvarAsync(entidade) > 0;            
         }
