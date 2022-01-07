@@ -16,21 +16,26 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<(byte[], string)> Executar(long Id)
         {
-            var exportacaoResultado = await mediator.Send(new ObterExportacaoResultadoPorIdQuery(Id));
-            var pathResultados = Environment.GetEnvironmentVariable("PathResultadosExportacaoSerap");
-            string filePath = new Uri(pathResultados).AbsolutePath;
-            string physicalPath = filePath.Replace("/", "\\");
-            var nomeArquivo = Path.Combine(physicalPath, exportacaoResultado.NomeArquivo);
-
-            if (File.Exists(nomeArquivo))
+            try
             {
-                var arquivo = await File.ReadAllBytesAsync(nomeArquivo);
+                var exportacaoResultado = await mediator.Send(new ObterExportacaoResultadoPorIdQuery(Id));
+                var pathResultados = Environment.GetEnvironmentVariable("PathResultadosExportacaoSerap");
+                string caminhoCompleto = Path.Combine(pathResultados, exportacaoResultado.NomeArquivo);
 
-                if (arquivo != null)
-                    return (arquivo, $"Prova{exportacaoResultado.ProvaSerapId}_{exportacaoResultado.Id}.csv");
+                if (File.Exists(caminhoCompleto))
+                {
+                    var arquivo = await File.ReadAllBytesAsync(caminhoCompleto);
+
+                    if (arquivo != null)
+                        return (arquivo, $"Prova{exportacaoResultado.ProvaSerapId}_{exportacaoResultado.Id}.csv");
+                }
+
+                throw new NegocioException("Não foi possível fazer download. Arquivo não localizado.");
             }
-
-            throw new NegocioException("Não foi possível fazer download do arquivo");
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Download arquivo -- {ex.Message}");
+            }
         }
     }
 }
