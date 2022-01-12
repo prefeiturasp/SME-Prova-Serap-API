@@ -1,0 +1,1 @@
+alter table prova add column if not exists aderir_todos bool default null;
