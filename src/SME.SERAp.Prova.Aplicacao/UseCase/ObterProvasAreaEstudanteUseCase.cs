@@ -51,15 +51,25 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
+            var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
+
+            if (string.IsNullOrEmpty(alunoRa))
+                throw new NegocioException("Não foi possível obter o RA do usuário logado.");
+
+            var turmasAluno = await mediator.Send(new ObterTurmasAlunoPorRaQuery(long.Parse(alunoRa)));
+            var turmaAtual = turmasAluno.Where(t => t.Ano == int.Parse(alunoLogadoAno) 
+                                                    && t.Modalidade == int.Parse(alunoLogadoModalidade) 
+                                                    && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
+
             alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
+
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
+            var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
+
+            provas = JuntarListasProvas(provas.ToList(), provasAdesao);
 
             if (provas.Any())
-            {
-                var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
-
-                if (string.IsNullOrEmpty(alunoRa))
-                    throw new NegocioException("Não foi possível obter o RA do usuário logado.");
+            {                
 
                 var provasParaRetornar = new List<ObterProvasRetornoDto>();
 
@@ -118,6 +128,17 @@ namespace SME.SERAp.Prova.Aplicacao
                 return (int)tempoTotal.TotalSeconds;
             }
             return 0;
+        }
+
+        private IEnumerable<ProvaAnoDto> JuntarListasProvas(List<ProvaAnoDto> provas, List<ProvaAnoDto> provasAdesao)
+        {
+            var retorno = new List<ProvaAnoDto>();
+            if (provas != null && provas.Any())
+                retorno.AddRange(provas);
+            if (provasAdesao != null && provasAdesao.Any())
+                retorno.AddRange(provasAdesao);
+            
+            return retorno.Distinct();
         }
     }
 }

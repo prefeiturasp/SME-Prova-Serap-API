@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -145,7 +146,8 @@ namespace SME.SERAp.Prova.Dados
 	                            prova p
                             inner join prova_ano pa 
                                 on pa.prova_id = p.id
-                             where (p.ocultar_prova = false or ocultar_prova is null)";
+                             where (p.ocultar_prova = false or ocultar_prova is null)
+                               and (aderir_todos or aderir_todos is null)";
 
                 return await conn.QueryAsync<ProvaAnoDto>(query);
             }
@@ -155,6 +157,43 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct
+	                            p.descricao,
+	                            p.Id,
+	                            p.total_Itens totalItens,
+	                            p.inicio_download as InicioDownload,
+	                            p.inicio,
+	                            p.fim,
+	                            p.Tempo_Execucao TempoExecucao,
+	                            p.Modalidade,
+	                            p.Senha,
+	                            p.possui_bib PossuiBIB
+                            from
+	                            prova p
+                            inner join prova_ano pa 
+                                on pa.prova_id = p.id
+                            inner join prova_adesao pd 
+                            	on p.id = pd.prova_id                            
+                             where (p.ocultar_prova = false or ocultar_prova is null)
+                               and not aderir_todos
+                               and pd.aluno_ra = @alunoRa;";
+
+                var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
+                return retorno.ToList();
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA)
         {
             using var conn = ObterConexaoLeitura();
