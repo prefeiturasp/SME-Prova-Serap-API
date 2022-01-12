@@ -14,5 +14,10 @@ namespace SME.SERAp.Prova
 
         [Required(ErrorMessage = "É necessário informar o perfil.")]
         public string Perfil { get; set; }
+
+        [Required(ErrorMessage = "É necessário informar o perfil.")]
+
+        public string ChaveApi { get; set; }
+
     }
 }
