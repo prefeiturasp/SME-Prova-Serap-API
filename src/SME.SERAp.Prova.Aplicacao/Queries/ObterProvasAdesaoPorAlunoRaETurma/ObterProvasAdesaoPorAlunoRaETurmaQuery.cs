@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvasAdesaoPorAlunoIdETurmaQuery : IRequest<List<ProvaAnoDto>>
+    public class ObterProvasAdesaoPorAlunoRaETurmaQuery : IRequest<List<ProvaAnoDto>>
     {
-        public ObterProvasAdesaoPorAlunoIdETurmaQuery(long alunoId, long turmaId)
+        public ObterProvasAdesaoPorAlunoRaETurmaQuery(long alunoRa, long turmaId)
         {
-            AlunoId = alunoId;
+            AlunoRa = alunoRa;
             TurmaId = turmaId;
         }
 
-        public long AlunoId { get; set; }
+        public long AlunoRa { get; set; }
         public long TurmaId { get; set; }
     }
 }

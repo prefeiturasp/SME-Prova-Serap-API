@@ -56,7 +56,6 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoRa))
                 throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
-            var alunoSerap = await mediator.Send(new ObterAlunoSerapPorRaQuery(long.Parse(alunoRa)));
             var turmasAluno = await mediator.Send(new ObterTurmasAlunoPorRaQuery(long.Parse(alunoRa)));
             var turmaAtual = turmasAluno.Where(t => t.Ano == int.Parse(alunoLogadoAno) 
                                                     && t.Modalidade == int.Parse(alunoLogadoModalidade) 
@@ -65,7 +64,7 @@ namespace SME.SERAp.Prova.Aplicacao
             alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
 
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
-            var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoIdETurmaQuery(alunoSerap.Id, turmaAtual.Id));
+            var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
             provas = JuntarListasProvas(provas.ToList(), provasAdesao);
 

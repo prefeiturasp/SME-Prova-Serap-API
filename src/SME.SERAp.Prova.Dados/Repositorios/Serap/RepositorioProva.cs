@@ -158,7 +158,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoId, long turmaId)
+        public async Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
         {
             using var conn = ObterConexaoLeitura();
             try
@@ -173,19 +173,18 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Tempo_Execucao TempoExecucao,
 	                            p.Modalidade,
 	                            p.Senha,
-	                            p.possui_bib PossuiBIB,
-	                            pa.ano
+	                            p.possui_bib PossuiBIB
                             from
 	                            prova p
                             inner join prova_ano pa 
                                 on pa.prova_id = p.id
-                            inner join prova_adesao pd on p.id = pd.prova_id
+                            inner join prova_adesao pd 
+                            	on p.id = pd.prova_id                            
                              where (p.ocultar_prova = false or ocultar_prova is null)
                                and not aderir_todos
-                               and pd.aluno_id = @alunoId
-                               and pd.turma_id = @turmaId";
+                               and pd.aluno_ra = @alunoRa;";
 
-                var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoId, turmaId });
+                var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
                 return retorno.ToList();
             }
             finally

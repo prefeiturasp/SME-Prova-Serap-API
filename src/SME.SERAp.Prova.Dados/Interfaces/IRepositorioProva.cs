@@ -16,6 +16,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync();
         Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync();
         Task<bool> VerificaSeExistePorProvaSerapId(long provaId);
-        Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoId, long turmaId);
+        Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId);
     }
 }
