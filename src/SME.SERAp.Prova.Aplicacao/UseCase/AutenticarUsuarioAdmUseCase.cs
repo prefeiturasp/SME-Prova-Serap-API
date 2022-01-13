@@ -11,7 +11,6 @@ namespace SME.SERAp.Prova.Aplicacao
     public class AutenticarUsuarioAdmUseCase : IAutenticarUsuarioAdmUseCase
     {
         private readonly IMediator mediator;
-        public IConfiguration Configuration { get; }
         public AutenticarUsuarioAdmUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
