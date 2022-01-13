@@ -23,6 +23,18 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await autenticarUsuarioUseCase.Executar(autenticacaoDto));
         }
 
+        [HttpPost("adm")]
+        [ValidaDto]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]
+        public async Task<IActionResult> AutenticarAdm(AutenticacaoAdmDto autenticacaoDto,
+            [FromServices] IAutenticarUsuarioAdmUseCase autenticarUsuarioAdmUseCase)
+        {
+            return Ok(await autenticarUsuarioAdmUseCase.Executar(autenticacaoDto));
+        }
+
         [HttpPost("revalidar")]
         [ValidaDto]
         [ProducesResponseType(200)]
