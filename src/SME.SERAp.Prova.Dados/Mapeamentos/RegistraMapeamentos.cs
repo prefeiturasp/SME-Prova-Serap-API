@@ -28,6 +28,8 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new DownloadProvaAlunoMap());
                 config.AddMap(new ExportacaoResultadoMap());
                 config.AddMap(new TurmaMap());
+                config.AddMap(new TipoDeficienciaMap());
+
                 config.ForDommel();
             });
         }

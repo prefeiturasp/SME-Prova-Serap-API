@@ -68,6 +68,8 @@ namespace SME.SERAp.Prova.Aplicacao
 
             provas = JuntarListasProvas(provas.ToList(), provasAdesao);
 
+            provas = await TratarProvasComAudio(provas.ToList(), long.Parse(alunoRa));
+
             if (provas.Any())
             {                
 
@@ -139,6 +141,24 @@ namespace SME.SERAp.Prova.Aplicacao
                 retorno.AddRange(provasAdesao);
             
             return retorno.Distinct();
+        }
+
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, long alunoRa)
+        {
+            var alunoNecessitaProvaComAudio = await mediator.Send(new VerificaAlunoProvaComAudioPorRaQuery(alunoRa));
+            var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
+            if (!alunoNecessitaProvaComAudio)
+            {                
+                return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id)).AsEnumerable();
+            }
+
+            foreach(ProvaAnoDto prova in provas)
+            {
+                if (provasComAudio.Any(p => p == prova.Id))
+                    prova.AlterarParaPossuiAudio();
+            }
+
+            return provas.AsEnumerable();
         }
     }
 }
