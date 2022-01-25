@@ -103,13 +103,11 @@ namespace SME.SERAp.Prova.Aplicacao
                     continue;
                 }
 
-
                 if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
                         status = provaAluno.Status;
-
 
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
                         prova.TotalItens,
@@ -118,7 +116,9 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.ObterDataInicioMais3Horas(),
                         prova.ObterDataFimMais3Horas(),
                         prova.Id, prova.TempoExecucao,
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
+                        provaAluno?.CriadoEm, prova.Senha, 
+                        prova.Modalidade));
                 }
 
             }
