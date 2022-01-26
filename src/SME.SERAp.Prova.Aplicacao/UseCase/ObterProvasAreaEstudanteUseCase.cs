@@ -154,13 +154,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (!alunoNecessitaProvaComAudio)
             {                
                 return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id)).AsEnumerable();
-            }
-
-            foreach(ProvaAnoDto prova in provas)
-            {
-                if (provasComAudio.Any(p => p == prova.Id))
-                    prova.AlterarParaPossuiAudio();
-            }
+            }            
 
             return provas.AsEnumerable();
         }
