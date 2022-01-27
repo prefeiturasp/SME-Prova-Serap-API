@@ -104,7 +104,8 @@ namespace SME.SERAp.Prova.Dados
                                     on tpd.tipo_prova_id = tp.id
                                 inner join tipo_deficiencia td 
                                     on td.id = tpd.deficiencia_id
-                                    where p.id = any(@provaIds);";
+                                    where p.id = any(@provaIds)
+                                    and tp.para_estudante_com_deficiencia;";
 
                 return await conn.QueryAsync<TipoDeficienciaProvaDto>(query, new { provaIds });
             }

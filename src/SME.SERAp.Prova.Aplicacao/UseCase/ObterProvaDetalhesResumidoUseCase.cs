@@ -66,12 +66,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (contextoProva.Any())
                     contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
 
-                long[] audioIds = Array.Empty<long>();
+                long[] audiosId = Array.Empty<long>();
                 var provaComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(new long[] { provaId }));
                 if (provaComAudio.Any(a => a == provaId))
-                    audioIds = await ObterAudioIds(questoesId);
+                    audiosId = await ObterAudioIds(questoesId);
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audioIds);
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId);
 
             }
             else return default;
@@ -79,14 +79,14 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<long[]> ObterAudioIds(long[] questoesId)
         {
-            List<long> audioIds = new();
+            List<long> audiosId = new();
             foreach (long questaoId in questoesId)
             {
                 var audiosQuestao = await mediator.Send(new ObterArquivosAudiosIdsPorQuestaoIdQuery(questaoId));
                 if (audiosQuestao != null && audiosQuestao.Any())
-                    audioIds.AddRange(audiosQuestao.ToList());
+                    audiosId.AddRange(audiosQuestao.ToList());
             }
-            return audioIds.ToArray();
+            return audiosId.ToArray();
         }
     }
 }
