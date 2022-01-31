@@ -68,5 +68,29 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<Arquivo>> ObterArquivosAudioPorQuestaoIdAsync(long questaoId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select 
+                                    a.id Id,
+                                    a.caminho Caminho,
+                                    a.tamanho_bytes TamanhoBytes,
+                                    a.legado_id LegadoId
+                                from arquivo a
+                                inner join questao_audio qa 
+                                    on a.id = qa.arquivo_id
+                                where qa.questao_id = @questaoId";
+
+                return await conn.QueryAsync<Arquivo>(query, new { questaoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }        
     }
 }
