@@ -68,56 +68,62 @@ namespace SME.SERAp.Prova.Aplicacao
 
             provas = JuntarListasProvas(provas.ToList(), provasAdesao);
 
+            provas = await TratarProvasComAudio(provas.ToList(), long.Parse(alunoRa));
+
             if (provas.Any())
-            {                
-
-                var provasParaRetornar = new List<ObterProvasRetornoDto>();
-
-                var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
-
-                var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, long.Parse(alunoRa)));
-
-                foreach (var prova in provas)
-                {
-                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
-
-                    if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
-                    {
-                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                            prova.TotalItens,
-                            (int)provaAluno.Status,
-                            prova.ObterDataInicioDownloadMais3Horas(),
-                            prova.ObterDataInicioMais3Horas(),
-                            prova.ObterDataFimMais3Horas(),
-                            prova.Id, prova.TempoExecucao,
-                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
-                            provaAluno.FinalizadoEm));
-                        continue;
-                    }
-
-
-                    if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
-                    {
-                        ProvaStatus status = ProvaStatus.NaoIniciado;
-                        if (provaAluno != null)
-                            status = provaAluno.Status;
-
-
-                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                            prova.TotalItens,
-                            (int)status,
-                            prova.ObterDataInicioDownloadMais3Horas(),
-                            prova.ObterDataInicioMais3Horas(),
-                            prova.ObterDataFimMais3Horas(),
-                            prova.Id, prova.TempoExecucao,
-                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
-                    }
-
-                }
-
-                return provasParaRetornar;
+            {
+                return await ObterProvasRetorno(tempoExtra, tempoAlerta, alunoRa, provas);
             }
             else return default;
+        }
+
+        private async Task<IEnumerable<ObterProvasRetornoDto>> ObterProvasRetorno(int tempoExtra, int tempoAlerta, string alunoRa, IEnumerable<ProvaAnoDto> provas)
+        {
+            var provasParaRetornar = new List<ObterProvasRetornoDto>();
+
+            var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
+
+            var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, long.Parse(alunoRa)));
+
+            foreach (var prova in provas)
+            {
+                var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
+
+                if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
+                {
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                        prova.TotalItens,
+                        (int)provaAluno.Status,
+                        prova.ObterDataInicioDownloadMais3Horas(),
+                        prova.ObterDataInicioMais3Horas(),
+                        prova.ObterDataFimMais3Horas(),
+                        prova.Id, prova.TempoExecucao,
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
+                        provaAluno.FinalizadoEm));
+                    continue;
+                }
+
+                if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                {
+                    ProvaStatus status = ProvaStatus.NaoIniciado;
+                    if (provaAluno != null)
+                        status = provaAluno.Status;
+
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                        prova.TotalItens,
+                        (int)status,
+                        prova.ObterDataInicioDownloadMais3Horas(),
+                        prova.ObterDataInicioMais3Horas(),
+                        prova.ObterDataFimMais3Horas(),
+                        prova.Id, prova.TempoExecucao,
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
+                        provaAluno?.CriadoEm, prova.Senha, 
+                        prova.Modalidade));
+                }
+
+            }
+
+            return provasParaRetornar;
         }
 
         private static int ObterTempoTotal(ProvaAluno provaAluno)
@@ -139,6 +145,18 @@ namespace SME.SERAp.Prova.Aplicacao
                 retorno.AddRange(provasAdesao);
             
             return retorno.Distinct();
+        }
+
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, long alunoRa)
+        {
+            var alunoNecessitaProvaComAudio = await mediator.Send(new VerificaAlunoProvaComAudioPorRaQuery(alunoRa));
+            var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
+            if (!alunoNecessitaProvaComAudio)
+            {                
+                return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id)).AsEnumerable();
+            }            
+
+            return provas.AsEnumerable();
         }
     }
 }

@@ -52,6 +52,8 @@ namespace SME.SERAp.Prova.Dados
                                      case  when  ex.id is null then 0 else ex.id end ProcessoId,
                                      case  when  ex.status is null then 1 else ex.status end Status
                                  from prova p
+                                 inner join (select distinct prova_id from prova_aluno where finalizado_em is not null and status in(2,5)) pf
+                                 on p.id = pf.prova_id
                                  left join (select id, prova_serap_id, 
                                     			   status
                                             from exportacao_resultado ex

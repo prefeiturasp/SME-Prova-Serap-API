@@ -35,6 +35,6 @@ namespace SME.SERAp.Prova.Infra
         public DateTime? ObterDataInicioDownloadMais3Horas()
         {
             return InicioDownload.HasValue ? InicioDownload?.AddHours(3) : null;
-        }
+        }        
     }
 }
