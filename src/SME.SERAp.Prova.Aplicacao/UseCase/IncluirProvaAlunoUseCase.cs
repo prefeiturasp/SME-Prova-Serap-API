@@ -31,6 +31,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaStatus.Status == Dominio.ProvaStatus.Finalizado)
                     throw new NegocioException("Esta prova já foi finalizada", 411);
 
+                provaStatus.TipoDispositivo = provaAlunoStatusDto.TipoDispositivo.HasValue ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado;
                 provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
                 provaStatus.FinalizadoEm = (ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado ? provaAlunoStatusDto.DataFimMenos3Horas() : null;
 

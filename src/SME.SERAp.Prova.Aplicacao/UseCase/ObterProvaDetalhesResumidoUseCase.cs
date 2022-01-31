@@ -62,17 +62,31 @@ namespace SME.SERAp.Prova.Aplicacao
                 var tamanhoTotalArquivos = questoesArquivoSomarTamanho.Sum(a => a.TamanhoInBytes) + alternativasArquivoSomarTamanho.Sum(a => a.TamanhoInBytes);
 
                 var contextoProva = await mediator.Send(new ObterContextosProvasPorProvaIdQuery(provaId));
-                long[] contextoProvaIds = System.Array.Empty<long>();
+                long[] contextoProvaIds = Array.Empty<long>();
                 if (contextoProva.Any())
                     contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds);
+                long[] audiosId = Array.Empty<long>();
+                var provaComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(new long[] { provaId }));
+                if (provaComAudio.Any(a => a == provaId))
+                    audiosId = await ObterAudioIds(questoesId);
+
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId);
 
             }
             else return default;
+        }
 
-
-
+        public async Task<long[]> ObterAudioIds(long[] questoesId)
+        {
+            List<long> audiosId = new();
+            foreach (long questaoId in questoesId)
+            {
+                var audiosQuestao = await mediator.Send(new ObterArquivosAudiosIdsPorQuestaoIdQuery(questaoId));
+                if (audiosQuestao != null && audiosQuestao.Any())
+                    audiosId.AddRange(audiosQuestao.ToList());
+            }
+            return audiosId.ToArray();
         }
     }
 }
