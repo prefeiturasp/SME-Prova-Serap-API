@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await repositorioCache.ObterRedisAsync("pas", async () => await repositorioProva.ObterAnosDatasEModalidadesAsync());
             if (provas != null && provas.Any())
             {
-                return provas.Where(a => a.Ano == request.Ano && (int)a.Modalidade == request.Modalidade && (request.DataReferenia.Date >= a.InicioDownload.Value.Date && request.DataReferenia.Date <= a.Fim.Date));
+                return provas.Where(a => a.Ano == request.Ano && (int)a.Modalidade == request.Modalidade);
             }
             else return default;
         }

@@ -144,7 +144,8 @@ namespace SME.SERAp.Prova.Dados
                             from
 	                            prova p
                             inner join prova_ano pa 
-                                on pa.prova_id = p.id";
+                                on pa.prova_id = p.id
+                             where (p.ocultar_prova = false or ocultar_prova is null)";
 
                 return await conn.QueryAsync<ProvaAnoDto>(query);
             }
@@ -195,6 +196,26 @@ namespace SME.SERAp.Prova.Dados
                 var query = @"select * from prova";
 
                 return await conn.QueryAsync<Dominio.Prova>(query);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<bool> VerificaSeExistePorProvaSerapId(long provaId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select 1 from prova pa where prova_legado_id = @provaId";
+
+                return await conn.QueryFirstOrDefaultAsync<bool>(query, new { provaId });
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
             finally
             {

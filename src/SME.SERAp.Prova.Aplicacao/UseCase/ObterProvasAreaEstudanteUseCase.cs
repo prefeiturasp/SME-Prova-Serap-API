@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
+using SME.SERAp.Prova.Infra.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +51,8 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
-            alunoLogadoAno = AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
-            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, DateTime.Today, int.Parse(alunoLogadoModalidade)));
+            alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
+            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
 
             if (provas.Any())
             {
@@ -70,22 +71,38 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
 
-                    if (provaAluno != null && provaAluno.Status == ProvaStatus.Finalizado)
+                    if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
+                    {
+                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                            prova.TotalItens,
+                            (int)provaAluno.Status,
+                            prova.ObterDataInicioDownloadMais3Horas(),
+                            prova.ObterDataInicioMais3Horas(),
+                            prova.ObterDataFimMais3Horas(),
+                            prova.Id, prova.TempoExecucao,
+                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
+                            provaAluno.FinalizadoEm));
                         continue;
-
-                    ProvaStatus status = ProvaStatus.NaoIniciado;
-                    if (provaAluno != null)
-                        status = provaAluno.Status;
+                    }
 
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao, 
-                        prova.TotalItens, 
-                        (int)status,
-                        prova.ObterDataInicioDownloadMais3Horas(),
-                        prova.ObterDataInicioMais3Horas(),
-                        prova.ObterDataFimMais3Horas(),
-                        prova.Id, prova.TempoExecucao,
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
+                    if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                    {
+                        ProvaStatus status = ProvaStatus.NaoIniciado;
+                        if (provaAluno != null)
+                            status = provaAluno.Status;
+
+
+                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                            prova.TotalItens,
+                            (int)status,
+                            prova.ObterDataInicioDownloadMais3Horas(),
+                            prova.ObterDataInicioMais3Horas(),
+                            prova.ObterDataFimMais3Horas(),
+                            prova.Id, prova.TempoExecucao,
+                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
+                    }
+
                 }
 
                 return provasParaRetornar;
@@ -102,17 +119,5 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             return 0;
         }
-
-        private static string AjustarAnoAluno(string modalidade, string ano)
-        {
-            if (ano.ToUpper() == "S" || String.IsNullOrEmpty(ano))
-                return ano;
-
-            var modalidadeAluno = (Modalidade)int.Parse(modalidade);
-            if ((modalidadeAluno == Modalidade.EJA && ano != "2") || modalidadeAluno == Modalidade.CIEJA)
-                return (int.Parse(ano) * 2).ToString();
-            return ano;
-        }
-
     }
 }

@@ -43,8 +43,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioCadernoAluno, RepositorioCadernoAluno>();
             services.TryAddScoped<IRepositorioQuestaoArquivo, RepositorioQuestaoArquivo>();
             services.TryAddScoped<IRepositorioContextoProva, RepositorioContextoProva>();
+            services.TryAddScoped<IRepositorioDownloadProvaAluno, RepositorioDownloadProvaAluno>();
             services.TryAddScoped<IRepositorioExportacaoResultado, RepositorioExportacaoResultado>();
-            
+
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -76,8 +77,13 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterContextosProvasPorProvaIdUseCase, ObterContextosProvasPorProvaIdUseCase>();
             services.TryAddScoped<ISincronizarQuestaoAlunoRespostaUseCase, SincronizarQuestaoAlunoRespostaUseCase>();
             services.TryAddScoped<IPropagacaoCacheUseCase, PropagacaoCacheUseCase>();
+            services.TryAddScoped<IIncluirDownloadProvaAlunoUseCase, IncluirDownloadProvaAlunoUseCase>();
+            services.TryAddScoped<IExcluirDownloadProvaAlunoUseCase, ExcluirDownloadProvaAlunoUseCase>();
+            services.TryAddScoped<IObterProvasAnterioresAreaEstudanteUseCase, ObterProvasAnterioresAreaEstudanteUseCase>();
             services.TryAddScoped<IObterExportacaoResultadoStatusUseCase, ObterExportacaoResultadoStatusUseCase>();
-
+            services.TryAddScoped<ISolicitarExportacaoResultadoUseCase, SolicitarExportacaoResultadoUseCase>();
+            services.TryAddScoped<IObterExportacaoResultadoProvasPorDataUseCase, ObterExportacaoResultadoProvasPorDataUseCase>();
+            services.TryAddScoped<IDownloadArquivoResultadoProvaUseCase, DownloadArquivoResultadoProvaUseCase>();
         }
     }
 }
