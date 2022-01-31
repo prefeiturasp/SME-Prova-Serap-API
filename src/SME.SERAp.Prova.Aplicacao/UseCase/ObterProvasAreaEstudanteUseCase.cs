@@ -51,63 +51,79 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
+            var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
+
+            if (string.IsNullOrEmpty(alunoRa))
+                throw new NegocioException("Não foi possível obter o RA do usuário logado.");
+
+            var turmasAluno = await mediator.Send(new ObterTurmasAlunoPorRaQuery(long.Parse(alunoRa)));
+            var turmaAtual = turmasAluno.Where(t => t.Ano == int.Parse(alunoLogadoAno) 
+                                                    && t.Modalidade == int.Parse(alunoLogadoModalidade) 
+                                                    && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
+
             alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
+
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
+            var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
+
+            provas = JuntarListasProvas(provas.ToList(), provasAdesao);
+
+            provas = await TratarProvasComAudio(provas.ToList(), long.Parse(alunoRa));
 
             if (provas.Any())
             {
-                var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
-
-                if (string.IsNullOrEmpty(alunoRa))
-                    throw new NegocioException("Não foi possível obter o RA do usuário logado.");
-
-                var provasParaRetornar = new List<ObterProvasRetornoDto>();
-
-                var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
-
-                var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, long.Parse(alunoRa)));
-
-                foreach (var prova in provas)
-                {
-                    var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
-
-                    if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
-                    {
-                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                            prova.TotalItens,
-                            (int)provaAluno.Status,
-                            prova.ObterDataInicioDownloadMais3Horas(),
-                            prova.ObterDataInicioMais3Horas(),
-                            prova.ObterDataFimMais3Horas(),
-                            prova.Id, prova.TempoExecucao,
-                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
-                            provaAluno.FinalizadoEm));
-                        continue;
-                    }
-
-
-                    if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
-                    {
-                        ProvaStatus status = ProvaStatus.NaoIniciado;
-                        if (provaAluno != null)
-                            status = provaAluno.Status;
-
-
-                        provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                            prova.TotalItens,
-                            (int)status,
-                            prova.ObterDataInicioDownloadMais3Horas(),
-                            prova.ObterDataInicioMais3Horas(),
-                            prova.ObterDataFimMais3Horas(),
-                            prova.Id, prova.TempoExecucao,
-                            tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade));
-                    }
-
-                }
-
-                return provasParaRetornar;
+                return await ObterProvasRetorno(tempoExtra, tempoAlerta, alunoRa, provas);
             }
             else return default;
+        }
+
+        private async Task<IEnumerable<ObterProvasRetornoDto>> ObterProvasRetorno(int tempoExtra, int tempoAlerta, string alunoRa, IEnumerable<ProvaAnoDto> provas)
+        {
+            var provasParaRetornar = new List<ObterProvasRetornoDto>();
+
+            var provasIds = provas.Select(a => a.Id).Distinct().ToArray();
+
+            var provasDoAluno = await mediator.Send(new ObterProvaAlunoPorProvaIdsRaQuery(provasIds, long.Parse(alunoRa)));
+
+            foreach (var prova in provas)
+            {
+                var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
+
+                if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
+                {
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                        prova.TotalItens,
+                        (int)provaAluno.Status,
+                        prova.ObterDataInicioDownloadMais3Horas(),
+                        prova.ObterDataInicioMais3Horas(),
+                        prova.ObterDataFimMais3Horas(),
+                        prova.Id, prova.TempoExecucao,
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
+                        provaAluno.FinalizadoEm));
+                    continue;
+                }
+
+                if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                {
+                    ProvaStatus status = ProvaStatus.NaoIniciado;
+                    if (provaAluno != null)
+                        status = provaAluno.Status;
+
+                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                        prova.TotalItens,
+                        (int)status,
+                        prova.ObterDataInicioDownloadMais3Horas(),
+                        prova.ObterDataInicioMais3Horas(),
+                        prova.ObterDataFimMais3Horas(),
+                        prova.Id, prova.TempoExecucao,
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
+                        provaAluno?.CriadoEm, prova.Senha, 
+                        prova.Modalidade));
+                }
+
+            }
+
+            return provasParaRetornar;
         }
 
         private static int ObterTempoTotal(ProvaAluno provaAluno)
@@ -118,6 +134,29 @@ namespace SME.SERAp.Prova.Aplicacao
                 return (int)tempoTotal.TotalSeconds;
             }
             return 0;
+        }
+
+        private IEnumerable<ProvaAnoDto> JuntarListasProvas(List<ProvaAnoDto> provas, List<ProvaAnoDto> provasAdesao)
+        {
+            var retorno = new List<ProvaAnoDto>();
+            if (provas != null && provas.Any())
+                retorno.AddRange(provas);
+            if (provasAdesao != null && provasAdesao.Any())
+                retorno.AddRange(provasAdesao);
+            
+            return retorno.Distinct();
+        }
+
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, long alunoRa)
+        {
+            var alunoNecessitaProvaComAudio = await mediator.Send(new VerificaAlunoProvaComAudioPorRaQuery(alunoRa));
+            var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
+            if (!alunoNecessitaProvaComAudio)
+            {                
+                return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id)).AsEnumerable();
+            }            
+
+            return provas.AsEnumerable();
         }
     }
 }
