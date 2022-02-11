@@ -88,6 +88,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IDownloadArquivoResultadoProvaUseCase, DownloadArquivoResultadoProvaUseCase>();
             services.TryAddScoped<IAutenticarUsuarioAdmUseCase, AutenticarUsuarioAdmUseCase>();
             services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
+            services.TryAddScoped<IPotenciacaoRUseCase, PotenciacaoRUseCase>();
         }
     }
 }
