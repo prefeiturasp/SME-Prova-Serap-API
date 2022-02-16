@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public ObterProvaDetalhesResumidoUseCase(IMediator mediator)
         {
-            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
         public async Task<ProvaDetalheResumidoRetornoDto> Executar(long provaId)
         {
@@ -71,7 +71,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaComAudio.Any(a => a == provaId))
                     audiosId = await ObterAudioIds(questoesId);
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId);
+                List<QuestaoVideoRetornoDto> videos = new();
+                var provaComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(new long[] { provaId }));
+                if (provaComVideo.Any(a => a == provaId))
+                    videos = await ObterVideos(questoesId);
+
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId, videos);
 
             }
             else return default;
@@ -87,6 +92,20 @@ namespace SME.SERAp.Prova.Aplicacao
                     audiosId.AddRange(audiosQuestao.ToList());
             }
             return audiosId.ToArray();
+        }
+
+        private async Task<List<QuestaoVideoRetornoDto>> ObterVideos(long[] questoesId)
+        {
+            List<QuestaoVideoRetornoDto> videosRetorno = new();
+            foreach (long questaoId in questoesId)
+            {
+                var videos = await mediator.Send(new ObterVideosPorQuestaoIdQuery(questaoId));
+                if(videos != null && videos.Any())
+                {
+                    videosRetorno.AddRange(videos.Select(v => new QuestaoVideoRetornoDto(v.ArquivoVideoId, v.ArquivoThumbnailId, v.ArquivoVideoConvertidoId)));
+                }
+            }
+            return videosRetorno;
         }
     }
 }
