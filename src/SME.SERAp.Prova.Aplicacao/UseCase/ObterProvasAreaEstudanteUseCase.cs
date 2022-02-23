@@ -150,15 +150,15 @@ namespace SME.SERAp.Prova.Aplicacao
         private async Task<IEnumerable<ProvaAnoDto>> TratarProvasPorTipoDeficiencia(List<ProvaAnoDto> provas, long alunoRa)
         {
             var provasRetorno = provas.AsEnumerable();
-            var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(alunoRa));            
+            var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(alunoRa));
 
-            provasRetorno = await TratarProvasComAudio(provasRetorno.ToList(), alunoRa, deficienciasAluno);
-            provasRetorno = await TratarProvasComVideo(provasRetorno.ToList(), alunoRa, deficienciasAluno);
+            provasRetorno = await TratarProvasComAudio(provasRetorno.ToList(), deficienciasAluno);
+            provasRetorno = await TratarProvasComVideo(provasRetorno.ToList(), deficienciasAluno);
 
             return provasRetorno;
         }
 
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, long alunoRa, List<int> deficienciasAluno)
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, List<int> deficienciasAluno)
         {
             int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.BAIXA_VISAO_OU_SUBNORMAL , (int)DeficienciaTipo.CEGUEIRA };
             var alunoNecessitaProvaComAudio = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
@@ -171,7 +171,7 @@ namespace SME.SERAp.Prova.Aplicacao
             return provas.AsEnumerable();
         }
 
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(List<ProvaAnoDto> provas, long alunoRa, List<int> deficienciasAluno)
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(List<ProvaAnoDto> provas, List<int> deficienciasAluno)
         {
             int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA, (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA };
             var alunoNecessitaProvaComVideo = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));

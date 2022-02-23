@@ -50,6 +50,28 @@ namespace SME.SERAp.Prova.Dados
                 conn.Close();
                 conn.Dispose();
             }
-        }        
+        }
+
+        public async Task<QuestaoVideo> ObterPorArquivoId(long arquivoId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select qv.id, qv.questao_id, qv.arquivo_video_id, qv.arquivo_thumbnail_id, 
+                                    qv.arquivo_video_convertido_id, qv.criado_em, qv.atualizado_em
+                                from questao_video qv
+                                    inner join questao q on q.id = qv.questao_id
+                                where qv.arquivo_video_id = @arquivoId
+                               or qv.arquivo_thumbnail_id = @arquivoId
+                              or qv.arquivo_video_convertido_id = @arquivoId;";
+
+                return await conn.QueryFirstOrDefaultAsync<QuestaoVideo>(query, new { arquivoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

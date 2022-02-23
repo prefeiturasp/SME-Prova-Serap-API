@@ -10,7 +10,7 @@ namespace SME.SERAp.Prova.Infra
         {
 
         }
-        public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno)
+        public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno, int[] deficiencias)
         {
             Nome = nome;
             Ano = ano;
@@ -20,6 +20,7 @@ namespace SME.SERAp.Prova.Infra
             Modalidade = modalidade;
             InicioTurno = inicioTurno;
             FimTurno = fimTurno;
+            Deficiencias = deficiencias;
         }
 
         public string Nome { get; set; }
@@ -30,5 +31,6 @@ namespace SME.SERAp.Prova.Infra
         public int FamiliaFonte { get; set; }
         public int InicioTurno { get; set; }
         public int FimTurno { get; set; }
+        public int[] Deficiencias { get; set; }
     }
 }

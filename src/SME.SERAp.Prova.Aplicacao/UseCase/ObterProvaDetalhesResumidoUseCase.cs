@@ -71,12 +71,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaComAudio.Any(a => a == provaId))
                     audiosId = await ObterAudioIds(questoesId);
 
-                List<QuestaoVideoRetornoDto> videos = new();
+                long[] videosIds = Array.Empty<long>();
                 var provaComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(new long[] { provaId }));
                 if (provaComVideo.Any(a => a == provaId))
-                    videos = await ObterVideos(questoesId);
+                    videosIds = await ObterVideoIds(questoesId);
 
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId, videos);
+                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId, videosIds);
 
             }
             else return default;
@@ -94,18 +94,18 @@ namespace SME.SERAp.Prova.Aplicacao
             return audiosId.ToArray();
         }
 
-        private async Task<List<QuestaoVideoRetornoDto>> ObterVideos(long[] questoesId)
+        private async Task<long[]> ObterVideoIds(long[] questoesId)
         {
-            List<QuestaoVideoRetornoDto> videosRetorno = new();
+            List<long> videosIds = new();
             foreach (long questaoId in questoesId)
             {
                 var videos = await mediator.Send(new ObterVideosPorQuestaoIdQuery(questaoId));
                 if(videos != null && videos.Any())
                 {
-                    videosRetorno.AddRange(videos.Select(v => new QuestaoVideoRetornoDto(v.ArquivoVideoId, v.ArquivoThumbnailId, v.ArquivoVideoConvertidoId)));
+                    videosIds.AddRange(videos.Select(v => v.Id));
                 }
             }
-            return videosRetorno;
+            return videosIds.ToArray();
         }
     }
 }

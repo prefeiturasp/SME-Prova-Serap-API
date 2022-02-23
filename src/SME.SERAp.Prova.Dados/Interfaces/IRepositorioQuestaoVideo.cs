@@ -8,5 +8,6 @@ namespace SME.SERAp.Prova.Dados
     {
         Task<IEnumerable<QuestaoVideo>> ObterPorQuestaoId(long questaoId);
         Task<IEnumerable<QuestaoVideo>> ObterPorProvaId(long provaId);
+        Task<QuestaoVideo> ObterPorArquivoId(long arquivoId);
     }
 }

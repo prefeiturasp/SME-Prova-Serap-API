@@ -39,5 +39,14 @@ namespace SME.SERAp.Prova.Api.Controllers
 
             return Ok(await obterArquivoPorIdLegadoUseCase.Executar(id));
         }
+
+        [HttpGet("video/{idVideo}")]
+        [ProducesResponseType(typeof(ArquivoVideoResponseDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterArquivoVideoPorId(long idVideo, [FromServices] IObterArquivoVideoPorIdUseCase obterArquivoVideoPorIdUseCase)
+        {
+            return Ok(await obterArquivoVideoPorIdUseCase.Executar(idVideo));
+        }
     }
 }

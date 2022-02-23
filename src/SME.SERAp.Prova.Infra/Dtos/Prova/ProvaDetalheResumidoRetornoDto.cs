@@ -5,7 +5,7 @@ namespace SME.SERAp.Prova.Infra
     public class ProvaDetalheResumidoRetornoDto
     {
         public ProvaDetalheResumidoRetornoDto(long provaId, long[] questoesId, long[] arquivosId, long[] alternativasId, 
-            long tamanhoTotalArquivos, long[] contextoProvaIds, long[] audiosId, List<QuestaoVideoRetornoDto> videos)
+            long tamanhoTotalArquivos, long[] contextoProvaIds, long[] audiosId, long[] videosId)
         {
             ProvaId = provaId;
             QuestoesId = questoesId;
@@ -14,7 +14,7 @@ namespace SME.SERAp.Prova.Infra
             TamanhoTotalArquivos = tamanhoTotalArquivos;
             ContextoProvaIds = contextoProvaIds;
             AudiosId = audiosId;
-            Videos = videos;
+            VideosId = videosId;
         }
 
         public long ProvaId { get; set; }
@@ -24,6 +24,6 @@ namespace SME.SERAp.Prova.Infra
         public long[] AlternativasId { get; set; }
         public long[] ContextoProvaIds {get;set;}
         public long TamanhoTotalArquivos { get; set; }
-        public List<QuestaoVideoRetornoDto> Videos { get; set; }
+        public long[] VideosId { get; set; }
     }
 }
