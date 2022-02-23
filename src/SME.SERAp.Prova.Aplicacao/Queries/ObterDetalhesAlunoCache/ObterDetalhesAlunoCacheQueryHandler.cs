@@ -40,19 +40,17 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 var turnoInicio = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
                 var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoFim(turnoUsuarioLogado), DateTime.Now.Year));
+                var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(usuarioLogadoRa));
 
-                return new MeusDadosRetornoDto(
-                    alunoDetalhes.DreAbreviacao,
-                    alunoDetalhes.Escola,
-                    alunoDetalhes.Turma,
-                    alunoDetalhes.NomeFinal(),
-                    anoUsuarioLogado,
-                    turnoUsuarioLogado,
+                return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado, turnoUsuarioLogado,
                     preferenciasUsuario?.TamanhoFonte ?? 16,
+                    preferenciasUsuario != null
+                        ? (int)preferenciasUsuario.FamiliaFonte
+                        : (int)FamiliaFonte.Poppins, 
                     (Modalidade)Enum.Parse(typeof(Modalidade), modalidadeUsuarioLogado),
-                    preferenciasUsuario != null ? (int)preferenciasUsuario.FamiliaFonte : (int)FamiliaFonte.Poppins,
-                    int.Parse(turnoInicio.Valor),
-                    int.Parse(turnoFim.Valor));
+                    turnoInicio != null ? int.Parse(turnoInicio.Valor) : 0,
+                    turnoFim != null ? int.Parse(turnoFim.Valor) : 0,
+                    deficienciasAluno != null ? deficienciasAluno.ToArray() : Array.Empty<int>());
             }
             else return null;
         }

@@ -17,6 +17,7 @@ namespace SME.SERAp.Prova.Infra
         public int FamiliaFonte { get; set; }
         public int InicioTurno { get; set; }
         public int FimTurno { get; set; }
+        public int[] Deficiencias { get; set; }
 
         public MeusDadosRetornoDto(
             string dreAbreviacao, 
@@ -29,7 +30,8 @@ namespace SME.SERAp.Prova.Infra
             Modalidade modalidade, 
             int familiaFonte, 
             int inicioTurno, 
-            int fimTurno)
+            int fimTurno,
+            int[] deficiencias)
         {
             DreAbreviacao = dreAbreviacao;
             Escola = escola;
@@ -42,6 +44,7 @@ namespace SME.SERAp.Prova.Infra
             FamiliaFonte = familiaFonte;
             InicioTurno = inicioTurno;
             FimTurno = fimTurno;
+            Deficiencias = deficiencias;
         }
     }
 }
