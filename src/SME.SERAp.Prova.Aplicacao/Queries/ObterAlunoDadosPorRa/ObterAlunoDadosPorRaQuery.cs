@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra.Dtos.Aluno;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterAlunoDadosPorRaQuery : IRequest<AlunoEol>
+    public class ObterAlunoDadosPorRaQuery : IRequest<AlunoDetalheDto>
     {
         public ObterAlunoDadosPorRaQuery(long alunoRa)
         {
