@@ -66,9 +66,9 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
             var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
-            provas = JuntarListasProvas(provas.ToList(), provasAdesao);
+            provas = JuntarListasProvas(provas?.ToList(), provasAdesao);
 
-            provas = await TratarProvasComAudio(provas.ToList(), long.Parse(alunoRa));
+            provas = await TratarProvasComAudio(provas?.ToList(), long.Parse(alunoRa));
 
             if (provas.Any())
             {
