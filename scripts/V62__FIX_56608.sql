@@ -1,7 +1,3 @@
-alter table resultado_prova_consolidado add column if not exists prova_data_inicio timestamptz null;
-alter table resultado_prova_consolidado add column if not exists prova_data_entregue timestamptz null;
-alter table prova add column if not exists multidisciplinar bool null;
-
 drop view if exists v_aluno_prova_extracao;
 create view v_aluno_prova_extracao as 
 select 
@@ -111,16 +107,6 @@ where vape.prova_serap_id = p_prova_serap_id and vape.dre_codigo_eol = p_dre_cod
 $procedure$
 ;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+alter table resultado_prova_consolidado add column if not exists prova_data_inicio timestamptz null;
+alter table resultado_prova_consolidado add column if not exists prova_data_entregue timestamptz null;
+alter table prova add column if not exists multidisciplinar bool null;
