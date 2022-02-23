@@ -40,7 +40,6 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 var turnoInicio = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
                 var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoFim(turnoUsuarioLogado), DateTime.Now.Year));
-
                 var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(usuarioLogadoRa));
 
                 return new MeusDadosRetornoDto(alunoDetalhes.NomeFinal(), anoUsuarioLogado, turnoUsuarioLogado,
