@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.SERAp.Prova.Aplicacao;
+using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
 using SME.SERAp.Prova.Dados.Interfaces;
@@ -48,6 +49,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioTurma, RepositorioTurma>();
             services.TryAddScoped<IRepositorioTipoDeficiencia, RepositorioTipoDeficiencia>();
             services.TryAddScoped<IRepositorioQuestaoVideo, RepositorioQuestaoVideo>();
+            services.TryAddScoped<IRepositorioProvaAdministrativo, RepositorioProvaAdministrativo>();
 
         }
 
@@ -91,6 +93,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
             services.TryAddScoped<IPotenciacaoRUseCase, PotenciacaoRUseCase>();
             services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
+            services.TryAddScoped<IObterProvaAreaAdministrativoUseCase, ObterProvaAreaAdministrativoUseCase>();
         }
     }
 }
