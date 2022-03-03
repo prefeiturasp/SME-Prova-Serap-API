@@ -1,6 +1,4 @@
-﻿using Dapper;
-using SME.SERAp.Prova.Dominio;
-using SME.SERAp.Prova.Infra;
+﻿using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Data.SqlClient;
@@ -58,17 +56,6 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Eol
 
             using var conn = new SqlConnection(connectionStringOptions.Eol);
             return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoEolRetornoDto>(query, new { alunoRA, anoLetivo = DateTime.Now.Year });
-
-        }
-        public async Task<AlunoEol> ObterAlunoDetalhePorRa(long alunoRA)
-        {
-
-            var query = @"select al.nm_aluno as nome, al.nm_social_aluno as nomeSocial 
-                            from aluno al 
-			                    where al.cd_aluno = @alunoRA";
-
-            using var conn = new SqlConnection(connectionStringOptions.Eol);
-            return await conn.QueryFirstOrDefaultAsync<AlunoEol>(query, new { alunoRA });
 
         }
     }

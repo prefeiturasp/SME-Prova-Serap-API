@@ -6,22 +6,9 @@ namespace SME.SERAp.Prova.Infra
     [MessagePackObject (keyAsPropertyName: true)]
     public class MeusDadosRetornoDto
     {
-        public MeusDadosRetornoDto()
-        {
-
-        }
-        public MeusDadosRetornoDto(string nome, string ano, string turno, int tamanhoFonte, int familiaFonte, Modalidade modalidade,int inicioTurno, int fimTurno)
-        {
-            Nome = nome;
-            Ano = ano;
-            TipoTurno = turno;
-            TamanhoFonte = tamanhoFonte;
-            FamiliaFonte = familiaFonte;
-            Modalidade = modalidade;
-            InicioTurno = inicioTurno;
-            FimTurno = fimTurno;
-        }
-
+        public string DreAbreviacao { get; set; }
+        public string Escola { get; set; }
+        public string Turma { get; set; }
         public string Nome { get; set; }
         public string Ano { get; set; }
         public string TipoTurno { get; set; }
@@ -30,5 +17,31 @@ namespace SME.SERAp.Prova.Infra
         public int FamiliaFonte { get; set; }
         public int InicioTurno { get; set; }
         public int FimTurno { get; set; }
+
+        public MeusDadosRetornoDto(
+            string dreAbreviacao, 
+            string escola, 
+            string turma, 
+            string nome, 
+            string ano, 
+            string tipoTurno, 
+            int tamanhoFonte, 
+            Modalidade modalidade, 
+            int familiaFonte, 
+            int inicioTurno, 
+            int fimTurno)
+        {
+            DreAbreviacao = dreAbreviacao;
+            Escola = escola;
+            Turma = turma;
+            Nome = nome;
+            Ano = ano;
+            TipoTurno = tipoTurno;
+            TamanhoFonte = tamanhoFonte;
+            Modalidade = modalidade;
+            FamiliaFonte = familiaFonte;
+            InicioTurno = inicioTurno;
+            FimTurno = fimTurno;
+        }
     }
 }
