@@ -1,22 +1,22 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra.Dtos.Aluno;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterAlunoDadosPorRaQueryHandler : IRequestHandler<ObterAlunoDadosPorRaQuery, AlunoEol>
+    public class ObterAlunoDadosPorRaQueryHandler : IRequestHandler<ObterAlunoDadosPorRaQuery, AlunoDetalheDto>
     {
-        private readonly IRepositorioAlunoEol repositorioAlunoEol;
-
-        public ObterAlunoDadosPorRaQueryHandler(IRepositorioAlunoEol repositorioAlunoEol)
+        private readonly IRepositorioAluno repositorioAluno;
+        public ObterAlunoDadosPorRaQueryHandler(IRepositorioAluno repositorioAluno)
         {
-            this.repositorioAlunoEol = repositorioAlunoEol ?? throw new System.ArgumentNullException(nameof(repositorioAlunoEol));
+            this.repositorioAluno = repositorioAluno ?? throw new System.ArgumentNullException(nameof(repositorioAluno));
         }
-        public async Task<AlunoEol> Handle(ObterAlunoDadosPorRaQuery request, CancellationToken cancellationToken)
+
+        public async Task<AlunoDetalheDto> Handle(ObterAlunoDadosPorRaQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioAlunoEol.ObterAlunoDetalhePorRa(request.AlunoRa);
+            return await repositorioAluno.ObterAlunoDetalhePorRa(request.AlunoRa);
         }
     }
 }
