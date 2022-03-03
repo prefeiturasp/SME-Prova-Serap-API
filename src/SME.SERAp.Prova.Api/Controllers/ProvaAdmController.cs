@@ -19,5 +19,14 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterProvaAreaAdministrativoUseCase.Executar(paginacaoFiltroDto));
         }
+
+        [HttpGet("{provaId}/resumo")]
+        [ProducesResponseType(typeof(PaginacaoResultadoDto<Dominio.Prova>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterProvasResumo(int provaId, [FromServices] IObterProvaResumoAreaAdministrativoUseCase obterProvaResumoAreaAdministrativoUseCase)
+        {
+            return Ok(await obterProvaResumoAreaAdministrativoUseCase.Executar(provaId));
+        }
     }
 }

@@ -10,5 +10,6 @@ namespace SME.SERAp.Prova.Dados
         Task<bool> RemoverPorProvaIdAsync(long provaId);
         Task<IEnumerable<Questao>> ObterTodasParaCacheAsync();
         Task<Questao> ObterPorArquivoAudioIdAsync(long arquivoAudioId);
+        Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdAsync(long provaId);
     }
 }

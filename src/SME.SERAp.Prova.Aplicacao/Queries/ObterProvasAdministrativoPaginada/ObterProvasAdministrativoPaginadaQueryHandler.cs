@@ -8,11 +8,11 @@ namespace SME.SERAp.Prova.Aplicacao.Queries.ObterProvasAdministrativoPaginada
 {
     public class ObterProvasAdministrativoPaginadaQueryHandler : IRequestHandler<ObterProvasAdministrativoPaginadaQuery, PaginacaoResultadoDto<Dominio.Prova>>
     {
-        private readonly IRepositorioProvaAdministrativo repositoryProvaAdministrativoRepository;
+        private readonly IRepositorioProva repositoryProva;
 
-        public ObterProvasAdministrativoPaginadaQueryHandler(IRepositorioProvaAdministrativo repositoryProvaAdministrativoRepository)
+        public ObterProvasAdministrativoPaginadaQueryHandler(IRepositorioProva repositorioProva)
         {
-            this.repositoryProvaAdministrativoRepository = repositoryProvaAdministrativoRepository;
+            this.repositoryProva = repositorioProva;
         }
 
         public async Task<PaginacaoResultadoDto<Dominio.Prova>> Handle(ObterProvasAdministrativoPaginadaQuery request, CancellationToken cancellationToken)
@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao.Queries.ObterProvasAdministrativoPaginada
             request.Filtro.NumeroPagina = request.Filtro.NumeroPagina <= 0 ? 1 : request.Filtro.NumeroPagina;
             request.Filtro.QuantidadeRegistros = request.Filtro.QuantidadeRegistros <= 0 ? 10 : request.Filtro.QuantidadeRegistros;
 
-            return await repositoryProvaAdministrativoRepository.ObterProvasPaginada(request.Filtro, request.InicioFuturo);
+            return await repositoryProva.ObterProvasPaginada(request.Filtro, request.InicioFuturo);
         }
     }
 }

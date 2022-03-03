@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
 {
@@ -87,6 +87,21 @@ namespace SME.SERAp.Prova.Dados
                                 where a.id = @arquivoAudioId;";
 
                 return await conn.QueryFirstOrDefaultAsync<Questao>(query, new { arquivoAudioId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdAsync(long provaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select * from questao q where q.prova_id = @provaId";
+                return await conn.QueryAsync<Questao>(query, new { provaId });
             }
             finally
             {
