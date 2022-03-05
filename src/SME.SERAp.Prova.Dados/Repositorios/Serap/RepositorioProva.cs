@@ -266,10 +266,10 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<PaginacaoResultadoDto<Dominio.Prova>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo)
+        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo)
         {
             using var conn = ObterConexaoLeitura();
-            var retorno = new PaginacaoResultadoDto<Dominio.Prova>();
+            var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
                 var where = new StringBuilder(" where 1 = 1");
@@ -292,15 +292,23 @@ namespace SME.SERAp.Prova.Dados
                 }
 
                 var query = new StringBuilder();
-                query.AppendFormat("select * from prova p {0} ", where.ToString());
-                query.Append("order by p.inclusao desc, p.descricao asc ");
-                query.Append("limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
+                query.Append(" select id, ");
+                query.Append("       descricao,");
+                query.Append("       inicio as datInicio,");
+                query.Append("       fim as datafim,");
+                query.Append("       inicio_download as dataInicioDownload,");
+                query.Append("       tempo_execucao as tempoExecucao,");
+                query.Append("       possui_bib as possuiBib,");
+                query.Append("       total_cadernos as totalCadernos,");
+                query.AppendFormat("       senha from prova p {0} ", where.ToString());
+                query.Append(" order by p.inclusao desc, p.descricao asc ");
+                query.Append(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
 
-                query.AppendFormat("select count(*) from prova p {0}; ", where.ToString());
+                query.AppendFormat(" select count(*) from prova p {0}; ", where.ToString());
 
                 using (var multi = await conn.QueryMultipleAsync(query.ToString(), provaAdmFiltroDto))
                 {
-                    retorno.Items = multi.Read<Dominio.Prova>().ToList();
+                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>().ToList();
                     retorno.TotalRegistros = multi.ReadFirst<int>();
                 }
 

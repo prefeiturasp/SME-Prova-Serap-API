@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,9 +15,9 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<QuestaoDetalheRetornoDto>> Executar(long provaId)
+        public async Task<IEnumerable<ProvaResumoAdministrativoRetornoDto>> Executar(long provaId, string caderno = null)
         {
-            return await mediator.Send(new ObterProvasResumoAdministrativoQuery(provaId));
+            return await mediator.Send(new ObterProvasResumoAdministrativoQuery(provaId, caderno));
         }
     }
 }

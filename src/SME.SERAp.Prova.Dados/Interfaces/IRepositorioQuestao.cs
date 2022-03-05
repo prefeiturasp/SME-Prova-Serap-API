@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra.Dtos;
+using SME.SERAp.Prova.Infra.Dtos.Prova;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Dados
 {
@@ -11,5 +13,8 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Questao>> ObterTodasParaCacheAsync();
         Task<Questao> ObterPorArquivoAudioIdAsync(long arquivoAudioId);
         Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdAsync(long provaId);
+        Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdCadernoAsync(long provaId, string caderno);
+        Task<IEnumerable<QuestaoDetalheResumoDadosDto>> ObterDetalhesResumoPorIdAsync(long provaId, long id);
+        Task<IEnumerable<ProvaCadernoDadoDto>> ObterCadernosPorProvaId(long provaId);
     }
 }

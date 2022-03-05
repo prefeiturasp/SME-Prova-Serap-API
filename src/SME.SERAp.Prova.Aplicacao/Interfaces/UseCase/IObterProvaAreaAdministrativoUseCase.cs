@@ -5,6 +5,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IObterProvaAreaAdministrativoUseCase
     {
-        Task<PaginacaoResultadoDto<Dominio.Prova>> Executar(ProvaAdmFiltroDto paginacaoFiltroDto);
+        Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> Executar(ProvaAdmFiltroDto paginacaoFiltroDto);
     }
 }

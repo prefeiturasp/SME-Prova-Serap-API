@@ -94,6 +94,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
             services.TryAddScoped<IObterProvaAreaAdministrativoUseCase, ObterProvaAreaAdministrativoUseCase>();
             services.TryAddScoped<IObterProvaResumoAreaAdministrativoUseCase, ObterProvaResumoAreaAdministrativoUseCase>();
+            services.TryAddScoped<IObterProvaCadernosAreaAdministrativoUseCase, ObterProvaCadernosAreaAdministrativoUseCase>();
+            services.TryAddScoped<IObterQuestaoDetalhesResumidoAreaAdministrativoUseCase, ObterQuestaoDetalhesResumidoAreaAdministrativoUseCase>();
         }
     }
 }

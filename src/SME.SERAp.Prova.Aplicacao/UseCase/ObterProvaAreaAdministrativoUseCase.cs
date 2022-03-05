@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Aplicacao.Queries.ObterProvasAdministrativoPaginada;
 using SME.SERAp.Prova.Dominio.Constantes;
-using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
@@ -20,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<PaginacaoResultadoDto<Dominio.Prova>> Executar(ProvaAdmFiltroDto paginacaoFiltroDto)
+        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> Executar(ProvaAdmFiltroDto paginacaoFiltroDto)
         {
             var claims = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery("Perfil"));
             var perfil = claims.FirstOrDefault(a => a.Chave == "Perfil")?.Valor;
@@ -29,7 +27,6 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             if(!ehGuid) throw new NaoAutorizadoException("Perfil Inválido", 401);
 
             var provas = await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, Perfis.PERFIL_ADMINISTRADOR == guidPerfil));
-
             return provas;
         }
     }
