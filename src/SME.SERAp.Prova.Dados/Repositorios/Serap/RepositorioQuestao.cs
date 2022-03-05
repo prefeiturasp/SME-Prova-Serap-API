@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.Dtos;
-using SME.SERAp.Prova.Infra.Dtos.Prova;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Threading.Tasks;
