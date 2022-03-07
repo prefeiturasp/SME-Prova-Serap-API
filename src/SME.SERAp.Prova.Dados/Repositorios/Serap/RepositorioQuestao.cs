@@ -101,7 +101,8 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from questao q where q.prova_id = @provaId";
+                var query = @"select id, texto_base, questao_legado_id, enunciado, ordem, prova_id, tipo, caderno, quantidade_alternativas 
+                              from questao q where q.prova_id = @provaId";
                 return await conn.QueryAsync<Questao>(query, new { provaId });
             }
             finally
@@ -116,7 +117,8 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from questao q where q.prova_id = @provaId and q.caderno = @caderno";
+                var query = @"select id, texto_base, questao_legado_id, enunciado, ordem, prova_id, tipo, caderno, quantidade_alternativas 
+                              from questao q where q.prova_id = @provaId and q.caderno = @caderno";
                 return await conn.QueryAsync<Questao>(query, new { provaId, caderno });
             }
             finally
