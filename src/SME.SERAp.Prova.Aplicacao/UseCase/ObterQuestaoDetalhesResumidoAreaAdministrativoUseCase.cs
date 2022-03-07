@@ -37,17 +37,11 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     if (detalhe.VideoId > 0) videosId.Add(detalhe.VideoId);
                 }
 
-                var contextoProva = await mediator.Send(new ObterContextosProvasPorProvaIdQuery(provaId));
-                long[] contextoProvaIds = Array.Empty<long>();
-                if (contextoProva.Any())
-                    contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
-
                 return new QuestaoDetalheResumoRetornoDto(
                     provaId,
                     questaoId,
                     arquivosId.Distinct().ToArray(),
                     alternativasId.Distinct().ToArray(),
-                    contextoProvaIds,
                     audiosId.Distinct().ToArray(),
                     videosId.Distinct().ToArray()
                 );

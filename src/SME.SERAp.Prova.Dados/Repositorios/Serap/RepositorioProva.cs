@@ -300,10 +300,12 @@ namespace SME.SERAp.Prova.Dados
                 query.Append("       tempo_execucao as tempoExecucao,");
                 query.Append("       possui_bib as possuiBib,");
                 query.Append("       total_cadernos as totalCadernos,");
-                query.AppendFormat("       senha from prova p {0} ", where.ToString());
+                query.Append("       total_itens as totalItens,");
+                query.Append("       exists(select 1 from contexto_prova cp where cp.prova_id = p.id) as possuiContexto,");
+                query.Append("       senha");
+                query.AppendFormat(" from prova p {0} ", where.ToString());
                 query.Append(" order by p.inclusao desc, p.descricao asc ");
                 query.Append(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
-
                 query.AppendFormat(" select count(*) from prova p {0}; ", where.ToString());
 
                 using (var multi = await conn.QueryMultipleAsync(query.ToString(), provaAdmFiltroDto))
