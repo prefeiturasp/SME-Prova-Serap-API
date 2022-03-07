@@ -12,6 +12,8 @@ namespace SME.SERAp.Prova.Infra.Dtos
         public int TempoExecucao { get; set; }
         public bool PossuiBIB { get; set; }
         public int TotalCadernos { get; set; }
+        public int TotalItens { get; set; }
+        public bool PossuiContexto { get; set; }
         public string Senha { get; set; }
     }
 }
