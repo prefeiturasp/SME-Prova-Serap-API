@@ -1,9 +1,10 @@
-﻿using Dapper;
-using SME.SERAp.Prova.Infra;
+﻿using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -50,6 +51,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        
         public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id)
         {
             using var conn = ObterConexaoLeitura();
@@ -125,6 +127,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        
         public async Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync()
         {
             using var conn = ObterConexaoLeitura();
@@ -261,6 +264,63 @@ namespace SME.SERAp.Prova.Dados
                 conn.Close();
                 conn.Dispose();
             }
+        }
+
+        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo)
+        {
+            using var conn = ObterConexaoLeitura();
+            var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
+            try
+            {
+                var where = new StringBuilder(" where 1 = 1");
+                if (!inicioFuturo)
+                    where.Append(" and p.inicio <= now()");
+
+                if (provaAdmFiltroDto.ProvaLegadoId.HasValue)
+                    where.Append(" and p.prova_legado_id = @provaLegadoId");
+
+                if (provaAdmFiltroDto.Modalidade.HasValue)
+                    where.Append(" and p.modalidade = @modalidade");
+
+                if (!string.IsNullOrWhiteSpace(provaAdmFiltroDto.Ano))
+                    where.Append(" and exists(select 1 from prova_ano pa where pa.prova_id = p.id and pa.ano = @ano limit 1)");
+
+                if (!string.IsNullOrWhiteSpace(provaAdmFiltroDto.Descricao))
+                {
+                    provaAdmFiltroDto.Descricao = $"%{provaAdmFiltroDto.Descricao.ToUpper()}%";
+                    where.Append(" and upper(p.descricao) like @descricao");
+                }
+
+                var query = new StringBuilder();
+                query.Append(" select id, ");
+                query.Append("       descricao,");
+                query.Append("       inicio as datInicio,");
+                query.Append("       fim as datafim,");
+                query.Append("       inicio_download as dataInicioDownload,");
+                query.Append("       tempo_execucao as tempoExecucao,");
+                query.Append("       possui_bib as possuiBib,");
+                query.Append("       total_cadernos as totalCadernos,");
+                query.AppendFormat("       senha from prova p {0} ", where.ToString());
+                query.Append(" order by p.inclusao desc, p.descricao asc ");
+                query.Append(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
+
+                query.AppendFormat(" select count(*) from prova p {0}; ", where.ToString());
+
+                using (var multi = await conn.QueryMultipleAsync(query.ToString(), provaAdmFiltroDto))
+                {
+                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>().ToList();
+                    retorno.TotalRegistros = multi.ReadFirst<int>();
+                }
+
+                retorno.TotalPaginas = (int)Math.Ceiling((double)retorno.TotalRegistros / provaAdmFiltroDto.QuantidadeRegistros);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return retorno;
         }
     }
 }
