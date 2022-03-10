@@ -272,7 +272,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where 1 = 1");
+                var where = new StringBuilder(" where p.ocultar_prova <> true");
                 if (!inicioFuturo)
                     where.Append(" and p.inicio <= now()");
 
@@ -294,7 +294,7 @@ namespace SME.SERAp.Prova.Dados
                 var query = new StringBuilder();
                 query.Append(" select id, ");
                 query.Append("       descricao,");
-                query.Append("       inicio as datInicio,");
+                query.Append("       inicio as dataInicio,");
                 query.Append("       fim as datafim,");
                 query.Append("       inicio_download as dataInicioDownload,");
                 query.Append("       tempo_execucao as tempoExecucao,");
