@@ -304,7 +304,7 @@ namespace SME.SERAp.Prova.Dados
                 query.Append("       exists(select 1 from contexto_prova cp where cp.prova_id = p.id) as possuiContexto,");
                 query.Append("       senha");
                 query.AppendFormat(" from prova p {0} ", where.ToString());
-                query.Append(" order by p.inclusao desc, p.descricao asc ");
+                query.Append(" order by p.inicio desc, p.descricao asc ");
                 query.Append(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
                 query.AppendFormat(" select count(*) from prova p {0}; ", where.ToString());
 

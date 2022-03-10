@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await obterContextoProvaPorIdUseCase.Executar(id));
         }
 
-        [HttpGet("provas/{id}")]
+        [HttpGet("provas/{provaId}")]
         [ProducesResponseType(typeof(IEnumerable<ContextoProvaDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
