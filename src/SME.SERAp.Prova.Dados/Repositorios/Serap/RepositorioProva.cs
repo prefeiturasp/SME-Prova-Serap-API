@@ -272,7 +272,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where p.ocultar_prova <> true");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova <> true)");
                 if (!inicioFuturo)
                     where.Append(" and p.inicio <= now()");
 
