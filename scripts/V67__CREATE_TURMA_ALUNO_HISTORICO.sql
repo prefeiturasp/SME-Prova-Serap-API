@@ -8,10 +8,6 @@ CREATE TABLE if not exists public.turma_aluno_historico (
 	data_matricula timestamp NULL,
 	data_situacao timestamp NULL,
 	CONSTRAINT turma_aluno_historico_pk PRIMARY KEY (id)
+	CONSTRAINT turma_aluno_historico_aluno_id_fk FOREIGN KEY (aluno_id) REFERENCES public.aluno(id),
+	CONSTRAINT turma_aluno_historico_turma_id_fk FOREIGN KEY (turma_id) REFERENCES public.turma (id)
 );
-
-
--- public.turma_aluno_historico foreign keys
-
-ALTER TABLE public.turma_aluno_historico ADD CONSTRAINT turma_aluno_historico_aluno_id_fk FOREIGN KEY (aluno_id) REFERENCES public.aluno(id);
-ALTER TABLE public.turma_aluno_historico ADD CONSTRAINT turma_aluno_historico_turma_id_fk FOREIGN KEY (turma_id) REFERENCES public.turma(id);
