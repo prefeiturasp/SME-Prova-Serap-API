@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra.Dtos;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
 {
@@ -87,6 +88,82 @@ namespace SME.SERAp.Prova.Dados
                                 where a.id = @arquivoAudioId;";
 
                 return await conn.QueryFirstOrDefaultAsync<Questao>(query, new { arquivoAudioId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdAsync(long provaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select id, texto_base, questao_legado_id, enunciado, ordem, prova_id, tipo, caderno, quantidade_alternativas 
+                              from questao q where q.prova_id = @provaId";
+                return await conn.QueryAsync<Questao>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdCadernoAsync(long provaId, string caderno)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select id, texto_base, questao_legado_id, enunciado, ordem, prova_id, tipo, caderno, quantidade_alternativas 
+                              from questao q where q.prova_id = @provaId and q.caderno = @caderno";
+                return await conn.QueryAsync<Questao>(query, new { provaId, caderno });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<QuestaoDetalheResumoDadosDto>> ObterDetalhesResumoPorIdAsync(long provaId, long id)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select
+	                            provaid,
+	                            questaoId,
+	                            alternativaId,
+	                            questaoArquivoId,
+	                            alternativaArquivoId,
+	                            aa.id as audioId,
+	                            qv.id as videoId
+                            from v_prova_detalhes p	
+                            left join questao_audio qa on qa.questao_id = p.questaoId 	
+                            left join arquivo aa on aa.id = qa.arquivo_id
+                            left join questao_video qv on qv.questao_id = p.questaoId 
+                            where p.provaid = @provaId 
+	                            and	 p.questaoid = @id";
+
+                return await conn.QueryAsync<QuestaoDetalheResumoDadosDto>(query, new { provaId, id });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<ProvaCadernoDadoDto>> ObterCadernosPorProvaId(long provaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct caderno from questao q where q.prova_id = @provaId order by caderno";
+                return await conn.QueryAsync<ProvaCadernoDadoDto>(query, new { provaId });
             }
             finally
             {
