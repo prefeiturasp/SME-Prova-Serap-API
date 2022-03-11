@@ -110,3 +110,17 @@ $procedure$
 alter table resultado_prova_consolidado add column if not exists prova_data_inicio timestamptz null;
 alter table resultado_prova_consolidado add column if not exists prova_data_entregue timestamptz null;
 alter table prova add column if not exists multidisciplinar bool null;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
