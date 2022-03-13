@@ -19,7 +19,7 @@ case
 	else qar.resposta
 end as resposta
 ,prova_data_inicio,prova_data_entregue
-from v_prova_aluno_dados_extracao vape
+from v_aluno_prova_extracao vape
 inner join prova p on vape.prova_serap_estudantes_id = p.id
 inner join questao q on vape.prova_serap_estudantes_id = q.prova_id 
 and (not p.possui_bib or (p.possui_bib and vape.prova_caderno = q.caderno))
@@ -30,4 +30,3 @@ where vape.prova_serap_id = p_prova_serap_id and vape.dre_codigo_eol = p_dre_cod
 
 
 $procedure$
-;

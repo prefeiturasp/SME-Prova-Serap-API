@@ -73,8 +73,3 @@ AS SELECT p.prova_legado_id AS prova_serap_id,
      JOIN prova p ON pa.prova_id = p.id AND t.modalidade_codigo = p.modalidade AND t.ano_letivo::double precision = date_part('year'::text, p.inicio)
      LEFT JOIN prova_aluno palu ON p.id = palu.prova_id AND a.ra = palu.aluno_ra AND (palu.status = ANY (ARRAY[2, 5])) AND palu.finalizado_em IS NOT NULL
      LEFT JOIN caderno_aluno ca ON p.id = ca.prova_id AND a.id = ca.aluno_id;
-
--- Permissions
-
-ALTER TABLE public.v_aluno_prova_extracao OWNER TO postgres;
-GRANT ALL ON TABLE public.v_aluno_prova_extracao TO postgres;

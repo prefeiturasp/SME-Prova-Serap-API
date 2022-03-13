@@ -16,8 +16,3 @@ UNION
      JOIN turma_aluno_historico tah ON tah.aluno_id = a.id
      JOIN turma t ON tah.turma_id = t.id AND tah.turma_id <> a.turma_id
   GROUP BY a.id, t.ano, t.ano_letivo, t.modalidade_codigo;
-
--- Permissions
-
-ALTER TABLE public.v_turmas_alunos OWNER TO postgres;
-GRANT ALL ON TABLE public.v_turmas_alunos TO postgres;
