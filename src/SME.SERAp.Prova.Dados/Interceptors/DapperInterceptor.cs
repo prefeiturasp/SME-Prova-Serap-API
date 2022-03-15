@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 
 namespace SME.SERAp.Prova.Dados
 {
@@ -62,7 +63,6 @@ namespace SME.SERAp.Prova.Dados
             }
 
         }
-
         public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
 
@@ -86,7 +86,6 @@ namespace SME.SERAp.Prova.Dados
                 throw;
             }
         }
-
         public static async Task<T> QueryFirstOrDefaultAsync<T>(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
         {
 
@@ -368,8 +367,6 @@ namespace SME.SERAp.Prova.Dados
         }
         public static async Task<IEnumerable<TReturn>> QueryAsync<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn>(this IDbConnection cnn, string sql, Func<TFirst, TSecond, TThird, TFourth, TFifth, TSixth, TSeventh, TReturn> map, object param = null, IDbTransaction transaction = null, bool buffered = true, string splitOn = "Id", int? commandTimeout = null, CommandType? commandType = null)
         {
-
-
             var inicioOperacao = DateTime.UtcNow;
             var timer = System.Diagnostics.Stopwatch.StartNew();
 
@@ -386,6 +383,48 @@ namespace SME.SERAp.Prova.Dados
             catch (Exception ex)
             {
                 insightsClient?.TrackDependency("PostgreSQL", "QueryAsync", $"{sql} -> erro: {ex.Message}", inicioOperacao, timer.Elapsed, false);
+                throw;
+            }
+        }
+        public static async Task<GridReader> QueryMultipleAsync(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                var result = await SqlMapper.QueryMultipleAsync(cnn, sql, param, transaction, commandTimeout, commandType);
+
+                timer.Stop();
+
+                insightsClient?.TrackDependency("PostgreSQL", "QueryMultipleAsync", sql, inicioOperacao, timer.Elapsed, true);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                insightsClient?.TrackDependency("PostgreSQL", "QueryMultipleAsync", $"{sql} -> erro: {ex.Message}", inicioOperacao, timer.Elapsed, false);
+                throw;
+            }
+        }
+        public static async Task<GridReader> QueryMultipleAsync(this IDbConnection cnn, CommandDefinition command)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                var result = await SqlMapper.QueryMultipleAsync(cnn, command);
+
+                timer.Stop();
+
+                insightsClient?.TrackDependency("PostgreSQL", "QueryMultipleAsync", command.CommandText, inicioOperacao, timer.Elapsed, true);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                insightsClient?.TrackDependency("PostgreSQL", "QueryMultipleAsync", $"{command.CommandText} -> erro: {ex.Message}", inicioOperacao, timer.Elapsed, false);
                 throw;
             }
         }
@@ -412,7 +451,6 @@ namespace SME.SERAp.Prova.Dados
                 throw;
             }
         }
-
         public static int Execute(this IDbConnection cnn, CommandDefinition command)
         {
 
@@ -487,7 +525,6 @@ namespace SME.SERAp.Prova.Dados
                 throw;
             }
         }
-
         public static bool Update<TEntity>(this IDbConnection connection, TEntity entity, IDbTransaction transaction = null)
         {
 
@@ -634,6 +671,5 @@ namespace SME.SERAp.Prova.Dados
 
 
         #endregion
-
     }
 }

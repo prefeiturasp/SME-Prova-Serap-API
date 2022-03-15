@@ -6,7 +6,7 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterUsuarioLogadoInformacoesPorClaimsQuery : IRequest<IEnumerable<ParametroDto>>
     {
-        public ObterUsuarioLogadoInformacoesPorClaimsQuery(string[] claims)
+        public ObterUsuarioLogadoInformacoesPorClaimsQuery(params string[] claims)
         {
             Claims = claims;
         }

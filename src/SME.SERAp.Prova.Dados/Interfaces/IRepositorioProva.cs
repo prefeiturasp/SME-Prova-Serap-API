@@ -1,4 +1,5 @@
 ﻿using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,5 +18,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync();
         Task<bool> VerificaSeExistePorProvaSerapId(long provaId);
         Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId);
+        Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo);
     }
 }
