@@ -118,9 +118,7 @@ namespace SME.SERAp.Prova.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseElasticApm(Configuration,
-                new SqlClientDiagnosticSubscriber(),
-                new HttpDiagnosticsSubscriber());
+            app.UseElasticApm(Configuration);
 
             app.UseResponseCompression();
             app.UseSwagger();
