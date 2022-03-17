@@ -1,5 +1,6 @@
 ﻿using Elastic.Apm;
 using Microsoft.ApplicationInsights;
+using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;

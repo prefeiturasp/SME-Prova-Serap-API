@@ -1,4 +1,4 @@
-﻿namespace SME.SERAp.Prova.Infra
+﻿namespace SME.SERAp.Prova.Infra.EnvironmentVariables
 {
     public class TelemetriaOptions
     {
