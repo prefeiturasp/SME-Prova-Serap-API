@@ -1,14 +1,9 @@
-﻿using SME.SERAp.Prova.Infra;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-   public interface IAutenticarUsuarioAdmUseCase
+    public interface IAutenticarUsuarioAdmUseCase
     {
-        Task<UsuarioAutenticacaoDto> Executar(AutenticacaoAdmDto autenticacaoDto);
+        Task<string> Executar(AutenticacaoAdmDto autenticacaoDto);
     }
 }

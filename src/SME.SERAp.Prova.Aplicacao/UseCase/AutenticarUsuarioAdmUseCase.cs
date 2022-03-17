@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Dominio.Constantes;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using SME.SERAp.Prova.Infra.Exceptions;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -16,30 +14,23 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<UsuarioAutenticacaoDto> Executar(AutenticacaoAdmDto autenticacaoDto)
+        public async Task<string> Executar(AutenticacaoAdmDto autenticacaoDto)
         {
+            // TODO: Validar login do usuário adm.
+
             VerificaChaveApi(autenticacaoDto.ChaveApi);
             PerfilEhValido(autenticacaoDto.Perfil);
-            return await CriaTokenAdm(autenticacaoDto);
+
+            return await mediator.Send(new GerarCodigoValidacaoAdmCommand(autenticacaoDto.Login, Guid.Parse(autenticacaoDto.Perfil)));
         }
 
-        private async Task<UsuarioAutenticacaoDto> CriaTokenAdm(AutenticacaoAdmDto autenticacaoDto)
-        {
-            var retornoDto = new UsuarioAutenticacaoDto();
-            var tokenDtExpiracao =
-                await mediator.Send(new ObterTokenJwtAdmQuery(autenticacaoDto.Login, Guid.Parse(autenticacaoDto.Perfil)));
-            retornoDto.Token = tokenDtExpiracao.Item1;
-            retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
-            return retornoDto;
-        }
-
-        private void VerificaChaveApi(string chaveApi)
+        private static void VerificaChaveApi(string chaveApi)
         {
             if (chaveApi != Environment.GetEnvironmentVariable("ChaveSerapProvaApi"))
                 throw new NaoAutorizadoException("Não Autorizado", 401);
         }
 
-        private void PerfilEhValido(string perfil)
+        private static void PerfilEhValido(string perfil)
         {
             var ehGuid = Guid.TryParse(perfil, out var guidPerfil);
 
