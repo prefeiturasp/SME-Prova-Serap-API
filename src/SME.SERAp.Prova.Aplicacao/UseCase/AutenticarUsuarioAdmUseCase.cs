@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio.Constantes;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -10,9 +11,12 @@ namespace SME.SERAp.Prova.Aplicacao
     public class AutenticarUsuarioAdmUseCase : IAutenticarUsuarioAdmUseCase
     {
         private readonly IMediator mediator;
-        public AutenticarUsuarioAdmUseCase(IMediator mediator)
+        private readonly ChaveIntegracaoOptions chaveIntegracaoOptions;
+
+        public AutenticarUsuarioAdmUseCase(IMediator mediator, ChaveIntegracaoOptions chaveIntegracaoOptions)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.chaveIntegracaoOptions = chaveIntegracaoOptions ?? throw new ArgumentNullException(nameof(chaveIntegracaoOptions));
         }
 
         public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
@@ -25,9 +29,9 @@ namespace SME.SERAp.Prova.Aplicacao
             return await mediator.Send(new GerarCodigoValidacaoAdmCommand(autenticacaoDto.Login, Guid.Parse(autenticacaoDto.Perfil)));
         }
 
-        private static void VerificaChaveApi(string chaveApi)
+        private void VerificaChaveApi(string chaveApi)
         {
-            if (chaveApi != Environment.GetEnvironmentVariable("ChaveSerapProvaApi"))
+            if (chaveApi != chaveIntegracaoOptions.ChaveSerapProvaApi)
                 throw new NaoAutorizadoException("Não Autorizado", 401);
         }
 
