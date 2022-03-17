@@ -5,6 +5,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IAutenticarUsuarioValidarAdmUseCase
     {
-        Task<UsuarioAutenticacaoDto> Executar(string codigo);
+        Task<UsuarioAutenticacaoDto> Executar(AutenticacaoValidarAdmDto autenticacaoValidarAdmDto);
     }
 }

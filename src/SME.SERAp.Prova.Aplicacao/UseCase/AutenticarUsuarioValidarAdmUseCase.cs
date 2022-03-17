@@ -14,9 +14,9 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<UsuarioAutenticacaoDto> Executar(string codigo)
+        public async Task<UsuarioAutenticacaoDto> Executar(AutenticacaoValidarAdmDto autenticacaoValidarAdmDto)
         {
-            var usuario = await mediator.Send(new ObterCodigoValidacaoAdmQuery(codigo));
+            var usuario = await mediator.Send(new ObterCodigoValidacaoAdmQuery(autenticacaoValidarAdmDto.Codigo));
 
             if(usuario == null)
                 throw new NaoAutorizadoException("Código inválido", 401);

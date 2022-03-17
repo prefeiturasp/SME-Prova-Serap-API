@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio.Constantes;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<string> Executar(AutenticacaoAdmDto autenticacaoDto)
+        public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
         {
             // TODO: Validar login do usuário adm.
 

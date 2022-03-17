@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Infra;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class GerarCodigoValidacaoAdmCommandHandler : IRequestHandler<GerarCodigoValidacaoAdmCommand, string>
+    public class GerarCodigoValidacaoAdmCommandHandler : IRequestHandler<GerarCodigoValidacaoAdmCommand, AutenticacaoValidarAdmDto>
     {
         private readonly IRepositorioCache repositorioCache;
 
@@ -15,11 +16,12 @@ namespace SME.SERAp.Prova.Aplicacao
             this.repositorioCache = repositorioCache ?? throw new ArgumentNullException(nameof(repositorioCache));
         }
 
-        public async Task<string> Handle(GerarCodigoValidacaoAdmCommand request, CancellationToken cancellationToken)
+        public async Task<AutenticacaoValidarAdmDto> Handle(GerarCodigoValidacaoAdmCommand request, CancellationToken cancellationToken)
         {
             var codigo = Guid.NewGuid();
-            await repositorioCache.SalvarRedisAsync($"auth-adm-{codigo}", request, 5);
-            return codigo.ToString();
+            var autenticacao = new AutenticacaoUsuarioAdmDto(request.Login, request.Perfil);
+            await repositorioCache.SalvarRedisAsync($"auth-adm-{codigo}", autenticacao, 5);
+            return new AutenticacaoValidarAdmDto(codigo.ToString());
         }
     }
 }

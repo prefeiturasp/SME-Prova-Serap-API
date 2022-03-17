@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Infra;
 using System;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class GerarCodigoValidacaoAdmCommand : IRequest<string>
+    public class GerarCodigoValidacaoAdmCommand : IRequest<AutenticacaoValidarAdmDto>
     {
         public GerarCodigoValidacaoAdmCommand(string login, Guid perfil)
         {

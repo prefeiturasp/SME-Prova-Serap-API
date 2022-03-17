@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var chave = $"auth-adm-{request.Codigo}";
 
             var retorno = await repositorioCache.ObterRedisAsync<AutenticacaoUsuarioAdmDto>(chave);
-            await repositorioCache.RemoverAsync(chave);
+            await repositorioCache.RemoverRedisAsync(chave);
 
             return retorno;
         }

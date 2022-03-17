@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(401)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]
+        [ProducesResponseType(typeof(AutenticacaoValidarAdmDto), 200)]
         public async Task<IActionResult> Autenticar([FromServices] IAutenticarUsuarioAdmUseCase autenticarUsuarioAdmUseCase,
            [FromBody] AutenticacaoAdmDto autenticacaoDto)
         {
@@ -29,9 +29,9 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [ProducesResponseType(typeof(UsuarioAutenticacaoDto), 200)]
         public async Task<IActionResult> Validar([FromServices] IAutenticarUsuarioValidarAdmUseCase autenticarUsuarioValidarAdmUseCase,
-           [FromBody] string codigo)
+           [FromBody] AutenticacaoValidarAdmDto autenticacaoValidarAdmDto)
         {
-            return Ok(await autenticarUsuarioValidarAdmUseCase.Executar(codigo));
+            return Ok(await autenticarUsuarioValidarAdmUseCase.Executar(autenticacaoValidarAdmDto));
         }
 
         [HttpPost("revalidar")]
