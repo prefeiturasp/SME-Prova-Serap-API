@@ -12,10 +12,15 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterUltimaVersaoAppQueryHandler : IRequestHandler<ObterUltimaVersaoAppQuery, VersaoApp>
     {
-         private readonly IRepositorioVersaoApp repositorioVersaoApp;
+        private readonly IRepositorioVersaoApp repositorioVersaoApp;
+
+        public ObterUltimaVersaoAppQueryHandler(IRepositorioVersaoApp repositorioVersaoApp)
+        {
+            this.repositorioVersaoApp = repositorioVersaoApp ?? throw new System.ArgumentNullException(nameof(repositorioVersaoApp));
+        }
         public Task<VersaoApp> Handle(ObterUltimaVersaoAppQuery request, CancellationToken cancellationToken)
         {
-           return repositorioVersaoApp.ObterUltimaVersao();
+            return repositorioVersaoApp.ObterUltimaVersao();
         }
     }
 }
