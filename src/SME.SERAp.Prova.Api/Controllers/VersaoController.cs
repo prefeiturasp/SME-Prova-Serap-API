@@ -23,5 +23,13 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterVersaoFrontUseCase.Executar());
         }
+
+        [HttpGet("atualizacao")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        public async Task<IActionResult> ObterUltimaVersaoApp([FromServices] IObterVersaoAppUseCase obterUltimaVersaoUseCase)
+        {
+            return Ok(await obterUltimaVersaoUseCase.Executar());
+        }
     }
 }
