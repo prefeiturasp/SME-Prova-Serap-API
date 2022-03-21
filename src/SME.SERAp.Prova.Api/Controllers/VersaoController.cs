@@ -25,7 +25,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpGet("atualizacao")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(VersaoAppDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         public async Task<IActionResult> ObterUltimaVersaoApp([FromServices] IObterVersaoAppUseCase obterUltimaVersaoUseCase)
         {
