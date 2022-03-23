@@ -266,13 +266,16 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, Guid? perfil, string login)
+        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo, Guid? perfil, string login)
         {
             using var conn = ObterConexaoLeitura();
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
                 var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova <> true)");
+
+                if(!inicioFuturo)
+                    where.Append(" and p.inicio <= now()");
 
                 if (provaAdmFiltroDto.ProvaLegadoId.HasValue)
                     where.Append(" and p.prova_legado_id = @provaLegadoId");
