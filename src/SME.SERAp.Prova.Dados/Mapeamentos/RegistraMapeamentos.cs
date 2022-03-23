@@ -31,7 +31,7 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new TipoDeficienciaMap());
                 config.AddMap(new QuestaoVideoMap());
                 config.AddMap(new UsuarioSerapCoreSSOMap());
-
+                config.AddMap(new VersaoAppMap());
                 config.ForDommel();
             });
         }
