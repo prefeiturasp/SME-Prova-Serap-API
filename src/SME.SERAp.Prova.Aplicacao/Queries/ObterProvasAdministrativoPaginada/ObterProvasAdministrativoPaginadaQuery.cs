@@ -1,17 +1,22 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra.Dtos;
+using System;
 
-namespace SME.SERAp.Prova.Aplicacao.Queries.ObterProvasAdministrativoPaginada
+namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterProvasAdministrativoPaginadaQuery : IRequest<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>>
     {
-        public ProvaAdmFiltroDto Filtro { get; set; }
-        public bool InicioFuturo { get; set; }
-
-        public ObterProvasAdministrativoPaginadaQuery(ProvaAdmFiltroDto paginacao, bool inicioFuturo)
+        public ObterProvasAdministrativoPaginadaQuery(ProvaAdmFiltroDto filtro, Guid? perfil = null, string login = null)
         {
-            Filtro = paginacao;
-            InicioFuturo = inicioFuturo;
+            Filtro = filtro;
+            Perfil = perfil;
+            Login = login;
         }
+
+        public ProvaAdmFiltroDto Filtro { get; set; }
+
+        public Guid? Perfil { get; set; }
+
+        public string Login { get; set; }
     }
 }

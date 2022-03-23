@@ -21,18 +21,20 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
         {
-            // TODO: Validar login do usuário adm.
+            var usuario = await mediator.Send(new ObterUsuarioSerapCoreSSOPorLoginQuery(autenticacaoDto.Login));
+            if(usuario == null)
+                throw new NaoAutorizadoException("Usuário inválido", 401);
 
             VerificaChaveApi(autenticacaoDto.ChaveApi);
             PerfilEhValido(autenticacaoDto.Perfil);
 
-            return await mediator.Send(new GerarCodigoValidacaoAdmCommand(autenticacaoDto.Login, Guid.Parse(autenticacaoDto.Perfil)));
+            return await mediator.Send(new GerarCodigoValidacaoAdmCommand(autenticacaoDto.Login, usuario.Nome, Guid.Parse(autenticacaoDto.Perfil)));
         }
 
         private void VerificaChaveApi(string chaveApi)
         {
             if (chaveApi != chaveIntegracaoOptions.ChaveSerapProvaApi)
-                throw new NaoAutorizadoException("Não Autorizado", 401);
+                throw new NaoAutorizadoException("Chave api inválida", 401);
         }
 
         private static void PerfilEhValido(string perfil)
@@ -46,7 +48,7 @@ namespace SME.SERAp.Prova.Aplicacao
                guidPerfil != Perfis.PERFIL_SERAP_DRE &&
                guidPerfil != Perfis.PERFIL_SERAP_UE)
             {
-                throw new NaoAutorizadoException("Perfil Inválido", 402);
+                throw new NaoAutorizadoException("Perfil Inválido", 401);
             }
         }
     }

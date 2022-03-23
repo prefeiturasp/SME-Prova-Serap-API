@@ -44,12 +44,15 @@ namespace SME.SERAp.Prova.Aplicacao
                 ClaimsPrincipal principal;
                 principal = validator.ValidateToken(request.Token, validationParameters, out SecurityToken validatedToken);
 
-                if (!principal.HasClaim(c => c.Type == "LOGIN") || !principal.HasClaim(c => c.Type == "PERFIL"))
+                if (!principal.HasClaim(c => c.Type == "LOGIN") ||
+                    !principal.HasClaim(c => c.Type == "NOME") ||
+                    !principal.HasClaim(c => c.Type == "PERFIL") )
                     throw new NaoAutorizadoException("Token inválido");
 
                 var login = principal.Claims.FirstOrDefault(c => c.Type == "LOGIN").Value;
+                var nome = principal.Claims.FirstOrDefault(c => c.Type == "NOME").Value;
                 var perfil = Guid.Parse(principal.Claims.FirstOrDefault(c => c.Type == "PERFIL").Value);
-                return new InformacoesTokenAdmDto(login, perfil);
+                return new InformacoesTokenAdmDto(login, nome, perfil);
             }
             catch (Exception)
             {

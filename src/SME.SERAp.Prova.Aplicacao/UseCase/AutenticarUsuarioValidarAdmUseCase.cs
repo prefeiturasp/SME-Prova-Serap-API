@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var retornoDto = new UsuarioAutenticacaoDto();
             var tokenDtExpiracao =
-                await mediator.Send(new ObterTokenJwtAdmQuery(autenticacaoDto.Login, autenticacaoDto.Perfil));
+                await mediator.Send(new ObterTokenJwtAdmQuery(autenticacaoDto.Login, autenticacaoDto.Nome, autenticacaoDto.Perfil));
             retornoDto.Token = tokenDtExpiracao.Item1;
             retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
             return retornoDto;

@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<AutenticacaoValidarAdmDto> Handle(GerarCodigoValidacaoAdmCommand request, CancellationToken cancellationToken)
         {
             var codigo = Guid.NewGuid();
-            var autenticacao = new AutenticacaoUsuarioAdmDto(request.Login, request.Perfil);
+            var autenticacao = new AutenticacaoUsuarioAdmDto(request.Login, request.Nome, request.Perfil);
             await repositorioCache.SalvarRedisAsync($"auth-adm-{codigo}", autenticacao, 5);
             return new AutenticacaoValidarAdmDto(codigo.ToString());
         }
