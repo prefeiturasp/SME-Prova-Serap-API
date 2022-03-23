@@ -273,5 +273,33 @@ namespace SME.SERAp.Prova.Dados.Cache
             }
         }
 
+        public async Task<T> ObterRedisAsync<T>(string nomeChave)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                var byteCache = await distributedCache.GetAsync(nomeChave);
+
+                timer.Stop();
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Obtendo", inicioOperacao, timer.Elapsed, true);
+
+                if (byteCache != null)
+                {
+                    return MessagePackSerializer.Deserialize<T>(byteCache);
+                }
+            }
+            catch (Exception ex)
+            {
+                servicoLog.Registrar(ex);
+                timer.Stop();
+
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, $"Obtendo - Erro {ex.Message}", inicioOperacao, timer.Elapsed, false);
+            }
+
+            return default;
+        }
+
     }
 }

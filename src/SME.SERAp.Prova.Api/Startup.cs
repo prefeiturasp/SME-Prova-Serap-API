@@ -1,7 +1,5 @@
 using Elastic.Apm;
 using Elastic.Apm.AspNetCore;
-using Elastic.Apm.DiagnosticSource;
-using Elastic.Apm.SqlClient;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -75,6 +73,10 @@ namespace SME.SERAp.Prova.Api
             var conexaoRabbit = factory.CreateConnection();
 
             services.AddSingleton(conexaoRabbit);
+
+            var chaveIntegracaoOptions = new ChaveIntegracaoOptions();
+            Configuration.GetSection("ChaveIntegracaoOptions").Bind(chaveIntegracaoOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(chaveIntegracaoOptions);
 
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
