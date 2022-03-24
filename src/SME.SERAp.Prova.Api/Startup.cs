@@ -1,3 +1,7 @@
+using Elastic.Apm;
+using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.SqlClient;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,12 +13,11 @@ using Prometheus;
 using RabbitMQ.Client;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
-using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using System.IO.Compression;
-using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api
 {
@@ -30,7 +33,6 @@ namespace SME.SERAp.Prova.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
 
             var jwtVariaveis = new JwtOptions();
@@ -47,12 +49,16 @@ namespace SME.SERAp.Prova.Api
 
             var gitHubOptions = new GithubOptions();
             Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(gitHubOptions);        
+            services.AddSingleton(gitHubOptions);
 
             var logOptions = new LogOptions();
             Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);
             logOptions.SentryDSN = sentryOptions.Dsn;
             services.AddSingleton(logOptions);
+
+            var telemetriaOptions = new TelemetriaOptions();
+            Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(telemetriaOptions);
 
             var rabbitOptions = new RabbitOptions();
             Configuration.GetSection("Rabbit").Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
@@ -73,15 +79,9 @@ namespace SME.SERAp.Prova.Api
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
             services.AddHttpContextAccessor();
-            services.AddMemoryCache();
-
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            RegistraClientesHttp.Registrar(services, gitHubOptions);
-            RegistraDependencias.Registrar(services);
-            RegistraAutenticacao.Registrar(services, jwtVariaveis);
-            RegistraMvc.Registrar(services, sentryOptions);
-            RegistraDocumentacaoSwagger.Registrar(services);
+            services.AddMemoryCache();
 
             services.AddResponseCompression();
             services.Configure<BrotliCompressionProviderOptions>(options =>
@@ -89,22 +89,36 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
+            RegistraClientesHttp.Registrar(services, gitHubOptions);
+            RegistraDependencias.Registrar(services);
+            RegistraAutenticacao.Registrar(services, jwtVariaveis);
+            RegistraMvc.Registrar(services, sentryOptions);
+            RegistraDocumentacaoSwagger.Registrar(services);
+
             var serviceProvider = services.BuildServiceProvider();
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
-            DapperExtensionMethods.Init(clientTelemetry);
+            var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
+            services.AddSingleton(servicoTelemetria);
 
-            services.AddStartupTask<WarmUpCacheTask>();
+            DapperExtensionMethods.Init(servicoTelemetria);
+
+            IniciarPropagacaoCache(services);
 
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration.GetConnectionString("Redis");
             });
-
         }
 
-        
+        private static void IniciarPropagacaoCache(IServiceCollection services)
+        {
+            Agent.Tracer.StartTransaction("PropagarCache", "startup");
+            services.AddStartupTask<WarmUpCacheTask>();
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseElasticApm(Configuration);
 
             app.UseResponseCompression();
             app.UseSwagger();
@@ -134,6 +148,6 @@ namespace SME.SERAp.Prova.Api
             {
                 endpoints.MapControllers();
             });
-        }     
+        }
     }
 }
