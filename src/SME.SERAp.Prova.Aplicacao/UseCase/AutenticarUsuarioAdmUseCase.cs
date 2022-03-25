@@ -11,12 +11,10 @@ namespace SME.SERAp.Prova.Aplicacao
     public class AutenticarUsuarioAdmUseCase : IAutenticarUsuarioAdmUseCase
     {
         private readonly IMediator mediator;
-        private readonly ChaveIntegracaoOptions chaveIntegracaoOptions;
 
-        public AutenticarUsuarioAdmUseCase(IMediator mediator, ChaveIntegracaoOptions chaveIntegracaoOptions)
+        public AutenticarUsuarioAdmUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-            this.chaveIntegracaoOptions = chaveIntegracaoOptions ?? throw new ArgumentNullException(nameof(chaveIntegracaoOptions));
         }
 
         public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
@@ -33,7 +31,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private void VerificaChaveApi(string chaveApi)
         {
-            if (chaveApi != chaveIntegracaoOptions.ChaveSerapProvaApi)
+            if (chaveApi != Environment.GetEnvironmentVariable("ChaveSerapProvaApi"))
                 throw new NaoAutorizadoException("Chave api inválida", 401);
         }
 
