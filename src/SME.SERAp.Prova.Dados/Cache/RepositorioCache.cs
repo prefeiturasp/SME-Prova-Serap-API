@@ -275,21 +275,31 @@ namespace SME.SERAp.Prova.Dados.Cache
 
         public async Task<T> ObterRedisAsync<T>(string nomeChave)
         {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
 
             try
             {
                 var byteCache = await distributedCache.GetAsync(nomeChave);
 
-                if (byteCache != null)
-                    return MessagePackSerializer.Deserialize<T>(byteCache);
+                timer.Stop();
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Obtendo", inicioOperacao, timer.Elapsed, true);
 
-                return default;
+                if (byteCache != null)
+                {
+                    return MessagePackSerializer.Deserialize<T>(byteCache);
+                }
             }
             catch (Exception ex)
             {
                 servicoLog.Registrar(ex);
-                return default;
+                timer.Stop();
+
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, $"Obtendo - Erro {ex.Message}", inicioOperacao, timer.Elapsed, false);
             }
+
+            return default;
         }
+
     }
 }

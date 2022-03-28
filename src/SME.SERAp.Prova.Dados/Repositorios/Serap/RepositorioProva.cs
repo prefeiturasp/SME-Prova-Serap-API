@@ -1,9 +1,10 @@
-﻿using Dapper;
-using SME.SERAp.Prova.Infra;
+﻿using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -50,6 +51,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        
         public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id)
         {
             using var conn = ObterConexaoLeitura();
@@ -125,6 +127,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+        
         public async Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync()
         {
             using var conn = ObterConexaoLeitura();
@@ -261,6 +264,108 @@ namespace SME.SERAp.Prova.Dados
                 conn.Close();
                 conn.Dispose();
             }
+        }
+
+        public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo, Guid? perfil, string login)
+        {
+            using var conn = ObterConexaoLeitura();
+            var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
+            try
+            {
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova <> true)");
+
+                if(!inicioFuturo)
+                    where.Append(" and p.inicio <= now()");
+
+                if (provaAdmFiltroDto.ProvaLegadoId.HasValue)
+                    where.Append(" and p.prova_legado_id = @provaLegadoId");
+
+                if (provaAdmFiltroDto.Modalidade.HasValue)
+                    where.Append(" and p.modalidade = @modalidade");
+
+                if (!string.IsNullOrWhiteSpace(provaAdmFiltroDto.Ano))
+                    where.Append(" and exists(select 1 from prova_ano pa where pa.prova_id = p.id and pa.ano = @ano limit 1)");
+
+                if (!string.IsNullOrWhiteSpace(provaAdmFiltroDto.Descricao))
+                {
+                    provaAdmFiltroDto.Descricao = $"%{provaAdmFiltroDto.Descricao.ToUpper()}%";
+                    where.Append(" and upper(p.descricao) like @descricao");
+                }
+
+                if(perfil != null && !string.IsNullOrEmpty(login))
+                {
+                    where.Append(" and exists(select 1 ");
+                    where.Append("              from prova p2 join prova_ano pa2 on pa2.prova_id = p2.id ");
+                    where.Append("              join turma t2 on t2.modalidade_codigo = p2.modalidade and t2.ano = pa2.ano and t2.ano_letivo::double precision = date_part('year'::text, p2.inicio) ");
+                    where.Append("              join ue u2 on u2.id = t2.ue_id ");
+                    where.Append("              where p2.id = p.id ");
+
+                    where.Append("                  and (exists(select 1 ");
+                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
+                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
+                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
+                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
+                    where.Append("                             where a.dre_id = u2.dre_id and gsc.id_coresso = @perfil and usc.login = @login) ");
+
+                    where.Append("                  or exists(select 1 ");
+                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
+                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
+                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
+                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
+                    where.Append("                             where a.ue_id = u2.id and gsc.id_coresso = @perfil and usc.login = @login) ");
+
+                    where.Append("                  or exists(select 1 ");
+                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
+                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
+                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
+                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
+                    where.Append("                             where a.turma_id = t2.id and gsc.id_coresso = @perfil and usc.login = @login))) ");
+                }
+
+                var query = new StringBuilder();
+                query.Append(" select id, ");
+                query.Append("       descricao,");
+                query.Append("       inicio as dataInicio,");
+                query.Append("       fim as datafim,");
+                query.Append("       inicio_download as dataInicioDownload,");
+                query.Append("       tempo_execucao as tempoExecucao,");
+                query.Append("       possui_bib as possuiBib,");
+                query.Append("       total_cadernos as totalCadernos,");
+                query.Append("       total_itens as totalItens,");
+                query.Append("       exists(select 1 from contexto_prova cp where cp.prova_id = p.id) as possuiContexto,");
+                query.Append("       senha");
+                query.AppendFormat(" from prova p {0} ", where.ToString());
+                query.Append(" order by p.inicio desc, p.descricao asc ");
+                query.Append(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
+                query.AppendFormat(" select count(*) from prova p {0}; ", where.ToString());
+
+                var parametros = new
+                {
+                    provaAdmFiltroDto.QuantidadeRegistros,
+                    provaAdmFiltroDto.NumeroPagina,
+                    provaAdmFiltroDto.ProvaLegadoId,
+                    provaAdmFiltroDto.Modalidade,
+                    provaAdmFiltroDto.Descricao,
+                    provaAdmFiltroDto.Ano,
+                    perfil,
+                    login
+                };
+
+                using (var multi = await conn.QueryMultipleAsync(query.ToString(), parametros))
+                {
+                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>().ToList();
+                    retorno.TotalRegistros = multi.ReadFirst<int>();
+                }
+
+                retorno.TotalPaginas = (int)Math.Ceiling((double)retorno.TotalRegistros / provaAdmFiltroDto.QuantidadeRegistros);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return retorno;
         }
     }
 }

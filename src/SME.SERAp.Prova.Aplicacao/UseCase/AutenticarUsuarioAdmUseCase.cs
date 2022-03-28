@@ -1,45 +1,41 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Dominio.Constantes;
+using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using SME.SERAp.Prova.Infra.Exceptions;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
     public class AutenticarUsuarioAdmUseCase : IAutenticarUsuarioAdmUseCase
     {
         private readonly IMediator mediator;
+
         public AutenticarUsuarioAdmUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<UsuarioAutenticacaoDto> Executar(AutenticacaoAdmDto autenticacaoDto)
+        public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
         {
+            var usuario = await mediator.Send(new ObterUsuarioSerapCoreSSOPorLoginQuery(autenticacaoDto.Login));
+            if(usuario == null)
+                throw new NaoAutorizadoException("Usuário inválido", 401);
+
             VerificaChaveApi(autenticacaoDto.ChaveApi);
             PerfilEhValido(autenticacaoDto.Perfil);
-            return await CriaTokenAdm(autenticacaoDto);
-        }
 
-        private async Task<UsuarioAutenticacaoDto> CriaTokenAdm(AutenticacaoAdmDto autenticacaoDto)
-        {
-            var retornoDto = new UsuarioAutenticacaoDto();
-            var tokenDtExpiracao =
-                await mediator.Send(new ObterTokenJwtAdmQuery(autenticacaoDto.Login, Guid.Parse(autenticacaoDto.Perfil)));
-            retornoDto.Token = tokenDtExpiracao.Item1;
-            retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
-            return retornoDto;
+            return await mediator.Send(new GerarCodigoValidacaoAdmCommand(autenticacaoDto.Login, usuario.Nome, Guid.Parse(autenticacaoDto.Perfil)));
         }
 
         private void VerificaChaveApi(string chaveApi)
         {
             if (chaveApi != Environment.GetEnvironmentVariable("ChaveSerapProvaApi"))
-                throw new NaoAutorizadoException("Não Autorizado", 401);
+                throw new NaoAutorizadoException("Chave api inválida", 401);
         }
 
-        private void PerfilEhValido(string perfil)
+        private static void PerfilEhValido(string perfil)
         {
             var ehGuid = Guid.TryParse(perfil, out var guidPerfil);
 
@@ -50,7 +46,7 @@ namespace SME.SERAp.Prova.Aplicacao
                guidPerfil != Perfis.PERFIL_SERAP_DRE &&
                guidPerfil != Perfis.PERFIL_SERAP_UE)
             {
-                throw new NaoAutorizadoException("Perfil Inválido", 402);
+                throw new NaoAutorizadoException("Perfil Inválido", 401);
             }
         }
     }
