@@ -1,5 +1,7 @@
 using Elastic.Apm;
 using Elastic.Apm.AspNetCore;
+using Elastic.Apm.DiagnosticSource;
+using Elastic.Apm.SqlClient;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -120,7 +122,9 @@ namespace SME.SERAp.Prova.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseElasticApm(Configuration);
+            app.UseElasticApm(Configuration,
+               new SqlClientDiagnosticSubscriber(),
+               new HttpDiagnosticsSubscriber());
 
             app.UseResponseCompression();
             app.UseSwagger();
