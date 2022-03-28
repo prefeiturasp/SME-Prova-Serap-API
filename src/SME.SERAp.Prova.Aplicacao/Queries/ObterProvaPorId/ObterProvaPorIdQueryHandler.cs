@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<Dominio.Prova> Handle(ObterProvaPorIdQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterAsync($"p-{request.ProvaId}", async () => await repositorioProva.ObterPorIdAsync(request.ProvaId));
+            return await repositorioCache.ObterRedisAsync($"p-{request.ProvaId}", async () => await repositorioProva.ObterPorIdAsync(request.ProvaId));
         }
     }
 }

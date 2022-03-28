@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<Arquivo> Handle(ObterArquivoPorIdLegadoQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterAsync($"ar-{request.Id}", async () => await repositorioArquivo.ObterPorIdLegadoAsync(request.Id));
+            return await repositorioCache.ObterRedisAsync($"ar-{request.Id}", async () => await repositorioArquivo.ObterPorIdLegadoAsync(request.Id));
         }
     }
 }

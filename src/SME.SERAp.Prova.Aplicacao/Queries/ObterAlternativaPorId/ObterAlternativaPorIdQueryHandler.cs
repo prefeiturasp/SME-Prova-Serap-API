@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<Alternativa> Handle(ObterAlternativaPorIdQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterAsync($"a-{request.Id}", async () => await repositorioAlternativa.ObterPorIdAsync(request.Id));
+            return await repositorioCache.ObterRedisAsync($"a-{request.Id}", async () => await repositorioAlternativa.ObterPorIdAsync(request.Id));
         }
     }
 }

@@ -47,7 +47,7 @@ namespace SME.SERAp.Prova.Api
 
             var gitHubOptions = new GithubOptions();
             Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(gitHubOptions);        
+            services.AddSingleton(gitHubOptions);
 
             var logOptions = new LogOptions();
             Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);
@@ -73,7 +73,7 @@ namespace SME.SERAp.Prova.Api
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
             services.AddHttpContextAccessor();
-            services.AddMemoryCache();
+            //services.AddMemoryCache();
 
             services.AddApplicationInsightsTelemetry(Configuration);
 
@@ -93,16 +93,15 @@ namespace SME.SERAp.Prova.Api
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
             DapperExtensionMethods.Init(clientTelemetry);
 
-            services.AddStartupTask<WarmUpCacheTask>();
-
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = Configuration.GetConnectionString("Redis");
             });
 
+            services.AddStartupTask<WarmUpCacheTask>();
         }
 
-        
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
@@ -134,6 +133,6 @@ namespace SME.SERAp.Prova.Api
             {
                 endpoints.MapControllers();
             });
-        }     
+        }
     }
 }
