@@ -29,8 +29,8 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<string> Handle(ObterUltimaVersaoFrontQuery request, CancellationToken cancellationToken)
         {
             var versaoApi = "Versão: 0";
-            
-            var versaoApiCache = await repositorioCache.ObterAsync(nomeCacheVersao);
+
+            var versaoApiCache = await repositorioCache.ObterRedisAsync<string>(nomeCacheVersao);
 
             if (string.IsNullOrEmpty(versaoApiCache))
             {
@@ -50,7 +50,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (versoes.Any())
                         versaoApi = $"Versão: {versoes.FirstOrDefault().Name}";
 
-                    repositorioCache.Salvar(nomeCacheVersao, versaoApi, 10080);
+                    await repositorioCache.SalvarRedisAsync(nomeCacheVersao, versaoApi, 10080);
                 }
 
             }

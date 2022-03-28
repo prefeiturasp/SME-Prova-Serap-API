@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<Questao> Handle(ObterQuestaoPorIdQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterAsync($"q-{request.Id}", async () => await repositorioQuestao.ObterPorIdAsync(request.Id));
+            return await repositorioCache.ObterRedisAsync($"q-{request.Id}", async () => await repositorioQuestao.ObterPorIdAsync(request.Id));
         }
     }
 }

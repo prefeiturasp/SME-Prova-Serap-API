@@ -72,10 +72,10 @@ namespace SME.SERAp.Prova.Dados.Cache
                     if (utilizarGZip)
                     {
                         stringCache = UtilGZip.Descomprimir(Convert.FromBase64String(stringCache));
-                    }                    
+                    }
                     return JsonSerializer.Deserialize<T>(stringCache);
                 }
-                
+
                 var dados = await buscarDados();
 
                 await SalvarAsync(nomeChave, JsonSerializer.Serialize(dados), minutosParaExpirar, utilizarGZip);
@@ -218,7 +218,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                 timer.Stop();
                 servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Salvar Redis Async", inicioOperacao, timer.Elapsed, true);
             }
-            
+
         }
 
         public async Task RemoverRedisAsync(string nomeChave)

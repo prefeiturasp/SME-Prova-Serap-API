@@ -83,7 +83,7 @@ namespace SME.SERAp.Prova.Api
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMemoryCache();
+            //services.AddMemoryCache();
 
             services.AddResponseCompression();
             services.Configure<BrotliCompressionProviderOptions>(options =>
