@@ -26,9 +26,12 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             if(!ehGuid) throw new NaoAutorizadoException("Perfil Inválido", 401);
 
             var login = claims.FirstOrDefault(a => a.Chave == "LOGIN")?.Valor;
+            var inicioFuturo = guidPerfil == Perfis.PERFIL_ADMINISTRADOR;
 
-            if(guidPerfil == Perfis.PERFIL_ADMINISTRADOR)
-                return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, true));
+            if(guidPerfil == Perfis.PERFIL_ADMINISTRADOR || 
+                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_NTA || 
+                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_SERAP_DRE)
+                return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, inicioFuturo));
 
             return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, false, guidPerfil, login));
         }

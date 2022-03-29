@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio.Constantes;
 using SME.SERAp.Prova.Infra;
-using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -20,7 +19,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<AutenticacaoValidarAdmDto> Executar(AutenticacaoAdmDto autenticacaoDto)
         {
             var usuario = await mediator.Send(new ObterUsuarioSerapCoreSSOPorLoginQuery(autenticacaoDto.Login));
-            if(usuario == null)
+            if (usuario == null)
                 throw new NaoAutorizadoException("Usuário inválido", 401);
 
             VerificaChaveApi(autenticacaoDto.ChaveApi);
@@ -39,15 +38,16 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var ehGuid = Guid.TryParse(perfil, out var guidPerfil);
 
-            if (!ehGuid || 
-               guidPerfil != Perfis.PERFIL_ADMINISTRADOR &&
-               guidPerfil != Perfis.PERFIL_ADMINISTRADOR_NTA &&
-               guidPerfil != Perfis.PERFIL_PROFESSOR &&
-               guidPerfil != Perfis.PERFIL_SERAP_DRE &&
-               guidPerfil != Perfis.PERFIL_SERAP_UE)
-            {
+            if (!ehGuid ||
+                guidPerfil != Perfis.PERFIL_ADMINISTRADOR &&
+                guidPerfil != Perfis.PERFIL_ADMINISTRADOR_SERAP_DRE &&
+                guidPerfil != Perfis.PERFIL_ADMINISTRADOR_NTA &&
+                guidPerfil != Perfis.PERFIL_ADMINISTRADOR_SERAP_UE &&
+                guidPerfil != Perfis.PERFIL_ASSISTENTE_DIRETOR_UE &&
+                guidPerfil != Perfis.PERFIL_COORDENADOR_PEDAGOGICO &&
+                guidPerfil != Perfis.PERFIL_DIRETOR_ESCOLAR &&
+                guidPerfil != Perfis.PERFIL_PROFESSOR)
                 throw new NaoAutorizadoException("Perfil Inválido", 401);
-            }
         }
     }
 }

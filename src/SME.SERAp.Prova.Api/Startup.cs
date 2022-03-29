@@ -76,10 +76,6 @@ namespace SME.SERAp.Prova.Api
 
             services.AddSingleton(conexaoRabbit);
 
-            var chaveIntegracaoOptions = new ChaveIntegracaoOptions();
-            Configuration.GetSection("ChaveIntegracaoOptions").Bind(chaveIntegracaoOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(chaveIntegracaoOptions);
-
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
             services.AddHttpContextAccessor();
