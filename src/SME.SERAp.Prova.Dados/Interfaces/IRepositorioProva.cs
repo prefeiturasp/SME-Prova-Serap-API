@@ -18,6 +18,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync();
         Task<bool> VerificaSeExistePorProvaSerapId(long provaId);
         Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId);
-        Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo);
+        Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo, Guid? perfil, string login);
     }
 }
