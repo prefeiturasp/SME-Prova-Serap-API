@@ -1,4 +1,4 @@
-drop view v_abrangencia_usuario_grupo;
+drop view IF EXISTS v_abrangencia_usuario_grupo;
 create view v_abrangencia_usuario_grupo as
 select a.id, a.usuario_id, usc.login, usc.nome as usuario, a.grupo_id, gsc.id_coresso, gsc.nome as grupo, a.dre_id, a.ue_id, a.turma_id 
 from abrangencia a
