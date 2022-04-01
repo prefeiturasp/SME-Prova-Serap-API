@@ -81,8 +81,6 @@ namespace SME.SERAp.Prova.Api
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            //services.AddMemoryCache();
-
             services.AddResponseCompression();
             services.Configure<BrotliCompressionProviderOptions>(options =>
             {
@@ -102,7 +100,7 @@ namespace SME.SERAp.Prova.Api
 
             DapperExtensionMethods.Init(servicoTelemetria);
 
-            IniciarPropagacaoCache(services);
+            //IniciarPropagacaoCache(services);
 
             services.AddStackExchangeRedisCache(options =>
             {
