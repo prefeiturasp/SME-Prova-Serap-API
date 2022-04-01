@@ -317,7 +317,7 @@ namespace SME.SERAp.Prova.Dados
                     where.Append(" or exists(select 1 ");
                     where.Append("             from prova p3 ");
                     where.Append("             join prova_adesao pa3 on pa3.prova_id = p3.id and pa3.modalidade_codigo = p3.modalidade ");
-                    where.Append("             join turma t3 on t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno and t3.ano_letivo::double precision = date_part('year'::text, p3.inicio) ");
+                    where.Append("             join turma t3 on t3.ue_id = pa3.ue_id and t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno and t3.ano_letivo::double precision = date_part('year'::text, p3.inicio) ");
                     where.Append("              join ue u3 on u3.id = t3.ue_id ");
                     where.Append("              where (p3.ocultar_prova is null or p3.ocultar_prova = false) and (p3.aderir_todos = false) and p3.id = p.id ");
 
