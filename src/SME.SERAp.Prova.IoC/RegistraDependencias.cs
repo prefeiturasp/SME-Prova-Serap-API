@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioQuestaoVideo, RepositorioQuestaoVideo>();
             services.TryAddScoped<IRepositorioUsuarioSerapCoreSSO, RepositorioUsuarioSerapCoreSSO>();
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
-
+            services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)

@@ -51,24 +51,6 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<Arquivo>> ObterTodosParaCacheAsync()
-        {
-            using var conn = ObterConexaoLeitura();
-            try
-            {
-                var query = @"select * from arquivo a where a.id in (select arquivo_id from alternativa_arquivo)
-                                union 
-                              select * from arquivo a where a.id in (select arquivo_id from questao_arquivo)";
-
-                return await conn.QueryAsync<Arquivo>(query);
-            }
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
-        }
-
         public async Task<IEnumerable<Arquivo>> ObterArquivosAudioPorQuestaoIdAsync(long questaoId)
         {
             using var conn = ObterConexaoLeitura();

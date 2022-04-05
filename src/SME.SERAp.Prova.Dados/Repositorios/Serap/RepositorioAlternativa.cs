@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -11,23 +10,6 @@ namespace SME.SERAp.Prova.Dados
         public RepositorioAlternativa(ConnectionStringOptions connectionStringOptions) : base(connectionStringOptions)
         {
 
-        }
-
-        public async Task<IEnumerable<Alternativa>> ObterTodosParaCacheAsync()
-        {
-            using var conn = ObterConexaoLeitura();
-            try
-            {
-                var query = @"select * from alternativa a where a.questao_id in (select id from questao)";
-
-                return await conn.QueryAsync<Alternativa>(query);
-                
-            }
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
         }
 
         public async Task<bool> RemoverPorProvaId(long provaId)
