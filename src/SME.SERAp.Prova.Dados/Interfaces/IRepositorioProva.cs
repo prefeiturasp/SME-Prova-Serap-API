@@ -15,7 +15,6 @@ namespace SME.SERAp.Prova.Dados
         Task<string> ObterCadernoAlunoPorProvaIdRa(long provaId, long alunoRA);
         Task<IEnumerable<Dominio.Prova>> ObterPorAnoDataEModalidade(string ano, DateTime dataReferenia, int modalidade);
         Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync();
-        Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync();
         Task<bool> VerificaSeExistePorProvaSerapId(long provaId);
         Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId);
         Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo, Guid? perfil, string login);

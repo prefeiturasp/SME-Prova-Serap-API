@@ -1,4 +1,3 @@
-using Elastic.Apm;
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
@@ -100,7 +99,7 @@ namespace SME.SERAp.Prova.Api
 
             DapperExtensionMethods.Init(servicoTelemetria);
 
-            //IniciarPropagacaoCache(services);
+            IniciarPropagacaoCache(services);
 
             services.AddStackExchangeRedisCache(options =>
             {
@@ -110,7 +109,6 @@ namespace SME.SERAp.Prova.Api
 
         private static void IniciarPropagacaoCache(IServiceCollection services)
         {
-            Agent.Tracer.StartTransaction("PropagarCache", "startup");
             services.AddStartupTask<WarmUpCacheTask>();
         }
 

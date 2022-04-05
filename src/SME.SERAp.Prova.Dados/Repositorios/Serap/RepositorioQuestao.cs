@@ -30,22 +30,6 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<Questao>> ObterTodasParaCacheAsync()
-        {
-            using var conn = ObterConexaoLeitura();
-            try
-            {
-                var query = @"select * from questao q where q.prova_id in (select id from prova)";
-
-                return await conn.QueryAsync<Questao>(query);
-            }
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
-        }
-
         public async Task<bool> RemoverPorProvaIdAsync(long provaId)
         {
             using var conn = ObterConexao();
