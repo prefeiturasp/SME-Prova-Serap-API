@@ -256,7 +256,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova <> true)");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
 
                 if(!inicioFuturo)
                     where.Append(" and p.inicio <= now()");
@@ -276,34 +276,44 @@ namespace SME.SERAp.Prova.Dados
                     where.Append(" and upper(p.descricao) like @descricao");
                 }
 
-                if(perfil != null && !string.IsNullOrEmpty(login))
+                if (perfil != null && !string.IsNullOrEmpty(login))
                 {
-                    where.Append(" and exists(select 1 ");
+                    //-> Abrangência
+                    where.Append(" and (exists(select 1 ");
                     where.Append("              from prova p2 join prova_ano pa2 on pa2.prova_id = p2.id ");
                     where.Append("              join turma t2 on t2.modalidade_codigo = p2.modalidade and t2.ano = pa2.ano and t2.ano_letivo::double precision = date_part('year'::text, p2.inicio) ");
                     where.Append("              join ue u2 on u2.id = t2.ue_id ");
-                    where.Append("              where p2.id = p.id ");
+                    where.Append("              where (p2.ocultar_prova is null or p2.ocultar_prova = false)");
+                    where.Append("                and (p2.aderir_todos is null or p2.aderir_todos) ");
+                    where.Append("                and p2.id = p.id");
 
-                    where.Append("                  and (exists(select 1 ");
-                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
-                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
-                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
-                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
-                    where.Append("                             where a.dre_id = u2.dre_id and gsc.id_coresso = @perfil and usc.login = @login) ");
+                    //-> Dre
+                    where.Append("                and (exists(select 1 from v_abrangencia_usuario_grupo where dre_id = u2.dre_id and ue_id is null and turma_id is null and login = @login and id_coresso = @perfil)");
 
-                    where.Append("                  or exists(select 1 ");
-                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
-                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
-                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
-                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
-                    where.Append("                             where a.ue_id = u2.id and gsc.id_coresso = @perfil and usc.login = @login) ");
+                    //-> Ue
+                    where.Append("                or exists(select 1 from v_abrangencia_usuario_grupo where ue_id = u2.id and turma_id is null and login = @login and id_coresso = @perfil)");
 
-                    where.Append("                  or exists(select 1 ");
-                    where.Append("                             from usuario_grupo_serap_coresso ugsc ");
-                    where.Append("                             join grupo_serap_coresso gsc on gsc.id = ugsc.id_grupo_serap ");
-                    where.Append("                             join usuario_serap_coresso usc on usc.id = ugsc.id_usuario_serap ");
-                    where.Append("                             join abrangencia a on a.grupo_id = ugsc.id_grupo_serap and a.usuario_id = ugsc.id_usuario_serap ");
-                    where.Append("                             where a.turma_id = t2.id and gsc.id_coresso = @perfil and usc.login = @login))) ");
+                    //-> Turma
+                    where.Append("                or exists(select 1 from v_abrangencia_usuario_grupo where turma_id = t2.id and login = @login and id_coresso = @perfil))");
+                    where.Append(" )");
+
+                    ////-> Adesão
+                    where.Append(" or exists(select 1 ");
+                    where.Append("             from prova p3 ");
+                    where.Append("             join prova_adesao pa3 on pa3.prova_id = p3.id and pa3.modalidade_codigo = p3.modalidade ");
+                    where.Append("             join turma t3 on t3.ue_id = pa3.ue_id and t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno and t3.ano_letivo::double precision = date_part('year'::text, p3.inicio) ");
+                    where.Append("              join ue u3 on u3.id = t3.ue_id ");
+                    where.Append("              where (p3.ocultar_prova is null or p3.ocultar_prova = false) and (p3.aderir_todos = false) and p3.id = p.id ");
+
+                    //-> Dre
+                    where.Append("                and (exists(select 1 from v_abrangencia_usuario_grupo where dre_id = u3.dre_id and ue_id is null and turma_id is null and login = @login and id_coresso = @perfil)");
+
+                    //-> Ue
+                    where.Append("                or exists(select 1 from v_abrangencia_usuario_grupo where ue_id = u3.id and turma_id is null and login = @login and id_coresso = @perfil)");
+
+                    //-> Turma
+                    where.Append("                or exists(select 1 from v_abrangencia_usuario_grupo where turma_id = t3.id and login = @login and id_coresso = @perfil)))");
+                    where.Append(" )");
                 }
 
                 var query = new StringBuilder();
