@@ -1,30 +1,24 @@
-﻿using System;
+﻿using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dominio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Aplicacao.UseCase
 {
     public class PropagacaoCacheUseCase : IPropagacaoCacheUseCase
     {
-        private readonly IRepositorioProva repositorioProva;
         private readonly IRepositorioCache repositorioCache;
-        private readonly IRepositorioQuestao repositorioQuestao;
-        private readonly IRepositorioAlternativa repositorioAlternativa;
-        private readonly IRepositorioArquivo repositorioArquivo;
+        private readonly IRepositorioPropagacaoCache repositorioPropagacaoCache;
 
-        public PropagacaoCacheUseCase(IRepositorioProva repositorioProva, IRepositorioCache repositorioCache, IRepositorioQuestao repositorioQuestao,
-            IRepositorioAlternativa repositorioAlternativa, IRepositorioArquivo repositorioArquivo)
+        public PropagacaoCacheUseCase(IRepositorioCache repositorioCache, IRepositorioPropagacaoCache repositorioPropagacaoCache)
         {
-            this.repositorioProva = repositorioProva ?? throw new ArgumentNullException(nameof(repositorioProva));
             this.repositorioCache = repositorioCache ?? throw new ArgumentNullException(nameof(repositorioCache));
-            this.repositorioQuestao = repositorioQuestao ?? throw new ArgumentNullException(nameof(repositorioQuestao));
-            this.repositorioAlternativa = repositorioAlternativa ?? throw new ArgumentNullException(nameof(repositorioAlternativa));
-            this.repositorioArquivo = repositorioArquivo ?? throw new ArgumentNullException(nameof(repositorioArquivo));
+            this.repositorioPropagacaoCache = repositorioPropagacaoCache ?? throw new ArgumentNullException(nameof(repositorioPropagacaoCache));
         }
+
         public async Task Propagar()
         {
             Console.WriteLine($"~~> Inicializando WarmUp do cache as {DateTime.Now}");
@@ -33,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
             if (await DeveCriarOCachePara<IEnumerable<Dominio.Prova>>("p-*"))
             {
-                var todasAsProvas = await repositorioProva.ObterTodasParaCacheAsync();
+                var todasAsProvas = await repositorioPropagacaoCache.ObterTodasProvasParaCacheAsync();
                 foreach (var prova in todasAsProvas)
                 {
                     await repositorioCache.SalvarRedisAsync($"p-{prova.Id}", prova, minutosParaUmDia);
@@ -42,7 +36,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
             if (await DeveCriarOCachePara<IEnumerable<Questao>>("q-*"))
             {
-                IEnumerable<Questao> todasAsQuestoes = await repositorioQuestao.ObterTodasParaCacheAsync();
+                IEnumerable<Questao> todasAsQuestoes = await repositorioPropagacaoCache.ObterTodasQuestoesParaCacheAsync();
                 todasAsQuestoes.AsParallel().WithDegreeOfParallelism(3).ForAll(async questao =>
                 {
                     await repositorioCache.SalvarRedisAsync($"q-{questao.Id}", JsonSerializer.Serialize(questao), minutosParaUmDia);
@@ -51,7 +45,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
             if (await DeveCriarOCachePara<IEnumerable<Alternativa>>("a-*"))
             {
-                IEnumerable<Alternativa> todasAsAlternativas = await repositorioAlternativa.ObterTodosParaCacheAsync();
+                IEnumerable<Alternativa> todasAsAlternativas = await repositorioPropagacaoCache.ObterTodasAlternativasParaCacheAsync();
                 todasAsAlternativas.AsParallel().WithDegreeOfParallelism(3).ForAll(async alternativa =>
                 {
                     await repositorioCache.SalvarRedisAsync($"a-{alternativa.Id}", JsonSerializer.Serialize(alternativa), minutosParaUmDia);
@@ -60,13 +54,12 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
             if (await DeveCriarOCachePara<IEnumerable<Arquivo>>("ar-*"))
             {
-                IEnumerable<Arquivo> todosOsArquivos = await repositorioArquivo.ObterTodosParaCacheAsync();
+                IEnumerable<Arquivo> todosOsArquivos = await repositorioPropagacaoCache.ObterTodosArquivosParaCacheAsync();
                 foreach (var arquivo in todosOsArquivos)
                 {
                     await repositorioCache.SalvarRedisAsync($"ar-{arquivo.LegadoId}", arquivo, minutosParaUmDia);
                 }
             }
-
 
             Console.WriteLine($"~~> WarmUp do cache Finalizado as {DateTime.Now}");
         }

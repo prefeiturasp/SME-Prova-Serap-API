@@ -230,22 +230,6 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<Dominio.Prova>> ObterTodasParaCacheAsync()
-        {
-            using var conn = ObterConexaoLeitura();
-            try
-            {
-                var query = @"select * from prova";
-
-                return await conn.QueryAsync<Dominio.Prova>(query);
-            }
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
-        }
-
         public async Task<bool> VerificaSeExistePorProvaSerapId(long provaId)
         {
             using var conn = ObterConexao();
