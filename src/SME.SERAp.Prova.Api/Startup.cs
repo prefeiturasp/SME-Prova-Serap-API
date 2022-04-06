@@ -1,4 +1,3 @@
-using Elastic.Apm;
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
@@ -81,8 +80,6 @@ namespace SME.SERAp.Prova.Api
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMemoryCache();
-
             services.AddResponseCompression();
             services.Configure<BrotliCompressionProviderOptions>(options =>
             {
@@ -112,13 +109,14 @@ namespace SME.SERAp.Prova.Api
 
         private static void IniciarPropagacaoCache(IServiceCollection services)
         {
-            Agent.Tracer.StartTransaction("PropagarCache", "startup");
             services.AddStartupTask<WarmUpCacheTask>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseElasticApm(Configuration);
+            app.UseElasticApm(Configuration,
+               new SqlClientDiagnosticSubscriber(),
+               new HttpDiagnosticsSubscriber());
 
             app.UseResponseCompression();
             app.UseSwagger();

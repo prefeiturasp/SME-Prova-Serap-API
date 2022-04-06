@@ -6,6 +6,7 @@ using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
 using SME.SERAp.Prova.Dados.Interfaces;
 using SME.SERAp.Prova.Dados.Repositorios.Eol;
+using SME.SERAp.Prova.Dados.Repositorios.Serap;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Services;
 
@@ -49,7 +50,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioTurma, RepositorioTurma>();
             services.TryAddScoped<IRepositorioTipoDeficiencia, RepositorioTipoDeficiencia>();
             services.TryAddScoped<IRepositorioQuestaoVideo, RepositorioQuestaoVideo>();
-
+            services.TryAddScoped<IRepositorioUsuarioSerapCoreSSO, RepositorioUsuarioSerapCoreSSO>();
+            services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
+            services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -96,6 +99,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterProvaResumoAreaAdministrativoUseCase, ObterProvaResumoAreaAdministrativoUseCase>();
             services.TryAddScoped<IObterProvaCadernosAreaAdministrativoUseCase, ObterProvaCadernosAreaAdministrativoUseCase>();
             services.TryAddScoped<IObterQuestaoDetalhesResumidoAreaAdministrativoUseCase, ObterQuestaoDetalhesResumidoAreaAdministrativoUseCase>();
+            services.TryAddScoped<IObterVersaoAppUseCase, ObterVersaoAppUseCase>();
+            services.TryAddScoped<IAutenticarUsuarioValidarAdmUseCase, AutenticarUsuarioValidarAdmUseCase>();
+            services.TryAddScoped<IRevalidaTokenJwtAdmUseCase, RevalidaTokenJwtAdmUseCase>();
         }
     }
 }

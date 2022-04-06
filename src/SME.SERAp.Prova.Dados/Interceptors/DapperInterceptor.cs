@@ -109,7 +109,7 @@ namespace SME.SERAp.Prova.Dados
 
             return result;
         }
-        public static async Task<GridReader> QueryMultipleAsync(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null, string queryName = "Query Postgres")
+        public static async Task<GridReader> QueryMultipleAsync(this IDbConnection cnn, string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null, string queryName = "QueryMultiple Postgres")
         {
             var result = await servicoTelemetria.RegistrarComRetornoAsync<GridReader>(async () => await SqlMapper.QueryMultipleAsync(cnn, sql, param, transaction, commandTimeout, commandType), "Postgres", $"Query {queryName}", sql);
             return result;

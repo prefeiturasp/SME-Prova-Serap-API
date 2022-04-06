@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Aplicacao.Queries.ObterProvasAdministrativoPaginada;
 using SME.SERAp.Prova.Dominio.Constantes;
 using SME.SERAp.Prova.Infra.Dtos;
 using SME.SERAp.Prova.Infra.Exceptions;
@@ -20,14 +19,21 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
         public async Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> Executar(ProvaAdmFiltroDto paginacaoFiltroDto)
         {
-            var claims = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery("Perfil"));
-            var perfil = claims.FirstOrDefault(a => a.Chave == "Perfil")?.Valor;
+            var claims = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery("PERFIL", "LOGIN"));
+            var perfil = claims.FirstOrDefault(a => a.Chave == "PERFIL")?.Valor;
             var ehGuid = Guid.TryParse(perfil, out var guidPerfil);
 
             if(!ehGuid) throw new NaoAutorizadoException("Perfil Inválido", 401);
 
-            var provas = await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, Perfis.PERFIL_ADMINISTRADOR == guidPerfil));
-            return provas;
+            var login = claims.FirstOrDefault(a => a.Chave == "LOGIN")?.Valor;
+            var inicioFuturo = guidPerfil == Perfis.PERFIL_ADMINISTRADOR;
+
+            if(guidPerfil == Perfis.PERFIL_ADMINISTRADOR || 
+                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_NTA || 
+                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_SERAP_DRE)
+                return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, inicioFuturo));
+
+            return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, false, guidPerfil, login));
         }
     }
 }

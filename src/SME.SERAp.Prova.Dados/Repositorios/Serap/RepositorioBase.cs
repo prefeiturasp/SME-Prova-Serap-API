@@ -113,10 +113,10 @@ namespace SME.SERAp.Prova.Dados
         }
         public virtual async Task<bool> RemoverFisicamenteAsync(T entidade)
         {
-            var conexao = ObterConexao();            
+            var conexao = ObterConexao();
             try
             {
-                return await conexao.DeleteAsync(entidade);                
+                return await conexao.DeleteAsync(entidade);
             }
             finally
             {

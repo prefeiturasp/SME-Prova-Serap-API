@@ -72,10 +72,10 @@ namespace SME.SERAp.Prova.Dados.Cache
                     if (utilizarGZip)
                     {
                         stringCache = UtilGZip.Descomprimir(Convert.FromBase64String(stringCache));
-                    }                    
+                    }
                     return JsonSerializer.Deserialize<T>(stringCache);
                 }
-                
+
                 var dados = await buscarDados();
 
                 await SalvarAsync(nomeChave, JsonSerializer.Serialize(dados), minutosParaExpirar, utilizarGZip);
@@ -218,7 +218,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                 timer.Stop();
                 servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Salvar Redis Async", inicioOperacao, timer.Elapsed, true);
             }
-            
+
         }
 
         public async Task RemoverRedisAsync(string nomeChave)
@@ -271,6 +271,34 @@ namespace SME.SERAp.Prova.Dados.Cache
                 servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, $"Obtendo - Erro {ex.Message}", inicioOperacao, timer.Elapsed, false);
                 return default;
             }
+        }
+
+        public async Task<T> ObterRedisAsync<T>(string nomeChave)
+        {
+            var inicioOperacao = DateTime.UtcNow;
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                var byteCache = await distributedCache.GetAsync(nomeChave);
+
+                timer.Stop();
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, "Obtendo", inicioOperacao, timer.Elapsed, true);
+
+                if (byteCache != null)
+                {
+                    return MessagePackSerializer.Deserialize<T>(byteCache);
+                }
+            }
+            catch (Exception ex)
+            {
+                servicoLog.Registrar(ex);
+                timer.Stop();
+
+                servicoLog.RegistrarDependenciaAppInsights("Redis", nomeChave, $"Obtendo - Erro {ex.Message}", inicioOperacao, timer.Elapsed, false);
+            }
+
+            return default;
         }
 
     }

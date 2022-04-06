@@ -10,7 +10,7 @@ namespace SME.SERAp.Prova.Api.Controllers
 {
     [ApiController]
     [Route("/api/v1/admin/provas")]
-    public class ProvaAdmController : ControllerBase
+    public class AdminProvaController : ControllerBase
     {
         [HttpGet]
         [ProducesResponseType(typeof(PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>), 200)]
