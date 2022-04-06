@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var retornoDto = new UsuarioAutenticacaoDto();
 
-            var aluno = await mediator.Send(new ObterAlunoAtivoEolQuery(autenticacaoDto.Login));
+            var aluno = await mediator.Send(new ObterAlunoAtivoQuery(autenticacaoDto.Login));
             if (aluno != null)
             {
                 var podeGerarToken =
@@ -34,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
 
-                var verificaUsuario = await mediator.Send(new ObterUsuarioPorLoginQuery(aluno.CodigoAluno));
+                var verificaUsuario = await mediator.Send(new ObterUsuarioPorLoginQuery(aluno.Ra));
 
                 if (verificaUsuario == null)
                 {
