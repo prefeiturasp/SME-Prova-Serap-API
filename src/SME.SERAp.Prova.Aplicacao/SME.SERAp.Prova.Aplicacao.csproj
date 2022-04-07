@@ -16,4 +16,10 @@
     <ProjectReference Include="..\SME.SERAp.Prova.Infra\SME.SERAp.Prova.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Queries\ObterAlunoAtivo\ObterAlunoAtivoQueryHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>
