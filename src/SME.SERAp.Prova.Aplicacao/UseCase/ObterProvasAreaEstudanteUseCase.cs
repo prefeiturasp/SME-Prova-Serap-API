@@ -103,7 +103,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     continue;
                 }
 
-                if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                if (DateTime.Now.Date >= prova.InicioDownload.GetValueOrDefault().Date && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
