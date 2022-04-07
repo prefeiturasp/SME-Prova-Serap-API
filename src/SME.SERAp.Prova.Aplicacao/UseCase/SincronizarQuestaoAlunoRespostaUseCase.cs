@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -15,10 +16,13 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<bool> Executar(QuestaoAlunoRespostaSincronizarDto dto)
+        public async Task<bool> Executar( List<QuestaoAlunoRespostaSincronizarDto> listaAlunoResposta)
         {
-            //await mediator.Send(new IncluirQuestaoAlunoRespostaCacheCommand(dto));
-            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, dto));
+            foreach(var dto in listaAlunoResposta)
+            {
+                await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, dto));
+            }
+            return true;
         }
     }
 }
