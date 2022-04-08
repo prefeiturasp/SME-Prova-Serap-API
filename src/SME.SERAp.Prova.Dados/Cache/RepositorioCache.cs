@@ -21,7 +21,10 @@ namespace SME.SERAp.Prova.Dados.Cache
         {
             try
             {
-                await database.StringSetAsync(nomeChave, MessagePackSerializer.Serialize(valor), TimeSpan.FromMinutes(minutosParaExpirar));
+                if (valor != null)
+                {
+                    await database.StringSetAsync(nomeChave, MessagePackSerializer.Serialize(valor), TimeSpan.FromMinutes(minutosParaExpirar));
+                }
             }
             catch(Exception ex)
             {
