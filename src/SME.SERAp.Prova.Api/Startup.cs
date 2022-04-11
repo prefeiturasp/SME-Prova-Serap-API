@@ -1,6 +1,7 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
+using Elastic.Apm.StackExchange.Redis;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -121,6 +122,9 @@ namespace SME.SERAp.Prova.Api
             app.UseElasticApm(Configuration,
                new SqlClientDiagnosticSubscriber(),
                new HttpDiagnosticsSubscriber());
+
+            var muxer = app.ApplicationServices.GetService<IConnectionMultiplexer>();
+            muxer.UseElasticApm();
 
             app.UseResponseCompression();
             app.UseSwagger();
