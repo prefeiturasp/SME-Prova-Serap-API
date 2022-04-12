@@ -144,7 +144,7 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Modalidade,
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
-	                            pa.ano
+	                            pa.ano,
                                 p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao
                             from
 	                            prova p
