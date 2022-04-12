@@ -22,6 +22,8 @@ namespace SME.SERAp.Prova.Infra
         public Modalidade Modalidade { get; set; }
         public string Ano { get; set; }
 
+        public int? QuantidadeRespostaSincronizacao { get; set; }
+
         public DateTime ObterDataInicioMais3Horas()
         {
             return Inicio.AddHours(3);

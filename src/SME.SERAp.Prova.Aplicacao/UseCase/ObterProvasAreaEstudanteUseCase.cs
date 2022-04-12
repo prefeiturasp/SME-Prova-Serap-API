@@ -118,7 +118,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
                         provaAluno?.CriadoEm, prova.Senha, 
-                        prova.Modalidade));
+                        prova.Modalidade,null, prova.QuantidadeRespostaSincronizacao));
                 }
 
             }

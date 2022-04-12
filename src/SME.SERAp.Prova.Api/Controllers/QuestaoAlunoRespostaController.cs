@@ -14,16 +14,7 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/questoes/respostas")]
     public class QuestaoAlunoRespostaController : ControllerBase
     {
-        [HttpPost]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
-        [ValidaDto]
-        public async Task<IActionResult> SalvarResposta([FromBody] QuestaoAlunoRespostaIncluirDto questaoAlunoRespostaIncluirDto,
-            [FromServices] IIncluirQuestaoAlunoRespostaUseCase incluirQuestaoAlunoRespostaUseCase)
-        {
-            return Ok(await incluirQuestaoAlunoRespostaUseCase.Executar(questaoAlunoRespostaIncluirDto));
-        }
+       
 
         [HttpPost]
         [ChaveAutenticacaoApi]
