@@ -18,5 +18,8 @@ namespace SME.SERAp.Prova.Dominio
         public int TipoTurma { get; set; }
         public int Modalidade { get; set; }
         public long TipoTurno { get; set; }
+        public int Semestre { get; set; }
+        public int EtapaEja { get; set; }
+        public string SerieEnsino { get; set; }
     }
 }

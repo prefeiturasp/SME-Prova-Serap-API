@@ -141,10 +141,11 @@ namespace SME.SERAp.Prova.Dados
 	                            p.inicio,
 	                            p.fim,
 	                            p.Tempo_Execucao TempoExecucao,
-	                            p.Modalidade,
+	                            case when pa.modalidade is not null then pa.modalidade else p.modalidade end Modalidade,
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
-	                            pa.ano
+	                            pa.ano,
+                                pa.etapa_eja EtapaEja
                             from
 	                            prova p
                             inner join prova_ano pa 

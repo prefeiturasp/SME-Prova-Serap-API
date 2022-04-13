@@ -9,6 +9,7 @@ namespace SME.SERAp.Prova.Infra.Utils
 {
     public static class UtilAluno
     {
+        [Obsolete]
         public static string AjustarAnoAluno(string modalidade, string ano)
         {
             if (ano.ToUpper() == "S" || String.IsNullOrEmpty(ano))

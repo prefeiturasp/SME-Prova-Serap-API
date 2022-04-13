@@ -21,6 +21,7 @@ namespace SME.SERAp.Prova.Infra
         public bool PossuiBIB { get; set; }
         public Modalidade Modalidade { get; set; }
         public string Ano { get; set; }
+        public int EtapaEja { get; set; }
 
         public DateTime ObterDataInicioMais3Horas()
         {

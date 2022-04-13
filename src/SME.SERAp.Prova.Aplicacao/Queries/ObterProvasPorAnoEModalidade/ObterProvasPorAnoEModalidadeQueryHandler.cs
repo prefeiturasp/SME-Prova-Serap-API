@@ -23,7 +23,11 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await repositorioCache.ObterRedisAsync("pas", async () => await repositorioProva.ObterAnosDatasEModalidadesAsync());
             if (provas != null && provas.Any())
             {
-                return provas.Where(a => a.Ano == request.Ano && (int)a.Modalidade == request.Modalidade);
+                return provas.Where(a => (a.Modalidade != Dominio.Modalidade.EJA 
+                                            && a.Modalidade != Dominio.Modalidade.CIEJA 
+                                            && (int)a.Modalidade == request.Modalidade 
+                                            && a.Ano == request.Ano)
+                                         || ((int)a.Modalidade == request.Modalidade && a.Ano == request.Ano && a.EtapaEja == request.EtapaEja));
             }
             else return default;
         }
