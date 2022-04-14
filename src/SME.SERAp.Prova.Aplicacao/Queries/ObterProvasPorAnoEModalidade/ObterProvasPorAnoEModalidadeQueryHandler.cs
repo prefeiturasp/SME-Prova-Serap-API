@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,13 +24,16 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await repositorioCache.ObterRedisAsync("pas", async () => await repositorioProva.ObterAnosDatasEModalidadesAsync());
             if (provas != null && provas.Any())
             {
-                return provas.Where(a => (a.Modalidade != Dominio.Modalidade.EJA 
-                                            && a.Modalidade != Dominio.Modalidade.CIEJA 
-                                            && (int)a.Modalidade == request.Modalidade 
-                                            && a.Ano == request.Ano)
-                                         || ((int)a.Modalidade == request.Modalidade && a.Ano == request.Ano && a.EtapaEja == request.EtapaEja));
+                return provas.Where(a => (!EhEjaCieja(a.Modalidade) 
+                                           && (int)a.Modalidade == request.Modalidade 
+                                           && a.Ano == request.Ano)
+                                        || ((int)a.Modalidade == request.Modalidade && a.Ano == request.Ano && a.EtapaEja == request.EtapaEja));
             }
             else return default;
+        }
+        private bool EhEjaCieja(Modalidade modalidade)
+        {
+            return modalidade == Modalidade.EJA || modalidade == Modalidade.CIEJA;
         }
     }
 }
