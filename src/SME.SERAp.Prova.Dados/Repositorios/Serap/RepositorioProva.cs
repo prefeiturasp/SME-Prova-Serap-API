@@ -145,7 +145,8 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
 	                            pa.ano,
-                                pa.etapa_eja EtapaEja
+                              pa.etapa_eja EtapaEja,
+                              p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao
                             from
 	                            prova p
                             inner join prova_ano pa 
@@ -177,7 +178,8 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Tempo_Execucao TempoExecucao,
 	                            p.Modalidade,
 	                            p.Senha,
-	                            p.possui_bib PossuiBIB
+	                            p.possui_bib PossuiBIB,
+                                p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao
                             from
 	                            prova p
                             inner join prova_ano pa 

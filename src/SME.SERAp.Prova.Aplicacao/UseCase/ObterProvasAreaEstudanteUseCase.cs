@@ -101,7 +101,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     continue;
                 }
 
-                if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                if (DateTime.Now.Date >= prova.InicioDownload.GetValueOrDefault().Date && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
@@ -116,7 +116,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
                         provaAluno?.CriadoEm, prova.Senha, 
-                        prova.Modalidade));
+                        prova.Modalidade,null, prova.QuantidadeRespostaSincronizacao));
                 }
 
             }

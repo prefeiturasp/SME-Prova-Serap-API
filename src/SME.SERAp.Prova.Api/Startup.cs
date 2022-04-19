@@ -1,6 +1,7 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
+using Elastic.Apm.StackExchange.Redis;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
+using StackExchange.Redis;
 using System.IO.Compression;
 
 namespace SME.SERAp.Prova.Api
@@ -86,6 +88,14 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
+            var redisConfigurationOptions = new ConfigurationOptions()
+            {
+                EndPoints = { Configuration.GetConnectionString("Redis") },
+                Proxy = Proxy.Twemproxy
+            };
+            var muxer = ConnectionMultiplexer.Connect(redisConfigurationOptions);
+            services.AddSingleton<IConnectionMultiplexer>(muxer);
+
             RegistraClientesHttp.Registrar(services, gitHubOptions);
             RegistraDependencias.Registrar(services);
             RegistraAutenticacao.Registrar(services, jwtVariaveis);
@@ -100,11 +110,6 @@ namespace SME.SERAp.Prova.Api
             DapperExtensionMethods.Init(servicoTelemetria);
 
             IniciarPropagacaoCache(services);
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = Configuration.GetConnectionString("Redis");
-            });
         }
 
         private static void IniciarPropagacaoCache(IServiceCollection services)
@@ -117,6 +122,9 @@ namespace SME.SERAp.Prova.Api
             app.UseElasticApm(Configuration,
                new SqlClientDiagnosticSubscriber(),
                new HttpDiagnosticsSubscriber());
+
+            var muxer = app.ApplicationServices.GetService<IConnectionMultiplexer>();
+            muxer.UseElasticApm();
 
             app.UseResponseCompression();
             app.UseSwagger();

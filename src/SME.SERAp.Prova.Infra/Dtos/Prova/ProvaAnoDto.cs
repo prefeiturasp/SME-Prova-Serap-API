@@ -23,6 +23,8 @@ namespace SME.SERAp.Prova.Infra
         public string Ano { get; set; }
         public int EtapaEja { get; set; }
 
+        public int? QuantidadeRespostaSincronizacao { get; set; }
+
         public DateTime ObterDataInicioMais3Horas()
         {
             return Inicio.AddHours(3);
