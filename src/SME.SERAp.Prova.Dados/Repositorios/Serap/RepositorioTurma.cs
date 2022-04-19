@@ -18,7 +18,15 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select t.id Id, t.ano Ano, t.ano_letivo AnoLetivo, t.tipo_turma TipoTurma, t.modalidade_codigo Modalidade, t.tipo_turno TipoTurno 
+                var query = @"select t.id Id, 
+                                     t.ano Ano, 
+                                     t.ano_letivo AnoLetivo, 
+                                     t.tipo_turma TipoTurma, 
+                                     t.modalidade_codigo Modalidade, 
+                                     t.tipo_turno TipoTurno,
+                                     t.semestre Semestre,
+                                     t.serie_ensino SerieEnsino,
+                                     t.etapa_eja EtapaEja
                                 from turma t 
                                 inner join aluno a on t.id = a.turma_id
                                 where a.ra = @alunoRa";
