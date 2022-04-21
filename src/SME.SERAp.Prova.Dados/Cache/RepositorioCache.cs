@@ -60,6 +60,10 @@ namespace SME.SERAp.Prova.Dados.Cache
 
                 return dados;
             }
+            catch (RedisTimeoutException)
+            {
+                return await buscarDados();
+            }
             catch (Exception ex)
             {
                 servicoLog.Registrar(ex);
