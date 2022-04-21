@@ -19,6 +19,7 @@ using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using StackExchange.Redis;
 using System.IO.Compression;
+using System.Threading;
 
 namespace SME.SERAp.Prova.Api
 {
@@ -35,6 +36,8 @@ namespace SME.SERAp.Prova.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            ThreadPool.SetMinThreads(50, 50);
 
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
@@ -91,7 +94,8 @@ namespace SME.SERAp.Prova.Api
             var redisConfigurationOptions = new ConfigurationOptions()
             {
                 EndPoints = { Configuration.GetConnectionString("Redis") },
-                Proxy = Proxy.Twemproxy
+                Proxy = Proxy.Twemproxy,
+                SyncTimeout = 10000
             };
             var muxer = ConnectionMultiplexer.Connect(redisConfigurationOptions);
             services.AddSingleton<IConnectionMultiplexer>(muxer);
