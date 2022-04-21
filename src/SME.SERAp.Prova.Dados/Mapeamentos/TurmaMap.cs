@@ -16,6 +16,9 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.TipoTurma).ToColumn("tipo_turma");
             Map(c => c.Modalidade).ToColumn("modalidade_codigo");
             Map(c => c.TipoTurno).ToColumn("tipo_turno");
+            Map(c => c.Semestre).ToColumn("semestre");
+            Map(c => c.EtapaEja).ToColumn("etapa_eja");
+            Map(c => c.SerieEnsino).ToColumn("serie_ensino");
         }
     }
 }
