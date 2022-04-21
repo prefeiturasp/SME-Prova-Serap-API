@@ -12,5 +12,6 @@ namespace SME.SERAp.Prova.Dominio.Constantes
         public readonly static Guid PERFIL_COORDENADOR_PEDAGOGICO = Guid.Parse("D4026F2C-1A1E-E811-B259-782BCB3D2D76");
         public readonly static Guid PERFIL_DIRETOR_ESCOLAR = Guid.Parse("75DCAB30-2C1E-E811-B259-782BCB3D2D76");
         public readonly static Guid PERFIL_PROFESSOR = Guid.Parse("E77E81B1-191E-E811-B259-782BCB3D2D76");
+        public readonly static Guid PERFIL_PROFESSOR_OLD = Guid.Parse("067D9B21-A1FF-E611-9541-782BCB3D218E");
     }
 }
