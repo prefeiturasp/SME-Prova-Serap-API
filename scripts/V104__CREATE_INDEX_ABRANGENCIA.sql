@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS abrangencia_inicio_fim_idx ON public.abrangencia USING btree (inicio, fim);
+CREATE INDEX IF NOT EXISTS usuario_serap_coresso_login_idx ON public.usuario_serap_coresso (login);
