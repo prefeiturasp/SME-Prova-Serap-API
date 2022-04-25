@@ -283,42 +283,41 @@ namespace SME.SERAp.Prova.Dados
                 {
                     //-> Abrangência
                     where.AppendLine(" and (exists(select 1 ");
-                    where.AppendLine("             from prova p2 join prova_ano pa2 on pa2.prova_id = p2.id ");
-                    where.AppendLine("             left join turma t2 on t2.modalidade_codigo = p2.modalidade and t2.ano = pa2.ano and t2.ano_letivo::double precision = date_part('year'::text, p2.inicio) ");
+                    where.AppendLine("             from prova_ano pa2 ");
+                    where.AppendLine("             left join turma t2 on t2.modalidade_codigo = pa2.modalidade and t2.ano = pa2.ano ");
                     where.AppendLine("             left join ue u2 on u2.id = t2.ue_id ");
-                    where.AppendLine("             where (p2.ocultar_prova is null or p2.ocultar_prova = false)");
-                    where.AppendLine("               and (p2.aderir_todos is null or p2.aderir_todos) ");
-                    where.AppendLine("               and p2.id = p.id");
+                    where.AppendLine("             where pa2.prova_id = p.id ");
+                    where.AppendLine("               and t2.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
+                    where.AppendLine("               and (p.aderir_todos is null or p.aderir_todos) ");
 
                     where.AppendLine("               and exists(select 1 ");
-                    where.AppendLine("                          from v_abrangencia_usuario_grupo ");
+                    where.AppendLine("                          from v_abrangencia_usuario_grupo vaug2 ");
                     //-> Dre
-                    where.AppendLine("                          where dre_id = u2.dre_id ");
+                    where.AppendLine("                          where vaug2.dre_id = u2.dre_id ");
                     //-> Ue
-                    where.AppendLine("                            and (ue_id is null or ue_id = u2.id) ");
+                    where.AppendLine("                            and (vaug2.ue_id is null or vaug2.ue_id = u2.id) ");
                     //-> Turma
-                    where.AppendLine("                            and (turma_id is null or (turma_id = t2.id and inicio <= p2.inicio and (fim is null or fim >= p2.fim))) and login = @login and id_coresso = @perfil");
+                    where.AppendLine("                            and (vaug2.turma_id is null or (vaug2.turma_id = t2.id and vaug2.inicio <= p.inicio and (vaug2.fim is null or vaug2.fim >= p.fim))) and vaug2.login = @login and vaug2.id_coresso = @perfil");
                     where.AppendLine("                         )");
                     where.AppendLine("            )");
 
                     ////-> Adesão
                     where.AppendLine(" or exists(select 1 ");
-                    where.AppendLine("           from prova p3 ");
-                    where.AppendLine("           left join prova_adesao pa3 on pa3.prova_id = p3.id and pa3.modalidade_codigo = p3.modalidade ");
-                    where.AppendLine("           left join turma t3 on t3.ue_id = pa3.ue_id and t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno and t3.ano_letivo::double precision = date_part('year'::text, p3.inicio) ");
+                    where.AppendLine("           from prova_adesao pa3 ");
+                    where.AppendLine("           left join turma t3 on t3.ue_id = pa3.ue_id and t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno ");
                     where.AppendLine("           left join ue u3 on u3.id = t3.ue_id ");
-                    where.AppendLine("           where (p3.ocultar_prova is null or p3.ocultar_prova = false)");
-                    where.AppendLine("             and (p3.aderir_todos = false) ");
-                    where.AppendLine("             and p3.id = p.id ");
+                    where.AppendLine("           where pa3.prova_id = p.id");
+                    where.AppendLine("             and t3.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
+                    where.AppendLine("             and p.aderir_todos = false ");
 
                     where.AppendLine("             and exists(select 1 ");
-                    where.AppendLine("                        from v_abrangencia_usuario_grupo ");
+                    where.AppendLine("                        from v_abrangencia_usuario_grupo vaug3 ");
                     //-> Dre
-                    where.AppendLine("                        where dre_id = u3.dre_id ");
+                    where.AppendLine("                        where vaug3.dre_id = u3.dre_id ");
                     //-> Ue
-                    where.AppendLine("                          and (ue_id is null or ue_id = u3.id) ");
+                    where.AppendLine("                          and (vaug3.ue_id is null or vaug3.ue_id = u3.id) ");
                     //-> Turma
-                    where.AppendLine("                          and (turma_id is null or (turma_id = t3.id and inicio <= p3.inicio and (fim is null or fim >= p3.fim))) and login = @login and id_coresso = @perfil");
+                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.fim))) and vaug3.login = @login and vaug3.id_coresso = @perfil");
                     where.AppendLine("                        )");
                     where.AppendLine("            )");
                     where.AppendLine("     )");
