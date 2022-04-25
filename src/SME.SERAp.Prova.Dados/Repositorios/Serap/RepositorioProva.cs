@@ -284,9 +284,10 @@ namespace SME.SERAp.Prova.Dados
                     //-> Abrangência
                     where.AppendLine(" and (exists(select 1 ");
                     where.AppendLine("             from prova_ano pa2 ");
-                    where.AppendLine("             left join turma t2 on t2.modalidade_codigo = pa2.modalidade and t2.ano = pa2.ano ");
+                    where.AppendLine("             left join turma t2 on t2.ano = pa2.ano ");
                     where.AppendLine("             left join ue u2 on u2.id = t2.ue_id ");
                     where.AppendLine("             where pa2.prova_id = p.id ");
+                    where.AppendLine("               and t2.modalidade_codigo = p.modalidade ");
                     where.AppendLine("               and t2.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
                     where.AppendLine("               and (p.aderir_todos is null or p.aderir_todos) ");
 
@@ -297,16 +298,20 @@ namespace SME.SERAp.Prova.Dados
                     //-> Ue
                     where.AppendLine("                            and (vaug2.ue_id is null or vaug2.ue_id = u2.id) ");
                     //-> Turma
-                    where.AppendLine("                            and (vaug2.turma_id is null or (vaug2.turma_id = t2.id and vaug2.inicio <= p.inicio and (vaug2.fim is null or vaug2.fim >= p.fim))) and vaug2.login = @login and vaug2.id_coresso = @perfil");
+                    where.AppendLine("                            and (vaug2.turma_id is null or (vaug2.turma_id = t2.id and vaug2.inicio <= p.inicio and (vaug2.fim is null or vaug2.fim >= p.fim))) ");
+
+                    where.AppendLine("                            and vaug2.login = @login ");
+                    where.AppendLine("                            and vaug2.id_coresso = @perfil ");
                     where.AppendLine("                         )");
                     where.AppendLine("            )");
 
                     ////-> Adesão
                     where.AppendLine(" or exists(select 1 ");
                     where.AppendLine("           from prova_adesao pa3 ");
-                    where.AppendLine("           left join turma t3 on t3.ue_id = pa3.ue_id and t3.modalidade_codigo = pa3.modalidade_codigo and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno ");
+                    where.AppendLine("           left join turma t3 on t3.ue_id = pa3.ue_id and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno ");
                     where.AppendLine("           left join ue u3 on u3.id = t3.ue_id ");
-                    where.AppendLine("           where pa3.prova_id = p.id");
+                    where.AppendLine("           where pa3.prova_id = p.id ");
+                    where.AppendLine("             and t3.modalidade_codigo = p.modalidade ");
                     where.AppendLine("             and t3.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
                     where.AppendLine("             and p.aderir_todos = false ");
 
@@ -317,7 +322,10 @@ namespace SME.SERAp.Prova.Dados
                     //-> Ue
                     where.AppendLine("                          and (vaug3.ue_id is null or vaug3.ue_id = u3.id) ");
                     //-> Turma
-                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.fim))) and vaug3.login = @login and vaug3.id_coresso = @perfil");
+                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.fim))) ");
+
+                    where.AppendLine("                          and vaug3.login = @login ");
+                    where.AppendLine("                          and vaug3.id_coresso = @perfil ");
                     where.AppendLine("                        )");
                     where.AppendLine("            )");
                     where.AppendLine("     )");
