@@ -298,7 +298,7 @@ namespace SME.SERAp.Prova.Dados
                     //-> Ue
                     where.AppendLine("                            and (vaug2.ue_id is null or vaug2.ue_id = u2.id) ");
                     //-> Turma
-                    where.AppendLine("                            and (vaug2.turma_id is null or (vaug2.turma_id = t2.id and vaug2.inicio <= p.inicio and (vaug2.fim is null or vaug2.fim >= p.fim))) ");
+                    where.AppendLine("                            and (vaug2.turma_id is null or (vaug2.turma_id = t2.id and vaug2.inicio <= p.inicio and (vaug2.fim is null or vaug2.fim >= p.inicio))) ");
 
                     where.AppendLine("                            and vaug2.login = @login ");
                     where.AppendLine("                            and vaug2.id_coresso = @perfil ");
@@ -322,7 +322,7 @@ namespace SME.SERAp.Prova.Dados
                     //-> Ue
                     where.AppendLine("                          and (vaug3.ue_id is null or vaug3.ue_id = u3.id) ");
                     //-> Turma
-                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.fim))) ");
+                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.inicio))) ");
 
                     where.AppendLine("                          and vaug3.login = @login ");
                     where.AppendLine("                          and vaug3.id_coresso = @perfil ");
