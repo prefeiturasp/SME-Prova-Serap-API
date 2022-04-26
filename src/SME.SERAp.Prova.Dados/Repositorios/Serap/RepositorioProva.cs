@@ -145,8 +145,9 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
 	                            pa.ano,
-                              pa.etapa_eja EtapaEja,
-                              p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao
+                                pa.etapa_eja EtapaEja,
+                                p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
+                                p.ultima_atualizacao as UltimaAtualizacao
                             from
 	                            prova p
                             inner join prova_ano pa 
