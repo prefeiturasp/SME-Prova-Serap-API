@@ -24,6 +24,9 @@ namespace SME.SERAp.Prova.Aplicacao
             var claimsParaBuscar = new string[] { "ANO", "TIPOTURNO", "MODALIDADE", "RA" };
             var claimsDoUsuario = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery(claimsParaBuscar));
 
+            if (claimsDoUsuario == null)
+                throw new NegocioException("Dados do usuário logado não localizado");
+
             var alunoLogadoAno = claimsDoUsuario.FirstOrDefault(a => a.Chave == "ANO")?.Valor;
             if (string.IsNullOrEmpty(alunoLogadoAno))
                 throw new NegocioException("Ano do aluno logado não localizado");
@@ -36,8 +39,15 @@ namespace SME.SERAp.Prova.Aplicacao
             if (string.IsNullOrEmpty(alunoLogadoModalidade))
                 throw new NegocioException("Modalidade do aluno logado não localizado");
 
+            var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
+            if (string.IsNullOrEmpty(alunoRa))
+                throw new NegocioException("Não foi possível obter o RA do usuário logado.");
+
             var tiposParaBuscar = new int[] { (int)TipoParametroSistema.TempoExtraProva, (int)TipoParametroSistema.TempoAlertaProva };
             var parametrosParaUtilizar = await mediator.Send(new ObterParametroSistemaPorTiposEAnoQuery(tiposParaBuscar, DateTime.Now.Year));
+
+            if (parametrosParaUtilizar == null)
+                throw new NegocioException("Parametros do sistema não localizado");
 
             var parametroTempoExtra = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoExtraProva);
 
@@ -51,12 +61,10 @@ namespace SME.SERAp.Prova.Aplicacao
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
-            var alunoRa = claimsDoUsuario.FirstOrDefault(a => a.Chave == "RA")?.Valor;
-
-            if (string.IsNullOrEmpty(alunoRa))
-                throw new NegocioException("Não foi possível obter o RA do usuário logado.");
-
             var turmasAluno = await mediator.Send(new ObterTurmasAlunoPorRaQuery(long.Parse(alunoRa)));
+            if (turmasAluno == null)
+                throw new NegocioException("Turma do aluno não localizado");
+
             var turmaAtual = turmasAluno.Where(t => t.Ano == int.Parse(alunoLogadoAno) 
                                                     && t.Modalidade == int.Parse(alunoLogadoModalidade) 
                                                     && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
@@ -66,9 +74,9 @@ namespace SME.SERAp.Prova.Aplicacao
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
             var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
-            provas = JuntarListasProvas(provas.ToList(), provasAdesao);            
+            provas = JuntarListasProvas(provas, provasAdesao);            
 
-            provas = await TratarProvasPorTipoDeficiencia(provas.ToList(), long.Parse(alunoRa));
+            provas = await TratarProvasPorTipoDeficiencia(provas, long.Parse(alunoRa));
 
             if (provas.Any())
             {
@@ -136,7 +144,7 @@ namespace SME.SERAp.Prova.Aplicacao
             return 0;
         }
 
-        private IEnumerable<ProvaAnoDto> JuntarListasProvas(List<ProvaAnoDto> provas, List<ProvaAnoDto> provasAdesao)
+        private IEnumerable<ProvaAnoDto> JuntarListasProvas(IEnumerable<ProvaAnoDto> provas, IEnumerable<ProvaAnoDto> provasAdesao)
         {
             var retorno = new List<ProvaAnoDto>();
             if (provas != null && provas.Any())
@@ -147,9 +155,9 @@ namespace SME.SERAp.Prova.Aplicacao
             return retorno.Distinct();
         }
 
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasPorTipoDeficiencia(List<ProvaAnoDto> provas, long alunoRa)
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasPorTipoDeficiencia(IEnumerable<ProvaAnoDto> provas, long alunoRa)
         {
-            var provasRetorno = provas.AsEnumerable();
+            var provasRetorno = provas;
             var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(alunoRa));
 
             provasRetorno = await TratarProvasComAudio(provasRetorno.ToList(), deficienciasAluno);
@@ -158,7 +166,7 @@ namespace SME.SERAp.Prova.Aplicacao
             return provasRetorno;
         }
 
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(List<ProvaAnoDto> provas, List<int> deficienciasAluno)
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(IEnumerable<ProvaAnoDto> provas, List<int> deficienciasAluno)
         {
             int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.BAIXA_VISAO_OU_SUBNORMAL , (int)DeficienciaTipo.CEGUEIRA };
             var alunoNecessitaProvaComAudio = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
@@ -166,12 +174,12 @@ namespace SME.SERAp.Prova.Aplicacao
             var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
             if (!alunoNecessitaProvaComAudio)
             {                
-                return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id)).AsEnumerable();
+                return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id));
             }
-            return provas.AsEnumerable();
+            return provas;
         }
 
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(List<ProvaAnoDto> provas, List<int> deficienciasAluno)
+        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(IEnumerable<ProvaAnoDto> provas, List<int> deficienciasAluno)
         {
             int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA, (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA };
             var alunoNecessitaProvaComVideo = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
@@ -179,9 +187,9 @@ namespace SME.SERAp.Prova.Aplicacao
             var provasComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(provas.Select(a => a.Id).ToArray()));
             if (!alunoNecessitaProvaComVideo)
             {
-                return provas.Where(a => !provasComVideo.Any(pa => pa == a.Id)).AsEnumerable();
+                return provas.Where(a => !provasComVideo.Any(pa => pa == a.Id));
             }
-            return provas.AsEnumerable();
+            return provas;
         }        
     }
 }
