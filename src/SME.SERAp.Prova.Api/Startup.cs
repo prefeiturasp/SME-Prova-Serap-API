@@ -99,9 +99,10 @@ namespace SME.SERAp.Prova.Api
             var redisConfigurationOptions = new ConfigurationOptions()
             {
                 Proxy = redisOptions.Proxy,
-                SyncTimeout = redisOptions.SyncTimeout
+                SyncTimeout = redisOptions.SyncTimeout,
+                EndPoints = { redisOptions.Endpoint }
             };
-            redisOptions.Endpoints.ForEach(endpoint => redisConfigurationOptions.EndPoints.Add(endpoint));
+
             var muxer = ConnectionMultiplexer.Connect(redisConfigurationOptions);
             services.AddSingleton<IConnectionMultiplexer>(muxer);
 
