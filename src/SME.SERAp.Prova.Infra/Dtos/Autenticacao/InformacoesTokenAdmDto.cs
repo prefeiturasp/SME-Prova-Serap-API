@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class InformacoesTokenAdmDto
+    public class InformacoesTokenAdmDto : DtoBase
     {
         public InformacoesTokenAdmDto(string login, string nome, Guid perfil)
         {

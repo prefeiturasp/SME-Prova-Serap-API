@@ -3,7 +3,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ObterProvasRetornoDto
+    public class ObterProvasRetornoDto : DtoBase
     {
         public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime? dataInicioDownload, DateTime dataInicio, DateTime? dataFim, long id, int tempoExecucao, 
             int tempoExtra, int tempoAlerta, int tempoTotal, DateTime? dataInicioProvaAluno, string senha, Modalidade modalidade, DateTime? dataFimProvaAluno = null)

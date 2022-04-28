@@ -1,7 +1,7 @@
 ﻿
 namespace SME.SERAp.Prova.Infra
 {
-    public class ArquivoVideoResponseDto
+    public class ArquivoVideoResponseDto : DtoBase
     {
         public ArquivoVideoResponseDto()
         {

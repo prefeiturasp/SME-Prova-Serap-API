@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class TelaBoasVindasDto
+    public class TelaBoasVindasDto : DtoBase
     {
         public TelaBoasVindasDto(long id, string titulo, string descricao, string imagem, int ordem)
         {

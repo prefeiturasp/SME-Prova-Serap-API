@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class InformacoesTokenDto
+    public class InformacoesTokenDto : DtoBase
     {
         public InformacoesTokenDto(long ra, string ano, int tipoTurno, int modalidade)
         {

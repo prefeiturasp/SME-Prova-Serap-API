@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra.Dtos
 {
-    public class ProvaCadernoDadoDto
+    public class ProvaCadernoDadoDto : DtoBase
     {
         public string Caderno { get; set; }
     }

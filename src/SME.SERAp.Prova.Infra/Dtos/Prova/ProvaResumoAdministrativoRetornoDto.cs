@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra.Dtos
 {
-    public class ProvaResumoAdministrativoRetornoDto
+    public class ProvaResumoAdministrativoRetornoDto : DtoBase
     {
         public ProvaResumoAdministrativoRetornoDto(long id, string titulo, string descricao, string caderno, int ordem)
         {

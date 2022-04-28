@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaAlunoStatusDto
+    public class ProvaAlunoStatusDto : DtoBase
     {
         public ProvaAlunoStatusDto(int status, long? dataFim, int? tipoDispositivo)
         {

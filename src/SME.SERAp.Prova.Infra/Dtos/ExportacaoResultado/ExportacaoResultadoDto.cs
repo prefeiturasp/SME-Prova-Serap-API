@@ -3,7 +3,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ExportacaoResultadoDto
+    public class ExportacaoResultadoDto : DtoBase
     {
         public ExportacaoResultadoDto(long provaSerapId, string nomeArquivo, DateTime criadoEm, DateTime atualizadoEm, ExportacaoResultadoStatus status)
         {

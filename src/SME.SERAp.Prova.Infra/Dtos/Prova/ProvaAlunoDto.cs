@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaAlunoDto
+    public class ProvaAlunoDto : DtoBase
     {
         public ProvaAlunoDto(long provaId, int status)
         {

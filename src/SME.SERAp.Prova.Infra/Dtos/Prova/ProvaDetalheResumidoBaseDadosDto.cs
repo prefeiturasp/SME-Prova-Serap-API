@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaDetalheResumidoBaseDadosDto
+    public class ProvaDetalheResumidoBaseDadosDto : DtoBase
     {
         public long QuestaoId { get; set; }
         public long AlternativaId { get; set; }
