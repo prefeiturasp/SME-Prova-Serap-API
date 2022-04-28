@@ -63,9 +63,8 @@ namespace SME.SERAp.Prova.Dados.Cache
             catch (Exception ex)
             {
                 servicoLog.Registrar(ex);
+                return await buscarDados();
             }
-
-            return default;
         }
 
         public async Task<T> ObterRedisAsync<T>(string nomeChave)

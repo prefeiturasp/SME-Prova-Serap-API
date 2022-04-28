@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class AutenticacaoDto
+    public class AutenticacaoDto : DtoBase
     {
         [Required(ErrorMessage = "É necessário informar usuário ou código Rf.")]        
         [Range(99, long.MaxValue, ErrorMessage = "O código RA deve conter no mínimo 3 caracteres.")]

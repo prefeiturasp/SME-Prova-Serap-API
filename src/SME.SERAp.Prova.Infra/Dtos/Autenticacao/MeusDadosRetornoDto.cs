@@ -3,8 +3,7 @@ using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Infra
 {
-    [MessagePackObject (keyAsPropertyName: true)]
-    public class MeusDadosRetornoDto
+    public class MeusDadosRetornoDto : DtoBase
     {
         public string DreAbreviacao { get; set; }
         public string Escola { get; set; }

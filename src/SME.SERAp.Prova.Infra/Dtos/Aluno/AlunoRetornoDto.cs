@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class AlunoRetornoDto
+    public class AlunoRetornoDto : DtoBase
     {
         public long Id { get; set; }
         public string Nome { get; set; }

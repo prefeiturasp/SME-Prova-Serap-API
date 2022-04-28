@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ArquivoRetornoDto
+    public class ArquivoRetornoDto : DtoBase
     {
         public ArquivoRetornoDto()
         {

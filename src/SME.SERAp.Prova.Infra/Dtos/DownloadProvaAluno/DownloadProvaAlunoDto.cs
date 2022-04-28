@@ -3,7 +3,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class DownloadProvaAlunoDto
+    public class DownloadProvaAlunoDto : DtoBase
     {
         public long ProvaId { get; set; }
         public TipoDispositivo TipoDispositivo { get; set; }

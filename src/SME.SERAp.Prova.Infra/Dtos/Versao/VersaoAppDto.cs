@@ -1,7 +1,7 @@
 ﻿
 namespace SME.SERAp.Prova.Infra
 { 
-   public class VersaoAppDto
+   public class VersaoAppDto : DtoBase
 
     {
         public int versionCode { get; set; }

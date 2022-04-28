@@ -3,7 +3,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ObterProvasAnterioresRetornoDto
+    public class ObterProvasAnterioresRetornoDto : DtoBase
     {
         public long Id { get; set; }
         public string Descricao { get; set; }

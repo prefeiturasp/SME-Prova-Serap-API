@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra.Dtos
 {
-    public class ProvaAreaAdministrativoRetornoDto
+    public class ProvaAreaAdministrativoRetornoDto : DtoBase
     {
         public long Id { get; set; }
         public string Descricao { get; set; }

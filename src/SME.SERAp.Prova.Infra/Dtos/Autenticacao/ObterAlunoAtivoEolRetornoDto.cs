@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ObterAlunoAtivoEolRetornoDto
+    public class ObterAlunoAtivoEolRetornoDto : DtoBase
     {
         public long CodigoAluno { get; set; }
         public string Ano { get; set; }

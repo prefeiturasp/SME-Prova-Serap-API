@@ -19,6 +19,7 @@ using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using StackExchange.Redis;
 using System.IO.Compression;
+using System.Threading;
 
 namespace SME.SERAp.Prova.Api
 {
@@ -88,11 +89,19 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
+            var threadPoolOptions = new ThreadPoolOptions();
+            Configuration.GetSection("ThreadPoolOptions").Bind(threadPoolOptions, c => c.BindNonPublicProperties = true);
+            if(threadPoolOptions.WorkerThreads > 0 && threadPoolOptions.CompletionPortThreads > 0)
+                ThreadPool.SetMinThreads(threadPoolOptions.WorkerThreads, threadPoolOptions.CompletionPortThreads);
+
+            var redisOptions = new RedisOptions();
+            Configuration.GetSection("RedisOptions").Bind(redisOptions, c => c.BindNonPublicProperties = true);
             var redisConfigurationOptions = new ConfigurationOptions()
             {
-                EndPoints = { Configuration.GetConnectionString("Redis") },
-                Proxy = Proxy.Twemproxy
+                Proxy = redisOptions.Proxy,
+                SyncTimeout = redisOptions.SyncTimeout
             };
+            redisOptions.Endpoints.ForEach(endpoint => redisConfigurationOptions.EndPoints.Add(endpoint));
             var muxer = ConnectionMultiplexer.Connect(redisConfigurationOptions);
             services.AddSingleton<IConnectionMultiplexer>(muxer);
 
