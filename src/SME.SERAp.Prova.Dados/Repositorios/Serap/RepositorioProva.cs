@@ -325,7 +325,7 @@ namespace SME.SERAp.Prova.Dados
                     where.AppendLine("                          and (vaug3.ue_id is null or vaug3.ue_id = u3.id) ");
                     //-> Turma
                     where.AppendLine("                          and (vaug3.turma_id is null or ");
-                    where.AppendLine("                              (t3.ue_id = ta3.ue_id and t3.ano = ta3.ano and t3.tipo_turma = ta3.tipo_turma and t3.tipo_turno = ta3.tipo_turno and t3.modalidade_codigo = ta3.modalidade_codigo and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.inicio))) ");
+                    where.AppendLine("                              (t3.ue_id = ta3.ue_id and t3.ano = ta3.ano and t3.tipo_turma = ta3.tipo_turma and t3.tipo_turno = ta3.tipo_turno and t3.modalidade_codigo = ta3.modalidade_codigo and t3.nome = ta3.nome and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.inicio))) ");
 
                     where.AppendLine("                          and vaug3.login = @login ");
                     where.AppendLine("                          and vaug3.id_coresso = @perfil ");
