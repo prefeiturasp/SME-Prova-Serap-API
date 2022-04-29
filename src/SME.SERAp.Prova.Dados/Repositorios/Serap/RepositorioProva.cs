@@ -308,21 +308,24 @@ namespace SME.SERAp.Prova.Dados
                     ////-> Adesão
                     where.AppendLine(" or exists(select 1 ");
                     where.AppendLine("           from prova_adesao pa3 ");
-                    where.AppendLine("           left join turma t3 on t3.ue_id = pa3.ue_id and t3.ano = pa3.ano_turma and t3.tipo_turma = pa3.tipo_turma and t3.tipo_turno = pa3.tipo_turno ");
-                    where.AppendLine("           left join ue u3 on u3.id = t3.ue_id ");
+                    where.AppendLine("           left join aluno a3 on a3.ra = pa3.aluno_ra ");
+                    where.AppendLine("           left join turma ta3 on ta3.id = a3.turma_id ");
+                    where.AppendLine("           left join ue u3 on u3.id = ta3.ue_id ");
                     where.AppendLine("           where pa3.prova_id = p.id ");
-                    where.AppendLine("             and t3.modalidade_codigo = p.modalidade ");
-                    where.AppendLine("             and t3.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
+                    where.AppendLine("             and ta3.modalidade_codigo = p.modalidade ");
+                    where.AppendLine("             and ta3.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
                     where.AppendLine("             and p.aderir_todos = false ");
 
                     where.AppendLine("             and exists(select 1 ");
                     where.AppendLine("                        from v_abrangencia_usuario_grupo vaug3 ");
+                    where.AppendLine("                        left join turma t3 on t3.id = vaug3.turma_id ");
                     //-> Dre
                     where.AppendLine("                        where vaug3.dre_id = u3.dre_id ");
                     //-> Ue
                     where.AppendLine("                          and (vaug3.ue_id is null or vaug3.ue_id = u3.id) ");
                     //-> Turma
-                    where.AppendLine("                          and (vaug3.turma_id is null or (vaug3.turma_id = t3.id and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.inicio))) ");
+                    where.AppendLine("                          and (vaug3.turma_id is null or ");
+                    where.AppendLine("                              (t3.ue_id = ta3.ue_id and t3.ano = ta3.ano and t3.tipo_turma = ta3.tipo_turma and t3.tipo_turno = ta3.tipo_turno and t3.modalidade_codigo = ta3.modalidade_codigo and vaug3.inicio <= p.inicio and (vaug3.fim is null or vaug3.fim >= p.inicio))) ");
 
                     where.AppendLine("                          and vaug3.login = @login ");
                     where.AppendLine("                          and vaug3.id_coresso = @perfil ");
