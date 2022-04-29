@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Dados
                                 and pa.ano = @ano";
 
                 return await conn.QueryAsync<Dominio.Prova>(query, new { ano = ano.ToString(), dataReferenia });
-            }            
+            }
             finally
             {
                 conn.Close();
@@ -51,7 +51,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
-        
+
         public async Task<IEnumerable<ProvaDetalheResumidoBaseDadosDto>> ObterDetalhesResumoPorIdAsync(long id)
         {
             using var conn = ObterConexaoLeitura();
@@ -71,7 +71,7 @@ namespace SME.SERAp.Prova.Dados
 
                 return await conn.QueryAsync<ProvaDetalheResumidoBaseDadosDto>(query, new { id });
             }
-            catch(Exception ex )
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -127,7 +127,7 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
-        
+
         public async Task<IEnumerable<ProvaAnoDto>> ObterAnosDatasEModalidadesAsync()
         {
             using var conn = ObterConexaoLeitura();
@@ -145,8 +145,9 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
 	                            pa.ano,
-                              pa.etapa_eja EtapaEja,
-                              p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao
+                                pa.etapa_eja EtapaEja,
+                                p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
+                                p.ultima_atualizacao as UltimaAtualizacao
                             from
 	                            prova p
                             inner join prova_ano pa 
@@ -261,7 +262,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
 
-                if(!inicioFuturo)
+                if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
 
                 if (provaAdmFiltroDto.ProvaLegadoId.HasValue)
@@ -305,12 +306,13 @@ namespace SME.SERAp.Prova.Dados
                     where.AppendLine("                         )");
                     where.AppendLine("            )");
 
-                    ////-> Adesão
+                    //-> Adesão
                     where.AppendLine(" or exists(select 1 ");
                     where.AppendLine("           from prova_adesao pa3 ");
                     where.AppendLine("           left join aluno a3 on a3.ra = pa3.aluno_ra ");
                     where.AppendLine("           left join turma ta3 on ta3.id = a3.turma_id ");
                     where.AppendLine("           left join ue u3 on u3.id = ta3.ue_id ");
+
                     where.AppendLine("           where pa3.prova_id = p.id ");
                     where.AppendLine("             and ta3.modalidade_codigo = p.modalidade ");
                     where.AppendLine("             and ta3.ano_letivo::double precision = date_part('year'::text, p.inicio) ");
