@@ -3,8 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SME.SERAp.Prova.Infra
 {
-    [MessagePackObject(keyAsPropertyName: true)]
-    public class QuestaoAlunoRespostaSincronizarDto
+    public class QuestaoAlunoRespostaSincronizarDto : DtoBase
     {
         [Required(ErrorMessage = "É necessário informar o RA do aluno")]
         public long AlunoRa { get; set; }

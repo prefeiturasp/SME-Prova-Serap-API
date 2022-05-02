@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class AutenticacaoValidarAdmDto
+    public class AutenticacaoValidarAdmDto : DtoBase
     {
         public AutenticacaoValidarAdmDto(string codigo)
         {

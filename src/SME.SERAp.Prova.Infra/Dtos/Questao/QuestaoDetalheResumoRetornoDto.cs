@@ -1,6 +1,6 @@
-﻿namespace SME.SERAp.Prova.Infra.Dtos
+﻿namespace SME.SERAp.Prova.Infra
 {
-    public class QuestaoDetalheResumoRetornoDto
+    public class QuestaoDetalheResumoRetornoDto : DtoBase
     {
         public QuestaoDetalheResumoRetornoDto(long provaId, long questaoId, long[] arquivosId, long[] alternativasId, long[] audiosId, long[] videosId)
         {

@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class QuestaoDetalheRetornoDto
+    public class QuestaoDetalheRetornoDto : DtoBase
     {
         public QuestaoDetalheRetornoDto(long id, string titulo, string descricao, int ordem, int tipo, int quantidadeAlternativas)
         {

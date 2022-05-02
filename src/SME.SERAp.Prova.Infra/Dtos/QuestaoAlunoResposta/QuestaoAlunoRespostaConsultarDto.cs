@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class QuestaoAlunoRespostaConsultarDto
+    public class QuestaoAlunoRespostaConsultarDto : DtoBase
     {
         public QuestaoAlunoRespostaConsultarDto(long? alternativaId, string resposta, DateTime dataHoraResposta)
         {

@@ -3,7 +3,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class TipoDeficienciaProvaDto
+    public class TipoDeficienciaProvaDto : DtoBase
     {
         public TipoDeficienciaProvaDto()
         {

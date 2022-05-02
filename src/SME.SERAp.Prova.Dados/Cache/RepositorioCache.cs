@@ -65,8 +65,6 @@ namespace SME.SERAp.Prova.Dados.Cache
                 servicoLog.Registrar(ex);
                 return await buscarDados();
             }
-
-            return default;
         }
 
         public async Task<T> ObterRedisAsync<T>(string nomeChave)

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
-using SME.SERAp.Prova.Infra.Dtos.Aluno;
+using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SME.SERAp.Prova.Infra
+﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ExportacaoRetornoSerapDto
-    {
+    public class ExportacaoRetornoSerapDto : DtoBase
+	{
 		public long Test_Id { get; set; }
 		public string TestDescription { get; set; }
 		public string TestTypeDescription { get; set; }

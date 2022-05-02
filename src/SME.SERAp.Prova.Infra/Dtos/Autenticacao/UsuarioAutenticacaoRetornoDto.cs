@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class UsuarioAutenticacaoDto
+    public class UsuarioAutenticacaoDto : DtoBase
     {
         public UsuarioAutenticacaoDto()
         {

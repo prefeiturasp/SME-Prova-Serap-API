@@ -1,10 +1,8 @@
-﻿using MessagePack;
-using System;
+﻿using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    [MessagePackObject(keyAsPropertyName: true)]
-    public class AutenticacaoUsuarioAdmDto
+    public class AutenticacaoUsuarioAdmDto : DtoBase
     {
         public AutenticacaoUsuarioAdmDto() { }
 

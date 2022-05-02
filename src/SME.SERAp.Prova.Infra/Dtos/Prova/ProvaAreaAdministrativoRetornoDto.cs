@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SME.SERAp.Prova.Infra.Dtos
+namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaAreaAdministrativoRetornoDto
+    public class ProvaAreaAdministrativoRetornoDto : DtoBase
     {
         public long Id { get; set; }
         public string Descricao { get; set; }
