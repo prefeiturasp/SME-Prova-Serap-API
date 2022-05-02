@@ -83,10 +83,11 @@ namespace SME.SERAp.Prova.Api
             services.AddHttpContextAccessor();
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddResponseCompression();
-            services.Configure<BrotliCompressionProviderOptions>(options =>
+            services.AddResponseCompression(options =>
             {
-                options.Level = CompressionLevel.Fastest;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.EnableForHttps = true;
             });
 
             var threadPoolOptions = new ThreadPoolOptions();
