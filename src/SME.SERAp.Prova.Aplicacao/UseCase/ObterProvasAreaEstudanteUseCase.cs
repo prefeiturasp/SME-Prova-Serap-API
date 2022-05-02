@@ -61,12 +61,10 @@ namespace SME.SERAp.Prova.Aplicacao
                                                     && t.Modalidade == int.Parse(alunoLogadoModalidade) 
                                                     && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
 
-            alunoLogadoAno = UtilAluno.AjustarAnoAluno(alunoLogadoModalidade, alunoLogadoAno);
-
-            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade)));
+            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade), turmaAtual.EtapaEja));
             var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
-            provas = JuntarListasProvas(provas.ToList(), provasAdesao);            
+            provas = JuntarListasProvas(provas.ToList(), provasAdesao);
 
             provas = await TratarProvasPorTipoDeficiencia(provas.ToList(), long.Parse(alunoRa));
 
@@ -99,11 +97,11 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.ObterDataFimMais3Horas(),
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
-                        provaAluno.FinalizadoEm));
+                        provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao));
                     continue;
                 }
 
-                if (DateTime.Now.Date >= prova.InicioDownload.Value.Date && DateTime.Now.Date <= prova.Fim.Date)
+                if (DateTime.Now.Date >= prova.InicioDownload.GetValueOrDefault().Date && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     ProvaStatus status = ProvaStatus.NaoIniciado;
                     if (provaAluno != null)
@@ -116,11 +114,10 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.ObterDataInicioMais3Horas(),
                         prova.ObterDataFimMais3Horas(),
                         prova.Id, prova.TempoExecucao,
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), 
-                        provaAluno?.CriadoEm, prova.Senha, 
-                        prova.Modalidade));
+                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno),
+                        provaAluno?.CriadoEm, prova.Senha,
+                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao));
                 }
-
             }
 
             return provasParaRetornar;

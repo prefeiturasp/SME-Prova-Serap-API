@@ -7,6 +7,7 @@ namespace SME.SERAp.Prova.Dados
 {
     public interface IRepositorioAluno : IRepositorioBase<Aluno>
     {
+        Task<ObterAlunoAtivoRetornoDto> ObterAlunoAtivoPorRa(long ra);
         Task<AlunoDetalheDto> ObterAlunoDetalhePorRa(long ra);
         Task<Aluno> ObterPorRA(long ra);
     }
