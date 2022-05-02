@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SME.SERAp.Prova
+namespace SME.SERAp.Prova.Infra
 {
-    public class AutenticacaoAdmDto
+    public class AutenticacaoAdmDto : DtoBase
     {
         [Required(ErrorMessage = "É necessário informar login ou código Rf.")]
         public string Login { get; set; }

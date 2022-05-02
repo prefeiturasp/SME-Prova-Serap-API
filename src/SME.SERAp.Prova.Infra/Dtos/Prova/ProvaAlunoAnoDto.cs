@@ -4,8 +4,7 @@ using System;
 
 namespace SME.SERAp.Prova.Infra
 {
-    [MessagePackObject(keyAsPropertyName: true)]
-    public class ProvaAlunoAnoDto
+    public class ProvaAlunoAnoDto : DtoBase
     {
         public long Id { get; set; }
         public string Descricao { get; set; }

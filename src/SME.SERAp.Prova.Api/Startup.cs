@@ -37,8 +37,6 @@ namespace SME.SERAp.Prova.Api
         {
             services.AddControllers();
 
-            ThreadPool.SetMinThreads(50, 50);
-
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(jwtVariaveis);
@@ -91,12 +89,20 @@ namespace SME.SERAp.Prova.Api
                 options.Level = CompressionLevel.Fastest;
             });
 
+            var threadPoolOptions = new ThreadPoolOptions();
+            Configuration.GetSection("ThreadPoolOptions").Bind(threadPoolOptions, c => c.BindNonPublicProperties = true);
+            if(threadPoolOptions.WorkerThreads > 0 && threadPoolOptions.CompletionPortThreads > 0)
+                ThreadPool.SetMinThreads(threadPoolOptions.WorkerThreads, threadPoolOptions.CompletionPortThreads);
+
+            var redisOptions = new RedisOptions();
+            Configuration.GetSection("RedisOptions").Bind(redisOptions, c => c.BindNonPublicProperties = true);
             var redisConfigurationOptions = new ConfigurationOptions()
             {
-                EndPoints = { Configuration.GetConnectionString("Redis") },
-                Proxy = Proxy.Twemproxy,
-                SyncTimeout = 10000
+                Proxy = redisOptions.Proxy,
+                SyncTimeout = redisOptions.SyncTimeout,
+                EndPoints = { redisOptions.Endpoint }
             };
+
             var muxer = ConnectionMultiplexer.Connect(redisConfigurationOptions);
             services.AddSingleton<IConnectionMultiplexer>(muxer);
 

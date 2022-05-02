@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class AlternativaDetalheRetornoDto
+    public class AlternativaDetalheRetornoDto : DtoBase
     {
         public AlternativaDetalheRetornoDto(long id, string descricao, int ordem, string numeracao, long questaoId)
         {

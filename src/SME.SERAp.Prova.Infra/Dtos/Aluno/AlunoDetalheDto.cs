@@ -1,6 +1,6 @@
-﻿namespace SME.SERAp.Prova.Infra.Dtos.Aluno
+﻿namespace SME.SERAp.Prova.Infra
 {
-    public class AlunoDetalheDto
+    public class AlunoDetalheDto : DtoBase
     {
         public string DreAbreviacao { get; set; }
         public string Escola { get; set; }

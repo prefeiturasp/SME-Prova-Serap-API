@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class QuestaoAlunoRespostaIncluirDto
+    public class QuestaoAlunoRespostaIncluirDto : DtoBase
     {
         [Required(ErrorMessage = "É necessário informar o identificador da questão")]
         public long QuestaoId { get; set; }        

@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ContextoProvaDto
+    public class ContextoProvaDto : DtoBase
     {
         public ContextoProvaDto(long id, long provaId, string titulo, string texto, string imagem, Posicionamento posicionamento, int ordem)
         {

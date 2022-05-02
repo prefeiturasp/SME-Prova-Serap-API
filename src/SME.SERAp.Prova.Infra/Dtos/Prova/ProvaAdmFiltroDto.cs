@@ -1,6 +1,6 @@
-﻿namespace SME.SERAp.Prova.Infra.Dtos
+﻿namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaAdmFiltroDto
+    public class ProvaAdmFiltroDto : DtoBase
     {
         public int QuantidadeRegistros { get; set; }
         public int NumeroPagina { get; set; }

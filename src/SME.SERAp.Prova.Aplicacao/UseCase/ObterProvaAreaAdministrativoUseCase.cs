@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio.Constantes;
-using SME.SERAp.Prova.Infra.Dtos;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Linq;

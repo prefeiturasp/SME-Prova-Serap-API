@@ -2,7 +2,7 @@
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class ProvaDetalheResumidoRetornoDto
+    public class ProvaDetalheResumidoRetornoDto : DtoBase
     {
         public ProvaDetalheResumidoRetornoDto(long provaId, long[] questoesId, long[] arquivosId, long[] alternativasId, 
             long tamanhoTotalArquivos, long[] contextoProvaIds, long[] audiosId, long[] videosId)

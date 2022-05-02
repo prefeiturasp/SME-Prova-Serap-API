@@ -3,7 +3,7 @@ using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Infra
 {
-    public class PreferenciaUsuarioRabbitDto
+    public class PreferenciaUsuarioRabbitDto : DtoBase
     {
         public PreferenciaUsuarioRabbitDto()
         {
