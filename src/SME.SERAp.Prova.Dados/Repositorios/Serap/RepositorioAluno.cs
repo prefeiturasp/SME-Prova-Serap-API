@@ -1,6 +1,5 @@
 ﻿using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
-using SME.SERAp.Prova.Infra.Dtos.Aluno;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Threading.Tasks;

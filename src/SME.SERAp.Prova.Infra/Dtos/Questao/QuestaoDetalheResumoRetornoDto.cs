@@ -1,4 +1,4 @@
-﻿namespace SME.SERAp.Prova.Infra.Dtos
+﻿namespace SME.SERAp.Prova.Infra
 {
     public class QuestaoDetalheResumoRetornoDto : DtoBase
     {

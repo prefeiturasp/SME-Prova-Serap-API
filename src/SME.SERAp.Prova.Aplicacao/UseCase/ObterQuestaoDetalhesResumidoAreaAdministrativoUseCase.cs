@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Aplicacao.Queries;
-using SME.SERAp.Prova.Infra.Dtos;
+using SME.SERAp.Prova.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;

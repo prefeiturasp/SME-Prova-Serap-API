@@ -1,5 +1,4 @@
 ﻿using SME.SERAp.Prova.Infra;
-using SME.SERAp.Prova.Infra.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
