@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Aplicacao.Queries.ObterProvaCadernosPorProvaId;
-using SME.SERAp.Prova.Infra.Dtos;
+using SME.SERAp.Prova.Infra;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

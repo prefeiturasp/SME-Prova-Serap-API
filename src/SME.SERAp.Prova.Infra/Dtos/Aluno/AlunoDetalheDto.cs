@@ -1,4 +1,4 @@
-﻿namespace SME.SERAp.Prova.Infra.Dtos.Aluno
+﻿namespace SME.SERAp.Prova.Infra
 {
     public class AlunoDetalheDto : DtoBase
     {

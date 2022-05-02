@@ -5,7 +5,6 @@ using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
 using SME.SERAp.Prova.Dados.Interfaces;
-using SME.SERAp.Prova.Dados.Repositorios.Eol;
 using SME.SERAp.Prova.Dados.Repositorios.Serap;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Services;
@@ -29,7 +28,6 @@ namespace SME.SERAp.Prova.IoC
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
-            services.TryAddScoped<IRepositorioAlunoEol, RepositorioAlunoEol>();
             services.TryAddScoped<IRepositorioAluno, RepositorioAluno>();
             services.TryAddScoped<IRepositorioProva, RepositorioProva>();
             services.TryAddScoped<IRepositorioQuestao, RepositorioQuestao>();

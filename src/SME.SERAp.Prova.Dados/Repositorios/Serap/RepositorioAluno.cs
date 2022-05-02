@@ -1,6 +1,7 @@
 ﻿using SME.SERAp.Prova.Dominio;
-using SME.SERAp.Prova.Infra.Dtos.Aluno;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -44,6 +45,25 @@ namespace SME.SERAp.Prova.Dados
                               where al.ra = @ra"; 
 
                 return await conn.QueryFirstOrDefaultAsync<AlunoDetalheDto>(query, new { ra });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<ObterAlunoAtivoRetornoDto> ObterAlunoAtivoPorRa(long ra)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select a.ra, t.ano, t.tipo_turno as tipoTurno, t.modalidade_codigo as modalidade 
+                            from aluno a
+                            left join turma t on t.id = a.turma_id 
+                            where a.ra = @ra and t.ano_letivo = @anoLetivo";
+
+                return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoRetornoDto>(query, new { ra, anoLetivo = DateTime.Now.Year });
             }
             finally
             {
