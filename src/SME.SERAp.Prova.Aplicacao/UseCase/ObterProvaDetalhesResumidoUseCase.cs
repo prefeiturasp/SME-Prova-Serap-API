@@ -2,7 +2,6 @@
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,15 +15,20 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<ProvaDetalheResumidoRetornoDto> Executar(long provaId)
         {
-            IEnumerable<ProvaDetalheResumidoBaseDadosDto> detalhesDaProva;
-
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
+            if (usuarioLogadoRa == 0)
+                throw new NegocioException($"Usuário infomado não foi encontrado");
 
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
             if (prova == null)
-                throw new NegocioException("A prova infomada não foi encontrada");
+                throw new NegocioException($"A prova {provaId} infomada não foi encontrada");
+
+            var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId));
+            if(questoesResumo == null || !questoesResumo.Any())
+                throw new NegocioException($"Nenhuma questão foi encontrada para a prova ${provaId}");
 
             if (prova.PossuiBIB)
             {
@@ -35,77 +39,23 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (aluno != null)
                     {
                         var totalCadernos = prova.TotalCadernos;
-                        Random sortear = new Random();
+                        var sortear = new Random();
                         var cadernoSorteado = sortear.Next(1, totalCadernos).ToString();
-                        await mediator.Send(new IncluirCadernoAlunoCommand(aluno.Id, provaId, cadernoSorteado));
+                        await mediator.Send(new IncluirCadernoAlunoCommand(aluno.RA, aluno.Id, provaId, cadernoSorteado));
                     }
                 }
-                detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoBIBQuery(provaId, usuarioLogadoRa));
+
+                questoesResumo = questoesResumo.Where(t => t.Caderno == caderno);
             }
 
-            else
-                detalhesDaProva = await mediator.Send(new ObterProvaDetalhesResumidoQuery(provaId));
+            var questoesIds = questoesResumo.Select(t => t.QuestaoId).ToArray();
 
-            if (detalhesDaProva.Any())
-            {
-                List<long> arquivosId = new();
-                var questoesId = detalhesDaProva.Select(a => a.QuestaoId).Where(b => b > 0).Distinct().ToArray();
-                var alternativasId = detalhesDaProva.Select(a => a.AlternativaId).Where(b => b > 0).Distinct().ToArray();
+            long[] contextosIds = Array.Empty<long>();
+            var contextosResumo = await mediator.Send(new ObterContextoResumoPorProvaIdQuery(provaId));
+            if(contextosResumo != null && contextosResumo.Any())
+                contextosIds = contextosResumo.Select(t => t.ContextoProvaId).ToArray();
 
-                arquivosId.AddRange(detalhesDaProva.Select(a => a.QuestaoArquivoId).Where(b => b > 0).Distinct().ToArray());
-                arquivosId.AddRange(detalhesDaProva.Select(a => a.AlternativaArquivoId).Where(b => b > 0).Distinct().ToArray());
-
-
-                var questoesArquivoSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.QuestaoArquivoTamanho, Id = a.QuestaoArquivoId }).Distinct();
-                var alternativasArquivoSomarTamanho = detalhesDaProva.Select(a => new { TamanhoInBytes = a.QuestaoArquivoTamanho, Id = a.QuestaoArquivoId }).Distinct();
-
-                var tamanhoTotalArquivos = questoesArquivoSomarTamanho.Sum(a => a.TamanhoInBytes) + alternativasArquivoSomarTamanho.Sum(a => a.TamanhoInBytes);
-
-                var contextoProva = await mediator.Send(new ObterContextosProvasPorProvaIdQuery(provaId));
-                long[] contextoProvaIds = Array.Empty<long>();
-                if (contextoProva.Any())
-                    contextoProvaIds = contextoProva.Select(a => a.Id).Distinct().ToArray();
-
-                long[] audiosId = Array.Empty<long>();
-                var provaComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(new long[] { provaId }));
-                if (provaComAudio.Any(a => a == provaId))
-                    audiosId = await ObterAudioIds(questoesId);
-
-                long[] videosIds = Array.Empty<long>();
-                var provaComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(new long[] { provaId }));
-                if (provaComVideo.Any(a => a == provaId))
-                    videosIds = await ObterVideoIds(questoesId);
-
-                return new ProvaDetalheResumidoRetornoDto(provaId, questoesId, arquivosId.ToArray(), alternativasId, tamanhoTotalArquivos, contextoProvaIds, audiosId, videosIds);
-
-            }
-            else return default;
-        }
-
-        public async Task<long[]> ObterAudioIds(long[] questoesId)
-        {
-            List<long> audiosId = new();
-            foreach (long questaoId in questoesId)
-            {
-                var audiosQuestao = await mediator.Send(new ObterArquivosAudiosIdsPorQuestaoIdQuery(questaoId));
-                if (audiosQuestao != null && audiosQuestao.Any())
-                    audiosId.AddRange(audiosQuestao.ToList());
-            }
-            return audiosId.ToArray();
-        }
-
-        private async Task<long[]> ObterVideoIds(long[] questoesId)
-        {
-            List<long> videosIds = new();
-            foreach (long questaoId in questoesId)
-            {
-                var videos = await mediator.Send(new ObterVideosPorQuestaoIdQuery(questaoId));
-                if(videos != null && videos.Any())
-                {
-                    videosIds.AddRange(videos.Select(v => v.Id));
-                }
-            }
-            return videosIds.ToArray();
+            return new ProvaDetalheResumidoRetornoDto(provaId, questoesIds, contextosIds);
         }
     }
 }

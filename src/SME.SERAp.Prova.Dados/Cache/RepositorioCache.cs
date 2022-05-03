@@ -17,6 +17,12 @@ namespace SME.SERAp.Prova.Dados.Cache
             this.database = connectionMultiplexer.GetDatabase();
         }
 
+        public async Task SalvarRedisAsync(object valor, string cacheChave, params object[] chaves)
+        {
+            var nomeChave = string.Format(cacheChave, chaves);
+            await SalvarRedisAsync(nomeChave, valor);
+        }
+
         public async Task SalvarRedisAsync(string nomeChave, object valor, int minutosParaExpirar = 720)
         {
             try
@@ -26,7 +32,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                     await database.StringSetAsync(nomeChave, MessagePackSerializer.Serialize(valor), TimeSpan.FromMinutes(minutosParaExpirar));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 servicoLog.Registrar(ex);
             }
