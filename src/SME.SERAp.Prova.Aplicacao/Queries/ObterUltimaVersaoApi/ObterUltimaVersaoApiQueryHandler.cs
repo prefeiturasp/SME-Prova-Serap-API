@@ -1,15 +1,15 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Text.Json;
-using System.Linq;
-using SME.SERAp.Prova.Dados;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
         private readonly IHttpClientFactory httpClientFactory;
         private readonly GithubOptions githubOptions;
         private readonly IRepositorioCache repositorioCache;
-        private const string nomeCacheVersao = "versao-api";
+        
         public ObterUltimaVersaoApiQueryHandler(IHttpClientFactory httpClientFactory, GithubOptions githubOptions, IRepositorioCache repositorioCache)
         {
             this.httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var versaoApi = "Versão: 0";
 
-            var versaoApiCache = await repositorioCache.ObterRedisAsync<string>(nomeCacheVersao);
+            var versaoApiCache = await repositorioCache.ObterRedisAsync<string>(CacheChave.VersaoApi);
 
             if (string.IsNullOrEmpty(versaoApiCache))
             {
@@ -50,7 +50,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     if (versoes.Any())
                         versaoApi = $"Versão: {versoes.FirstOrDefault().Name}";
 
-                    await repositorioCache.SalvarRedisAsync(nomeCacheVersao, versaoApi, 10080);
+                    await repositorioCache.SalvarRedisAsync(CacheChave.VersaoApi, versaoApi, 10080);
                 }
 
             }

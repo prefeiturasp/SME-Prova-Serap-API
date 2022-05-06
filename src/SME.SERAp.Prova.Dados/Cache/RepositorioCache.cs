@@ -10,6 +10,7 @@ namespace SME.SERAp.Prova.Dados.Cache
     {
         private readonly IServicoLog servicoLog;
         private readonly IDatabase database;
+
         public RepositorioCache(IServicoLog servicoLog, IConnectionMultiplexer connectionMultiplexer)
         {
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
@@ -90,6 +91,20 @@ namespace SME.SERAp.Prova.Dados.Cache
             }
 
             return default;
+        }
+
+        public async Task<bool> ExisteChaveAsync(string nomeChave)
+        {
+            try
+            {
+                return await database.KeyExistsAsync(nomeChave);
+            }
+            catch (Exception ex)
+            {
+                servicoLog.Registrar(ex);
+            }
+
+            return false;
         }
     }
 }

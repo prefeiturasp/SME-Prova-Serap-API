@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<MeusDadosRetornoDto> Handle(ObterDetalhesAlunoCacheQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterRedisAsync($"ra-{request.AlunoRA}", async () => await ObterDetalhesAsync(request.AlunoRA));
+            return await repositorioCache.ObterRedisAsync(string.Format(CacheChave.MeusDados, request.AlunoRA), async () => await ObterDetalhesAsync(request.AlunoRA));
         }
 
         private async Task<MeusDadosRetornoDto> ObterDetalhesAsync(long usuarioLogadoRa)

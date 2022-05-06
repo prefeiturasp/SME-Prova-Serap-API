@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<ParametroSistema> Handle(ObterParametroSistemaPorTipoEAnoQuery request, CancellationToken cancellationToken)
         {
-            var parametrosDoSistema = await repositorioCache.ObterRedisAsync("parametros", async () => await repositorioParametroSistema.ObterTudoAsync(), 1440);
+            var parametrosDoSistema = await repositorioCache.ObterRedisAsync(CacheChave.Parametros, async () => await repositorioParametroSistema.ObterTudoAsync(), 1440);
 
             if (parametrosDoSistema != null && parametrosDoSistema.Any())
                 return parametrosDoSistema.FirstOrDefault(a => a.Ano == request.Ano && a.Tipo == request.Tipo);            

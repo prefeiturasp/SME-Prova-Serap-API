@@ -1,11 +1,11 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterArquivosAudiosIdsPorQuestaoIdQuery : IRequest<long[]>
+    public class ObterQuestaoCompletaPorIdQuery : IRequest<QuestaoCompletaDto>
     {
-
-        public ObterArquivosAudiosIdsPorQuestaoIdQuery(long questaoId)
+        public ObterQuestaoCompletaPorIdQuery(long questaoId)
         {
             QuestaoId = questaoId;
         }

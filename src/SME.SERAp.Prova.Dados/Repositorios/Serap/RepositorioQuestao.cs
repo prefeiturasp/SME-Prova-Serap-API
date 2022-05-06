@@ -3,6 +3,8 @@ using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados
@@ -163,6 +165,79 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = @"select q.id as QuestaoId, q.caderno from questao q where q.prova_id = @provaId";
                 return await conn.QueryAsync<QuestaoResumoProvaDto>(query, new { provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<QuestaoCompletaDto> ObterQuestaoCompletaPorIdAsync(long id)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = new StringBuilder();
+                // questão
+                query.AppendLine(" select q.id, q.texto_base as titulo, q.enunciado as descricao, q.ordem, q.tipo, q.quantidade_alternativas as quantidadeAlternativas ");
+                query.AppendLine(" from questao q ");
+                query.AppendLine(" where q.id = @id; ");
+
+                // arquivos
+                query.AppendLine(" select distinct ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" from questao_arquivo qa ");
+                query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
+                query.AppendLine(" where qa.questao_id = @id; ");
+
+                // arquivos audio
+                query.AppendLine(" select distinct ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" from questao_audio qa ");
+                query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
+                query.AppendLine(" where qa.questao_id = @id; ");
+
+                // arquivos video
+                query.AppendLine(" select distinct qv.id, ");
+                query.AppendLine("     ar.caminho, ar.tamanho_bytes as tamanhoBytes,  ");
+                query.AppendLine("     art.caminho as caminhoVideoThumbinail, art.tamanho_bytes as videoThumbinailTamanhoBytes, ");
+                query.AppendLine("     arc.caminho as caminhoVideoConvertido, arc.tamanho_bytes as videoConvertidoTamanhoBytes ");
+                query.AppendLine(" from questao_video qv ");
+                query.AppendLine(" join arquivo ar on ar.id = qv.arquivo_video_id ");
+                query.AppendLine(" left join arquivo art on art.id = qv.arquivo_thumbnail_id ");
+                query.AppendLine(" left join arquivo arc on arc.id = qv.arquivo_video_convertido_id ");
+                query.AppendLine(" where qv.questao_id = @id; ");
+
+                // alternativas
+                query.AppendLine(" select a.id, a.descricao, a.ordem, a.numeracao ");
+                query.AppendLine(" from alternativa a ");
+                query.AppendLine(" where a.questao_id = @id; ");
+
+                // arquivos alternativas
+                query.AppendLine(" select distinct a.id as alternativaId, ar.id, ar.caminho, ar.tamanho_bytes as tamanhoBytes ");
+                query.AppendLine(" from alternativa a ");
+                query.AppendLine(" join alternativa_arquivo aa on aa.alternativa_id = a.id ");
+                query.AppendLine(" join arquivo ar on ar.id = aa.arquivo_id ");
+                query.AppendLine(" where a.questao_id = @id; ");
+
+                using (var sqlMapper = await conn.QueryMultipleAsync(query.ToString(), new { id }))
+                {
+                    var questaoCompletaDto = sqlMapper.ReadFirst<QuestaoCompletaDto>();
+                    questaoCompletaDto.Arquivos = sqlMapper.Read<ArquivoDto>();
+                    questaoCompletaDto.Audios = sqlMapper.Read<ArquivoDto>();
+                    questaoCompletaDto.Videos = sqlMapper.Read<ArquivoVideoDto>();
+                    questaoCompletaDto.Alternativas = sqlMapper.Read<AlternativaDto>();
+
+                    var arquivosAlternativas = sqlMapper.Read<ArquivoAlternativaDto>();
+                    if (arquivosAlternativas.Any())
+                    {
+                        foreach(var alternativa in questaoCompletaDto.Alternativas)
+                        {
+                            alternativa.Arquivos = arquivosAlternativas.Where(t => t.AlternativaId == alternativa.Id);
+                        }
+                    }
+
+                    return questaoCompletaDto;
+                }
             }
             finally
             {

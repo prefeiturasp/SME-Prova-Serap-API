@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System;
 using System.Threading;
@@ -25,7 +24,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var exportacao = request.ExportacaoResultado;
                 exportacao.Id = await repositorioExportacaoResultado.IncluirAsync(request.ExportacaoResultado);
-                await repositorioCache.SalvarRedisAsync($"exportacao-{exportacao.Id}-prova-{exportacao.ProvaSerapId}-status", (int)exportacao.Status);
+
+                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.ExportacaoResultadoStatus, request.ExportacaoResultado.Id, request.ExportacaoResultado.ProvaSerapId), (int)exportacao.Status);
                 return exportacao.Id;
             }
             catch(Exception ex)

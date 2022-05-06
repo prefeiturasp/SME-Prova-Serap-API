@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var codigo = Guid.NewGuid();
             var autenticacao = new AutenticacaoUsuarioAdmDto(request.Login, request.Nome, request.Perfil);
-            await repositorioCache.SalvarRedisAsync($"auth-adm-{codigo}", autenticacao, 5);
+            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.CodigoAutenticacaoAdmin, codigo), autenticacao, 5);
             return new AutenticacaoValidarAdmDto(codigo.ToString());
         }
     }

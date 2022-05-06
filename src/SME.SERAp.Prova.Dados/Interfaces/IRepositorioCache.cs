@@ -9,5 +9,6 @@ namespace SME.SERAp.Prova.Dados
         Task RemoverRedisAsync(string nomeChave);
         Task<T> ObterRedisAsync<T>(string nomeChave, Func<Task<T>> buscarDados, int minutosParaExpirar = 720);
         Task<T> ObterRedisAsync<T>(string nomeChave);
+        Task<bool> ExisteChaveAsync(string nomeChave);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -10,13 +11,13 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/questoes")]
     public class QuestaoController : ControllerBase
     {
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(QuestaoDetalheRetornoDto), 200)]
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<QuestaoCompletaDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterPorId(long id, [FromServices] IObterQuestaoPorIdUseCase obterQuestaoPorIdUseCase)
+        public async Task<IActionResult> ObterPorId([FromQuery]long[] ids, [FromServices] IObterQuestoesCompletaPorIdsUseCase obterQuestoesCompletaPorIdsUseCase)
         {
-            return Ok(await obterQuestaoPorIdUseCase.Executar(id));
+            return Ok(await obterQuestoesCompletaPorIdsUseCase.Executar(ids));
         }
     }
 }
