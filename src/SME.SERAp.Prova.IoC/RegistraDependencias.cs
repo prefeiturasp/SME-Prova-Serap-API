@@ -24,7 +24,6 @@ namespace SME.SERAp.Prova.IoC
             RegistraMapeamentos.Registrar();
         }
 
-
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
@@ -51,6 +50,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioUsuarioSerapCoreSSO, RepositorioUsuarioSerapCoreSSO>();
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
+            services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -100,6 +100,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterVersaoAppUseCase, ObterVersaoAppUseCase>();
             services.TryAddScoped<IAutenticarUsuarioValidarAdmUseCase, AutenticarUsuarioValidarAdmUseCase>();
             services.TryAddScoped<IRevalidaTokenJwtAdmUseCase, RevalidaTokenJwtAdmUseCase>();
+            services.TryAddScoped<IIncluirVersaoAppDispositivoUseCase, IncluirVersaoAppDispositivoUseCase>();
         }
     }
 }
