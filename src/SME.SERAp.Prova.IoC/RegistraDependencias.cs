@@ -51,6 +51,13 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
+
+            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
+            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)

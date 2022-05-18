@@ -185,13 +185,13 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where q.id = @id; ");
 
                 // arquivos
-                query.AppendLine(" select distinct ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, qa.questao_id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes");
                 query.AppendLine(" from questao_arquivo qa ");
                 query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
                 query.AppendLine(" where qa.questao_id = @id; ");
 
                 // arquivos audio
-                query.AppendLine(" select distinct ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, qa.questao_id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes");
                 query.AppendLine(" from questao_audio qa ");
                 query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
                 query.AppendLine(" where qa.questao_id = @id; ");
@@ -213,7 +213,7 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where a.questao_id = @id; ");
 
                 // arquivos alternativas
-                query.AppendLine(" select distinct a.id as alternativaId, ar.id, ar.caminho, ar.tamanho_bytes as tamanhoBytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, a.questao_id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes");
                 query.AppendLine(" from alternativa a ");
                 query.AppendLine(" join alternativa_arquivo aa on aa.alternativa_id = a.id ");
                 query.AppendLine(" join arquivo ar on ar.id = aa.arquivo_id ");
@@ -227,13 +227,12 @@ namespace SME.SERAp.Prova.Dados
                     questaoCompletaDto.Videos = sqlMapper.Read<ArquivoVideoDto>();
                     questaoCompletaDto.Alternativas = sqlMapper.Read<AlternativaDto>();
 
-                    var arquivosAlternativas = sqlMapper.Read<ArquivoAlternativaDto>();
+                    var arquivosAlternativas = sqlMapper.Read<ArquivoDto>();
                     if (arquivosAlternativas.Any())
                     {
-                        foreach(var alternativa in questaoCompletaDto.Alternativas)
-                        {
-                            alternativa.Arquivos = arquivosAlternativas.Where(t => t.AlternativaId == alternativa.Id);
-                        }
+                        var arquivos = questaoCompletaDto.Arquivos.ToList();
+                        arquivos.AddRange(arquivosAlternativas);
+                        questaoCompletaDto.Arquivos = arquivos;
                     }
 
                     return questaoCompletaDto;

@@ -20,30 +20,21 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var usuarioLogadoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             if (usuarioLogadoRa == 0)
-                throw new NegocioException($"Usuário infomado não foi encontrado");
+                throw new NegocioException($"Usuário infomado {usuarioLogadoRa} não foi encontrado");
 
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
             if (prova == null)
-                throw new NegocioException($"A prova {provaId} infomada não foi encontrada");
+                throw new NegocioException($"A prova infomada {provaId} não foi encontrada");
 
             var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId));
             if(questoesResumo == null || !questoesResumo.Any())
-                throw new NegocioException($"Nenhuma questão foi encontrada para a prova ${provaId}");
+                throw new NegocioException($"Nenhuma questão foi encontrada para a prova {provaId}");
 
             if (prova.PossuiBIB)
             {
                 var caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(provaId, usuarioLogadoRa));
                 if (string.IsNullOrEmpty(caderno))
-                {
-                    var aluno = await mediator.Send(new ObterAlunoSerapPorRaQuery(usuarioLogadoRa));
-                    if (aluno != null)
-                    {
-                        var totalCadernos = prova.TotalCadernos;
-                        var sortear = new Random();
-                        var cadernoSorteado = sortear.Next(1, totalCadernos).ToString();
-                        await mediator.Send(new IncluirCadernoAlunoCommand(aluno.RA, aluno.Id, provaId, cadernoSorteado));
-                    }
-                }
+                    throw new NegocioException($"Usuário informado {usuarioLogadoRa} não possui caderno para a prova {provaId}");
 
                 questoesResumo = questoesResumo.Where(t => t.Caderno == caderno);
             }

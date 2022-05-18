@@ -11,7 +11,16 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/questoes")]
     public class QuestaoController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(QuestaoDetalheRetornoDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterPorId(long id, [FromServices] IObterQuestaoPorIdUseCase obterQuestaoPorIdUseCase)
+        {
+            return Ok(await obterQuestaoPorIdUseCase.Executar(id));
+        }
+
+        [HttpGet("completas")]
         [ProducesResponseType(typeof(IEnumerable<QuestaoCompletaDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]

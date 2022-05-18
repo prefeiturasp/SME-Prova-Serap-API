@@ -56,14 +56,14 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where q.prova_id = ANY(@provaIds); ");
 
                 // arquivos
-                query.AppendLine(" select distinct q.id as questaoId, ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, q.id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes");
                 query.AppendLine(" from questao q ");
                 query.AppendLine(" join questao_arquivo qa on qa.questao_id = q.id ");
                 query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
                 query.AppendLine(" where q.prova_id = ANY(@provaIds); ");
 
                 // arquivos audio
-                query.AppendLine(" select distinct q.id as questaoId, ar.id, ar.caminho, ar.tamanho_bytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, q.id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes");
                 query.AppendLine(" from questao q ");
                 query.AppendLine(" join questao_audio qa on qa.questao_id = q.id ");
                 query.AppendLine(" join arquivo ar on ar.id = qa.arquivo_id ");
@@ -88,7 +88,7 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where q.prova_id = ANY(@provaIds); ");
 
                 // arquivos alternativas
-                query.AppendLine(" select distinct a.id as alternativaId, ar.id, ar.caminho, ar.tamanho_bytes as tamanhoBytes ");
+                query.AppendLine(" select distinct ar.id, ar.legado_id as legadoId, a.questao_id as questaoId, ar.caminho, ar.tamanho_bytes as tamanhoBytes ");
                 query.AppendLine(" from questao q ");
                 query.AppendLine(" join alternativa a on a.questao_id = q.id ");
                 query.AppendLine(" join alternativa_arquivo aa on aa.alternativa_id = a.id ");
@@ -102,7 +102,7 @@ namespace SME.SERAp.Prova.Dados
                     var audios = sqlMapper.Read<ArquivoDto>();
                     var videos = sqlMapper.Read<ArquivoVideoDto>();
                     var alternativas = sqlMapper.Read<AlternativaDto>();
-                    var arquivosAlternativas = sqlMapper.Read<ArquivoAlternativaDto>();
+                    var arquivosAlternativas = sqlMapper.Read<ArquivoDto>();
 
                     foreach (var questaoCompleta in questoesCompletas)
                     {
@@ -111,12 +111,12 @@ namespace SME.SERAp.Prova.Dados
                         questaoCompleta.Videos = videos.Where(t => t.QuestaoId == questaoCompleta.Id);
                         questaoCompleta.Alternativas = alternativas.Where(t => t.QuestaoId == questaoCompleta.Id);
 
-                        if (arquivosAlternativas.Any())
+                        var arquivosAlternativasQuestao = arquivosAlternativas.Where(t => t.QuestaoId == questaoCompleta.Id);
+                        if (arquivosAlternativasQuestao.Any())
                         {
-                            foreach (var alternativa in questaoCompleta.Alternativas)
-                            {
-                                alternativa.Arquivos = arquivosAlternativas.Where(t => t.AlternativaId == alternativa.Id);
-                            }
+                            var arquivosQuestao = questaoCompleta.Arquivos.ToList();
+                            arquivosQuestao.AddRange(arquivosAlternativasQuestao);
+                            questaoCompleta.Arquivos = arquivosQuestao;
                         }
                     }
 

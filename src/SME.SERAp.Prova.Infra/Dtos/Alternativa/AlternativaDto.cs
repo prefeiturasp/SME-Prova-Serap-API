@@ -9,6 +9,5 @@ namespace SME.SERAp.Prova.Infra
         public string Descricao { get; set; }
         public int Ordem { get; set; }
         public string Numeracao { get; set; }
-        public IEnumerable<ArquivoAlternativaDto> Arquivos { get; set; }
     }
 }
