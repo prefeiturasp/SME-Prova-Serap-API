@@ -244,5 +244,25 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorIdsAsync(long[] ids)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = new StringBuilder();
+                // questão
+                query.AppendLine(" select id, json ");
+                query.AppendLine(" from questao_completa ");
+                query.AppendLine(" where id = ANY(@ids); ");
+
+                return await conn.QueryAsync<QuestaoCompleta>(query.ToString(), new { ids });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

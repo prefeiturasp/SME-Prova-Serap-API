@@ -29,6 +29,13 @@ namespace SME.SERAp.Prova.Dados
             return conexao;
         }
 
+        private IDbConnection ObterConexao()
+        {
+            var conexao = new NpgsqlConnection(connectionStrings.ApiSerap);
+            conexao.Open();
+            return conexao;
+        }
+
         public async Task<IEnumerable<Dominio.Prova>> ObterProvasLiberadasNoPeriodoParaCacheAsync(DateTime dataHoraAtual)
         {
             using var conn = ObterConexaoLeitura();
@@ -197,5 +204,22 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task InserirTabelaJson(long questaoId, string json)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"insert into questao_completa (id, json) values (@questaoId, @json) on conflict (id) do update set json = @json;";
+                await SqlMapper.ExecuteAsync(conn, query, new { questaoId, json });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using SME.SERAp.Prova.Dados;
+﻿using MessagePack;
+using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
@@ -60,6 +61,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                         var questoesCompletas = await repositorioPropagacaoCache.ObterQuestaoCompletaParaCacheAsync(provasIds);
                         foreach (var questao in questoesCompletas)
                         {
+                            await PopularTabelaQuestaoCompleta(questao);
                             await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao, minutosParaUmDia);
                         }
                     }
@@ -75,6 +77,14 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 if (progagandoCache)
                     await repositorioCache.RemoverRedisAsync(CacheChave.CachePropagado);
             }
+        }
+
+        private async Task PopularTabelaQuestaoCompleta(QuestaoCompletaDto questao)
+        {
+            var bytes = MessagePackSerializer.Serialize(questao);
+            var json = MessagePackSerializer.ConvertToJson(bytes);
+
+            await repositorioPropagacaoCache.InserirTabelaJson(questao.Id, json);
         }
     }
 }
