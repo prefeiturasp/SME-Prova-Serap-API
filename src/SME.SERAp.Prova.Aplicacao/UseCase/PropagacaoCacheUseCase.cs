@@ -1,10 +1,8 @@
 ﻿using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao.UseCase
@@ -24,45 +22,46 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
         public async Task Propagar()
         {
+            bool progagandoCache = false;
             try
             {
-                Console.WriteLine($"~~> Inicializando WarmUp do cache as {DateTime.Now}");
+                var dataHoraAtual = DateTime.Now;
+                Console.WriteLine($"~~> Inicializando WarmUp do cache as {dataHoraAtual}");
 
                 var minutosParaUmDia = (int)TimeSpan.FromDays(1).TotalMinutes;
-
-                if (await DeveCriarOCachePara<IEnumerable<Dominio.Prova>>("p-*"))
+                if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
                 {
-                    var todasAsProvas = await repositorioPropagacaoCache.ObterTodasProvasParaCacheAsync();
-                    foreach (var prova in todasAsProvas)
+                    progagandoCache = true;
+                    await repositorioCache.SalvarRedisAsync(CacheChave.CachePropagado, true, minutosParaUmDia);
+
+                    var parametros = await repositorioPropagacaoCache.ObterParametrosParaCacheAsync();
+                    await repositorioCache.SalvarRedisAsync(CacheChave.Parametros, parametros, minutosParaUmDia);
+
+                    var provasAnosDatasEModalidades = await repositorioPropagacaoCache.ObterProvasAnosDatasEModalidadesParaCacheAsync();
+                    await repositorioCache.SalvarRedisAsync(CacheChave.ProvasAnosDatasEModalidades, provasAnosDatasEModalidades, minutosParaUmDia);
+
+                    var provas = await repositorioPropagacaoCache.ObterProvasLiberadasNoPeriodoParaCacheAsync(dataHoraAtual);
+                    foreach (var prova in provas)
                     {
-                        await repositorioCache.SalvarRedisAsync($"p-{prova.Id}", prova, minutosParaUmDia);
+                        await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.Prova, prova.Id), prova, minutosParaUmDia);
                     }
-                }
 
-                if (await DeveCriarOCachePara<IEnumerable<Questao>>("q-*"))
-                {
-                    IEnumerable<Questao> todasAsQuestoes = await repositorioPropagacaoCache.ObterTodasQuestoesParaCacheAsync();
-                    todasAsQuestoes.AsParallel().WithDegreeOfParallelism(3).ForAll(async questao =>
-                    {
-                        await repositorioCache.SalvarRedisAsync($"q-{questao.Id}", JsonSerializer.Serialize(questao), minutosParaUmDia);
-                    });
-                }
+                    var provasIds = provas.Select(p => p.Id).ToArray();
 
-                if (await DeveCriarOCachePara<IEnumerable<Alternativa>>("a-*"))
-                {
-                    IEnumerable<Alternativa> todasAsAlternativas = await repositorioPropagacaoCache.ObterTodasAlternativasParaCacheAsync();
-                    todasAsAlternativas.AsParallel().WithDegreeOfParallelism(3).ForAll(async alternativa =>
+                    if (provasIds.Any())
                     {
-                        await repositorioCache.SalvarRedisAsync($"a-{alternativa.Id}", JsonSerializer.Serialize(alternativa), minutosParaUmDia);
-                    });
-                }
+                        var questoesResumo = await repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds);
+                        foreach(var provaId in provasIds)
+                        {
+                            var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
+                            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questapResumoProva, minutosParaUmDia);
+                        }
 
-                if (await DeveCriarOCachePara<IEnumerable<Arquivo>>("ar-*"))
-                {
-                    IEnumerable<Arquivo> todosOsArquivos = await repositorioPropagacaoCache.ObterTodosArquivosParaCacheAsync();
-                    foreach (var arquivo in todosOsArquivos)
-                    {
-                        await repositorioCache.SalvarRedisAsync($"ar-{arquivo.LegadoId}", arquivo, minutosParaUmDia);
+                        var questoesCompletas = await repositorioPropagacaoCache.ObterQuestaoCompletaParaCacheAsync(provasIds);
+                        foreach (var questao in questoesCompletas)
+                        {
+                            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao, minutosParaUmDia);
+                        }
                     }
                 }
 
@@ -70,14 +69,12 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             }
             catch (Exception ex)
             {
-                servicoLog.Registrar($"Propagacao Cache erro no acesso ao redis durante o warmUp do pod. Erro original: {ex.Message}");
+                servicoLog.Registrar($"Erro ao Propagar os dados para o cache durante o warmUp do pod. Erro original: {ex.Message}");
                 servicoLog.Registrar(ex);
-            }
-        }
 
-        private async Task<bool> DeveCriarOCachePara<T>(string chave)
-        {
-            return await repositorioCache.ObterRedisAsync<T>(chave) != null;
+                if (progagandoCache)
+                    await repositorioCache.RemoverRedisAsync(CacheChave.CachePropagado);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Infra;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<long> Handle(ExportacaoResultadoAtualizarCommand request, CancellationToken cancellationToken)
         {            
             var result = await repositorioExportacaoResultado.UpdateAsync(request.ExportacaoResultado);
-            await repositorioCache.RemoverRedisAsync($"exportacao-{request.ExportacaoResultado.Id}-prova-{request.ExportacaoResultado.ProvaSerapId}");
+            await repositorioCache.RemoverRedisAsync(string.Format(CacheChave.ExportacaoResultado, request.ExportacaoResultado.Id, request.ExportacaoResultado.ProvaSerapId));
             return result;
         }
     }
