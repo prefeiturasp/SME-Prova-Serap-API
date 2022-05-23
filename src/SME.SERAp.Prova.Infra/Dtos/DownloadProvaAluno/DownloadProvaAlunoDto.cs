@@ -5,6 +5,7 @@ namespace SME.SERAp.Prova.Infra
 {
     public class DownloadProvaAlunoDto : DtoBase
     {
+        public long AlunoRa { get; set; }
         public long ProvaId { get; set; }
         public TipoDispositivo TipoDispositivo { get; set; }
         public string DispositivoId { get; set; }
