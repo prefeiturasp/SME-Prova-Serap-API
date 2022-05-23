@@ -208,7 +208,7 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where qv.questao_id = @id; ");
 
                 // alternativas
-                query.AppendLine(" select a.id, a.descricao, a.ordem, a.numeracao ");
+                query.AppendLine(" select a.id, a.descricao, a.questao_id as questaoId, a.ordem, a.numeracao ");
                 query.AppendLine(" from alternativa a ");
                 query.AppendLine(" where a.questao_id = @id; ");
 
