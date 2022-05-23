@@ -60,7 +60,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                         var questoesCompletas = await repositorioPropagacaoCache.ObterQuestaoCompletaParaCacheAsync(provasIds);
                         foreach (var questao in questoesCompletas)
                         {
-                            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao, minutosParaUmDia);
+                            await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao.Json, minutosParaUmDia);
                         }
                     }
                 }

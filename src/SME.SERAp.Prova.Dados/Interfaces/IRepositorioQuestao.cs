@@ -7,14 +7,12 @@ namespace SME.SERAp.Prova.Dados
 {
     public interface IRepositorioQuestao : IRepositorioBase<Questao>
     {
-        Task<Questao> ObterPorIdLegadoAsync(long id);
-        Task<bool> RemoverPorProvaIdAsync(long provaId);
         Task<Questao> ObterPorArquivoAudioIdAsync(long arquivoAudioId);
         Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdAsync(long provaId);
         Task<IEnumerable<Questao>> ObterQuestoesPorProvaIdCadernoAsync(long provaId, string caderno);
         Task<IEnumerable<QuestaoDetalheResumoDadosDto>> ObterDetalhesResumoPorIdAsync(long provaId, long id);
         Task<IEnumerable<ProvaCadernoDadoDto>> ObterCadernosPorProvaId(long provaId);
         Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoPorProvaIdAsync(long provaId);
-        Task<QuestaoCompletaDto> ObterQuestaoCompletaPorIdAsync(long id);
+        Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorIdsAsync(long[] ids);
     }
 }

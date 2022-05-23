@@ -15,16 +15,10 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<QuestaoCompletaDto>> Executar(long[] ids)
+        public async Task<string> Executar(long[] ids)
         {
-            var retorno = new List<QuestaoCompletaDto>();
-            foreach(var id in ids)
-            {
-                var questao = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(id));
-                retorno.Add(questao);
-            }
-            
-            return retorno;
+            var questoes = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(ids));
+            return $"[{string.Join(",", questoes)}]" ;
         }
     }
 }
