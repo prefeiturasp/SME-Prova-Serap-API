@@ -24,9 +24,9 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<QuestaoCompletaDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterPorId([FromQuery]long[] ids, [FromServices] IObterQuestoesCompletaPorIdsUseCase obterQuestoesCompletaPorIdsUseCase)
+        public async Task<IActionResult> ObterCompletasPorId([FromQuery]long[] ids, [FromServices] IObterQuestoesCompletaPorIdsUseCase obterQuestoesCompletaPorIdsUseCase)
         {
-            return Ok(await obterQuestoesCompletaPorIdsUseCase.Executar(ids));
+            return Content(await obterQuestoesCompletaPorIdsUseCase.Executar(ids), "application/json");
         }
     }
 }

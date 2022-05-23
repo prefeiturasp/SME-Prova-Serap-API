@@ -1,15 +1,16 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterQuestaoCompletaPorIdQuery : IRequest<QuestaoCompletaDto>
+    public class ObterQuestaoCompletaPorIdQuery : IRequest<IEnumerable<string>>
     {
-        public ObterQuestaoCompletaPorIdQuery(long questaoId)
+        public ObterQuestaoCompletaPorIdQuery(long[] questoesIds)
         {
-            QuestaoId = questaoId;
+            QuestoesIds = questoesIds;
         }
 
-        public long QuestaoId { get; set; }
+        public long[] QuestoesIds { get; set; }
     }
 }

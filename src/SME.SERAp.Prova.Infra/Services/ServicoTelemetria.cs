@@ -33,12 +33,14 @@ namespace SME.SERAp.Prova.Infra
 
             if (telemetriaOptions.Apm)
             {
-                var transactionElk = Agent.Tracer.CurrentTransaction;
+                Stopwatch temporizadorApm = Stopwatch.StartNew();
+                result = await acao() as dynamic;
+                temporizadorApm.Stop();
 
-                await transactionElk.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
                 {
                     span.SetLabel(telemetriaNome, telemetriaValor);
-                    result = (await acao()) as dynamic;
+                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
                 });
             }
             else

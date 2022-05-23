@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IObterQuestoesCompletaPorIdsUseCase
     {
-        Task<IEnumerable<QuestaoCompletaDto>> Executar(long[] ids);
+        Task<string> Executar(long[] ids);
     }
 }
