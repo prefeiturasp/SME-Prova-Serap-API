@@ -11,10 +11,11 @@ namespace SME.SERAp.Prova.Aplicacao
         {
         }
 
-        public async Task<bool> Executar(long[] ids)
+        public async Task<bool> Executar(Guid[] codigos)
         {
             var dataAlteracao = DateTime.Now.AddHours(3);
-            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.ExcluirDownloadProva, new ExcluirDownloadProvaAlunoDto(ids, dataAlteracao)));
+            var excluirDownloadProvaAluno = new DownloadProvaAlunoExcluirDto(codigos, dataAlteracao);
+            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.DownloadProvaAlunoTratar, new DownloadProvaAlunoFilaDto(Dominio.DownloadProvaAlunoSituacao.Excluir, null, excluirDownloadProvaAluno)));
         }
     }
 }

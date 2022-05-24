@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -10,10 +11,14 @@ namespace SME.SERAp.Prova.Aplicacao
         {
         }
 
-        public async Task<bool> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto)
+        public async Task<Guid> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto)
         {
+            downloadProvaAlunoDto.Codigo = Guid.NewGuid();
             downloadProvaAlunoDto.AlunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirDownloadProva, downloadProvaAlunoDto));
+
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.DownloadProvaAlunoTratar, new DownloadProvaAlunoFilaDto(Dominio.DownloadProvaAlunoSituacao.Incluir, downloadProvaAlunoDto, null)));
+
+            return downloadProvaAlunoDto.Codigo;
         }
     }
 }
