@@ -7,17 +7,18 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class IncluirDownloadProvaAlunoUseCase : AbstractUseCase, IIncluirDownloadProvaAlunoUseCase
     {
-        private readonly IMediator mediator;
         public IncluirDownloadProvaAlunoUseCase(IMediator mediator) : base(mediator)
         {
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<long> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto)
+        public async Task<Guid> Executar(DownloadProvaAlunoDto downloadProvaAlunoDto)
         {
-            var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+            downloadProvaAlunoDto.Codigo = Guid.NewGuid();
+            downloadProvaAlunoDto.AlunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            return  await mediator.Send(new IncluirDownloadProvaCommand(alunoRa, downloadProvaAlunoDto));
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.DownloadProvaAlunoTratar, new DownloadProvaAlunoFilaDto(Dominio.DownloadProvaAlunoSituacao.Incluir, downloadProvaAlunoDto, null)));
+
+            return downloadProvaAlunoDto.Codigo;
         }
     }
 }

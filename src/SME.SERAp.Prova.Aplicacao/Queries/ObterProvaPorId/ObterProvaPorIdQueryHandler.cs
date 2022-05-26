@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Infra;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<Dominio.Prova> Handle(ObterProvaPorIdQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterRedisAsync($"p-{request.ProvaId}", async () => await repositorioProva.ObterPorIdAsync(request.ProvaId));
+            return await repositorioCache.ObterRedisAsync(string.Format(CacheChave.Prova, request.ProvaId), async () => await repositorioProva.ObterPorIdAsync(request.ProvaId));
         }
     }
 }

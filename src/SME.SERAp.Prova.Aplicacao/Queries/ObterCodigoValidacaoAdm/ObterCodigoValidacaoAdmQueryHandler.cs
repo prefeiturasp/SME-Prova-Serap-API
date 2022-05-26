@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<AutenticacaoUsuarioAdmDto> Handle(ObterCodigoValidacaoAdmQuery request, CancellationToken cancellationToken)
         {
-            var chave = $"auth-adm-{request.Codigo}";
+            var chave = string.Format(CacheChave.CodigoAutenticacaoAdmin, request.Codigo);
 
             var retorno = await repositorioCache.ObterRedisAsync<AutenticacaoUsuarioAdmDto>(chave);
             await repositorioCache.RemoverRedisAsync(chave);

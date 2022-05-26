@@ -205,24 +205,11 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select
-	                            distinct ca.caderno		
-                            from
-	                            prova p
-                            inner join caderno_aluno ca on 
-                                p.id = ca.prova_id
-                            inner join aluno a on 
-                                ca.aluno_id = a.id
-                            inner join questao q on
-	                            q.prova_id = p.id and ca.caderno = q.caderno
-                            left join alternativa alt on
-	                            alt.questao_id = q.id
-                            left join questao_arquivo qa on
-	                            qa.questao_id = q.id
-                            left join arquivo arq on
-	                            qa.arquivo_id = arq.id
+                var query = @"select ca.caderno 	
+                              from caderno_aluno ca 
+                              left join aluno a on a.id = ca.aluno_id
                             where
-	                            p.id = @provaId and a.ra = @alunoRA ";
+	                            ca.prova_id = @provaId and a.ra = @alunoRA ";
 
                 return await conn.QueryFirstOrDefaultAsync<string>(query, new { provaId, alunoRA });
             }
