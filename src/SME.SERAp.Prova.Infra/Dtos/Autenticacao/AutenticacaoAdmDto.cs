@@ -1,7 +1,6 @@
-﻿using SME.SERAp.Prova.Infra;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SME.SERAp.Prova
+namespace SME.SERAp.Prova.Infra
 {
     public class AutenticacaoAdmDto : DtoBase
     {

@@ -1,29 +1,19 @@
-﻿using System.Collections.Generic;
-
-namespace SME.SERAp.Prova.Infra
+﻿namespace SME.SERAp.Prova.Infra
 {
     public class ProvaDetalheResumidoRetornoDto : DtoBase
     {
-        public ProvaDetalheResumidoRetornoDto(long provaId, long[] questoesId, long[] arquivosId, long[] alternativasId, 
-            long tamanhoTotalArquivos, long[] contextoProvaIds, long[] audiosId, long[] videosId)
+        public ProvaDetalheResumidoRetornoDto(
+            long provaId, 
+            long[] questoesIds,
+            long[] contextosProvaIds)
         {
             ProvaId = provaId;
-            QuestoesId = questoesId;
-            ArquivosId = arquivosId;
-            AlternativasId = alternativasId;
-            TamanhoTotalArquivos = tamanhoTotalArquivos;
-            ContextoProvaIds = contextoProvaIds;
-            AudiosId = audiosId;
-            VideosId = videosId;
+            QuestoesIds = questoesIds;
+            ContextosProvaIds = contextosProvaIds;
         }
 
         public long ProvaId { get; set; }
-        public long[] QuestoesId { get; set; }
-        public long[] ArquivosId { get; set; }
-        public long[] AudiosId { get; set; }
-        public long[] AlternativasId { get; set; }
-        public long[] ContextoProvaIds {get;set;}
-        public long TamanhoTotalArquivos { get; set; }
-        public long[] VideosId { get; set; }
+        public long[] QuestoesIds { get; set; }
+        public long[] ContextosProvaIds {get;set;}
     }
 }

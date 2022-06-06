@@ -5,7 +5,6 @@ using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
 using SME.SERAp.Prova.Dados.Interfaces;
-using SME.SERAp.Prova.Dados.Repositorios.Eol;
 using SME.SERAp.Prova.Dados.Repositorios.Serap;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Services;
@@ -25,11 +24,9 @@ namespace SME.SERAp.Prova.IoC
             RegistraMapeamentos.Registrar();
         }
 
-
         private static void RegistrarRepositorios(IServiceCollection services)
         {
             services.TryAddScoped<IRepositorioCache, RepositorioCache>();
-            services.TryAddScoped<IRepositorioAlunoEol, RepositorioAlunoEol>();
             services.TryAddScoped<IRepositorioAluno, RepositorioAluno>();
             services.TryAddScoped<IRepositorioProva, RepositorioProva>();
             services.TryAddScoped<IRepositorioQuestao, RepositorioQuestao>();
@@ -53,6 +50,14 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioUsuarioSerapCoreSSO, RepositorioUsuarioSerapCoreSSO>();
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
+            services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
+
+            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
+            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -69,12 +74,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterMeusDadosUseCase, ObterMeusDadosUseCase>();
             services.TryAddScoped<IObterProvasAreaEstudanteUseCase, ObterProvasAreaEstudanteUseCase>();
             services.TryAddScoped<IObterProvaDetalhesResumidoUseCase, ObterProvaDetalhesResumidoUseCase>();
-            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
             services.TryAddScoped<IObterTelasBoasVindasUseCase, ObterTelasBoasVindasUseCase>();
-            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
-            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
-            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
-            services.TryAddScoped<IIncluirQuestaoAlunoRespostaUseCase, IncluirQuestaoAlunoRespostaUseCase>();
             services.TryAddScoped<IIncluirProvaAlunoUseCase, IncluirProvaAlunoUseCase>();
             services.TryAddScoped<IObterQuestaoAlunoRespostaPorQuestaoIdUseCase, ObterQuestaoAlunoRespostaPorQuestaoIdUseCase>();
             services.TryAddScoped<IObterRespostasAlunoPorProvaIdUseCase, ObterRespostasAlunoPorProvaIdUseCase>();
@@ -92,9 +92,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterExportacaoResultadoProvasPorDataUseCase, ObterExportacaoResultadoProvasPorDataUseCase>();
             services.TryAddScoped<IDownloadArquivoResultadoProvaUseCase, DownloadArquivoResultadoProvaUseCase>();
             services.TryAddScoped<IAutenticarUsuarioAdmUseCase, AutenticarUsuarioAdmUseCase>();
-            services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
             services.TryAddScoped<IPotenciacaoRUseCase, PotenciacaoRUseCase>();
-            services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
             services.TryAddScoped<IObterProvaAreaAdministrativoUseCase, ObterProvaAreaAdministrativoUseCase>();
             services.TryAddScoped<IObterProvaResumoAreaAdministrativoUseCase, ObterProvaResumoAreaAdministrativoUseCase>();
             services.TryAddScoped<IObterProvaCadernosAreaAdministrativoUseCase, ObterProvaCadernosAreaAdministrativoUseCase>();
@@ -102,6 +100,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterVersaoAppUseCase, ObterVersaoAppUseCase>();
             services.TryAddScoped<IAutenticarUsuarioValidarAdmUseCase, AutenticarUsuarioValidarAdmUseCase>();
             services.TryAddScoped<IRevalidaTokenJwtAdmUseCase, RevalidaTokenJwtAdmUseCase>();
+            services.TryAddScoped<IIncluirVersaoAppDispositivoUseCase, IncluirVersaoAppDispositivoUseCase>();
+            services.TryAddScoped<IObterQuestoesCompletaPorIdsUseCase, ObterQuestoesCompletaPorIdsUseCase>();
         }
     }
 }

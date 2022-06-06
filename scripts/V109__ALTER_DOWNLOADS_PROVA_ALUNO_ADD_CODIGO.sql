@@ -1,0 +1,1 @@
+alter table downloads_prova_aluno add if not exists codigo uuid;
