@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Sentry;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,7 +23,22 @@ namespace SME.SERAp.Prova.Api.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvas([FromServices] IObterProvasAreaEstudanteUseCase obterProvasAreaEstudanteUseCase)
         {
-            return Ok(await obterProvasAreaEstudanteUseCase.Executar());
+            obterProvasAreaEstudanteUseCase = obterProvasAreaEstudanteUseCase ?? throw new ArgumentException(nameof(obterProvasAreaEstudanteUseCase));
+
+            try
+            {
+                return Ok(await obterProvasAreaEstudanteUseCase.Executar());
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.AddBreadcrumb($"Ocorreu um erro ao obter as prova para o aluno");
+
+                if (ex.InnerException != null)
+                    SentrySdk.CaptureException(ex.InnerException);
+
+                SentrySdk.CaptureException(ex);
+                throw;
+            }
         }
 
         [HttpGet("finalizadas")]
