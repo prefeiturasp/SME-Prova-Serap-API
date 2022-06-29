@@ -13,12 +13,12 @@ using Prometheus;
 using RabbitMQ.Client;
 using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
+using SME.SERAp.Prova.Api.Converters;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using StackExchange.Redis;
-using System.IO.Compression;
 using System.Threading;
 
 namespace SME.SERAp.Prova.Api
@@ -35,7 +35,10 @@ namespace SME.SERAp.Prova.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+            });
 
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
