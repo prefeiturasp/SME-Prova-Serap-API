@@ -67,9 +67,14 @@ namespace SME.SERAp.Prova.Api
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
+          
+
             var conexaoRabbit = factory.CreateConnection();
 
             services.AddSingleton(conexaoRabbit);
+
+
+
 
             var configuracaoRabbitLogOptions = new RabbitLogOptions();
             Configuration.GetSection("RabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
@@ -125,7 +130,7 @@ namespace SME.SERAp.Prova.Api
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
             var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
             services.AddSingleton(servicoTelemetria);
-
+            RegistraMvc.Registrar(services, serviceProvider);
             DapperExtensionMethods.Init(servicoTelemetria);
 
             IniciarPropagacaoCache(services);

@@ -1,4 +1,5 @@
 ﻿using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
@@ -69,8 +70,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             }
             catch (Exception ex)
             {
-                servicoLog.Registrar($"Erro ao Propagar os dados para o cache durante o warmUp do pod. Erro original: {ex.Message}");
-                servicoLog.Registrar(ex);
+                servicoLog.Registrar("Erro ao Propagar os dados para o cache durante o warmUp do pod", ex);
 
                 if (progagandoCache)
                     await repositorioCache.RemoverRedisAsync(CacheChave.CachePropagado);
