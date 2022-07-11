@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
-using Sentry;
 using SME.SERAp.Prova.Dados.Interfaces;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Aplicacao
     public class PublicarFilaSerapEstudantesCommandHandler : IRequestHandler<PublicarFilaSerapEstudantesCommand, bool>
     {
         private readonly IConnection connectionRabbit;
-
+        private readonly IMediator mediator;
         public PublicarFilaSerapEstudantesCommandHandler(IConnection connectionRabbit)
         {
             this.connectionRabbit = connectionRabbit ?? throw new ArgumentNullException(nameof(connectionRabbit));
@@ -31,20 +31,18 @@ namespace SME.SERAp.Prova.Aplicacao
                 var mensagemJson = JsonSerializer.Serialize(mensagem);
                 var body = Encoding.UTF8.GetBytes(mensagemJson);
 
-                using(IModel canal = connectionRabbit.CreateModel())
+                using (IModel canal = connectionRabbit.CreateModel())
                 {
                     var props = canal.CreateBasicProperties();
                     props.Persistent = true;
                     canal.BasicPublish(ExchangeRabbit.SerapEstudante, request.Fila, props, body);
                 }
-                
+
                 return Task.FromResult(true);
             }
             catch (Exception ex)
             {
-                SentrySdk.AddBreadcrumb($"Erros: PublicarFilaSerapEstudantesCommand", null, null, null, BreadcrumbLevel.Error);
-                SentrySdk.CaptureMessage($"SERAp Estudantes: Fila -> {request.Fila}", SentryLevel.Error);
-                SentrySdk.CaptureException(ex);
+                mediator.Send(new SalvarLogViaRabbitCommand($"Erros: PublicarFilaSerapEstudantesCommand -- Estudantes: Fila -> {request.Fila}", LogNivel.Critico, ex.Message));
                 return Task.FromResult(false);
             }
         }

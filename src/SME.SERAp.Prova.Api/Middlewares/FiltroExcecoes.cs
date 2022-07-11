@@ -1,41 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Sentry;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc.Filters;
+using SME.SERAp.Prova.Aplicacao;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Middlewares
 {
     public class FiltroExcecoesAttribute : ExceptionFilterAttribute
     {
-        private readonly SentryOptions sentryOptions;
+            private readonly IMediator mediator;
 
-        public FiltroExcecoesAttribute(SentryOptions sentryOptions)
-        {
-            this.sentryOptions = sentryOptions ?? throw new ArgumentNullException(nameof(sentryOptions));
-        }
-
-        public override void OnException(ExceptionContext context)
-        {
-            using (SentrySdk.Init(sentryOptions))
+            public FiltroExcecoesAttribute(IMediator mediator)
             {
-                var internalIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList?.Where(c => c.AddressFamily == AddressFamily.InterNetwork).ToString();
-                SentrySdk.AddBreadcrumb($"{Environment.MachineName ?? string.Empty} - {internalIP ?? string.Empty }", "Machine Identification");
-
-                SentrySdk.CaptureException(context.Exception);                
+                this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             }
 
-            context.Result = context.Exception switch
+            public override async void OnException(ExceptionContext context)
             {
-                NegocioException negocioException => new ResultadoBaseResult(context.Exception.Message, negocioException.StatusCode),
-                ValidacaoException validacaoException => new ResultadoBaseResult(new RetornoBaseDto(validacaoException.Erros)),
-                NaoAutorizadoException naoAutorizadoException => new ResultadoBaseResult(context.Exception.Message, naoAutorizadoException.StatusCode),
-                _ => new ResultadoBaseResult("Ocorreu um erro interno. Favor contatar o suporte.", 500),
-            };
-            base.OnException(context);
+                var internalIP = "";
+
+                switch (context.Exception)
+                {
+                    case NegocioException negocioException:
+                        await SalvaLogAsync(LogNivel.Negocio, context.Exception.Message, internalIP, context.Exception.StackTrace);
+                        context.Result = new ResultadoBaseResult(context.Exception.Message, negocioException.StatusCode);
+                        break;
+                    case ValidacaoException validacaoException:
+                        await SalvaLogAsync(LogNivel.Negocio, context.Exception.Message, internalIP, context.Exception.StackTrace);
+                        context.Result = new ResultadoBaseResult(new RetornoBaseDto(validacaoException.Erros));
+                        break;
+                    default:
+                        await SalvaLogAsync(LogNivel.Critico, context.Exception.Message, internalIP, context.Exception.StackTrace);
+                        context.Result = new ResultadoBaseResult("Ocorreu um erro interno. Favor contatar o suporte.", 500);
+                        break;
+                }
+
+                base.OnException(context);
+            }
+            public async Task SalvaLogAsync(LogNivel nivel, string erro, string observacoes, string stackTrace)
+            {
+                await mediator.Send(new SalvarLogViaRabbitCommand(erro, nivel, observacoes, rastreamento: stackTrace));
+            }
         }
     }
-}
