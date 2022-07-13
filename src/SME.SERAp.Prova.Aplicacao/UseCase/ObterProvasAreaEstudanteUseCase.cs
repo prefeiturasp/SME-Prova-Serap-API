@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Sentry;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
@@ -96,12 +95,11 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             catch(Exception ex)
             {
-                SentrySdk.AddBreadcrumb($"Ocorreu um erro ao obter as prova no passo {passo} para o aluno: {alunoRa}");
 
-                if(ex.InnerException != null)
-                    SentrySdk.CaptureException(ex.InnerException);
+                // /  if(ex.InnerException != null)
+                //   SentrySdk.CaptureException(ex.InnerException);
 
-                SentrySdk.CaptureException(ex);
+                await mediator.Send(new SalvarLogViaRabbitCommand("Ocorreu um erro ao obter as prova no passo {passo} para o aluno: {alunoRa}", LogNivel.Critico, ex.Message, ex.StackTrace));
                 throw;
             }
         }
