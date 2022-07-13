@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Elastic.Apm;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Dominio;
@@ -35,7 +36,8 @@ namespace SME.SERAp.Prova.Api.Middlewares
                     context.Result = new ResultadoBaseResult(context.Exception.Message, negocioException.StatusCode);
                     break;
                 case ValidacaoException validacaoException:
-                    servicoLog.Registrar(LogNivel.Negocio, context.Exception.Message, internalIP, context.Exception.StackTrace);
+                    var observacao = $"IP: {internalIP}, Erros: {string.Join(", ", validacaoException.Mensagens())}";
+                    servicoLog.Registrar(LogNivel.Negocio, context.Exception.Message, observacao, context.Exception.StackTrace);
                     context.Result = new ResultadoBaseResult(new RetornoBaseDto(validacaoException.Erros));
                     break;
                 default:
@@ -44,6 +46,7 @@ namespace SME.SERAp.Prova.Api.Middlewares
                     break;
             }
 
+            Agent.Tracer.CurrentTransaction?.CaptureException(context.Exception);
             base.OnException(context);
         }
         public async Task SalvaLogAsync(LogNivel nivel, string erro, string observacoes, string stackTrace)

@@ -28,12 +28,12 @@ namespace SME.SERAp.Prova.Infra.Services
 
         public void Registrar(LogNivel nivel, string erro, string observacoes, string stackTrace)
         {
-            LogMensagem logMensagem = new LogMensagem(erro,nivel, observacoes, stackTrace);
+            LogMensagem logMensagem = new LogMensagem(erro, nivel, observacoes, stackTrace);
             Registrar(logMensagem);
 
         }
 
-        public void Registrar(string mensagem, Exception ex )
+        public void Registrar(string mensagem, Exception ex)
         {
             LogMensagem logMensagem = new LogMensagem(mensagem, LogNivel.Critico, ex.Message, ex.StackTrace);
 
@@ -41,44 +41,40 @@ namespace SME.SERAp.Prova.Infra.Services
         }
         private void Registrar(LogMensagem log)
         {
-            try
+            var mensagem = JsonConvert.SerializeObject(log, new JsonSerializerSettings
             {
-                var mensagem = JsonConvert.SerializeObject(log, new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
+                NullValueHandling = NullValueHandling.Ignore
 
-                });
+            });
 
-                var body = Encoding.UTF8.GetBytes(mensagem);
+            var body = Encoding.UTF8.GetBytes(mensagem);
 
-                servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
-
-            }
-            catch (System.Exception ex)
-            {
-                throw ex;
-            }
+            servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
         }
 
         private void PublicarMensagem(byte[] body)
         {
-            var factory = new ConnectionFactory
+            try
             {
-                HostName = configuracaoRabbitOptions.HostName,
-                UserName = configuracaoRabbitOptions.UserName,
-                Password = configuracaoRabbitOptions.Password,
-                VirtualHost = configuracaoRabbitOptions.VirtualHost
-            };
-
-            using (var conexaoRabbit = factory.CreateConnection())
-            {
-                using (IModel _channel = conexaoRabbit.CreateModel())
+                var factory = new ConnectionFactory
                 {
-                    var props = _channel.CreateBasicProperties();
+                    HostName = configuracaoRabbitOptions.HostName,
+                    UserName = configuracaoRabbitOptions.UserName,
+                    Password = configuracaoRabbitOptions.Password,
+                    VirtualHost = configuracaoRabbitOptions.VirtualHost
+                };
 
-                    _channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
+                using (var conexaoRabbit = factory.CreateConnection())
+                {
+                    using (IModel _channel = conexaoRabbit.CreateModel())
+                    {
+                        var props = _channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        _channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
+                    }
                 }
             }
+            catch { }
         }
     }
 }
