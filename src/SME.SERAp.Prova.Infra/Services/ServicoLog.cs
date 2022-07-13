@@ -7,17 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SME.SERAp.Prova.Dominio;
+using Microsoft.Extensions.Logging;
 
 namespace SME.SERAp.Prova.Infra.Services
 {
     public class ServicoLog : IServicoLog
     {
+        private readonly ILogger<ServicoLog> logger;
         private readonly IServicoTelemetria servicoTelemetria;
         private readonly RabbitLogOptions configuracaoRabbitOptions;
-        public ServicoLog(IServicoTelemetria servicoTelemetria, RabbitLogOptions configuracaoRabbitOptions)
+        public ServicoLog(IServicoTelemetria servicoTelemetria, RabbitLogOptions configuracaoRabbitOptions, ILogger<ServicoLog> logger)
         {
             this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
             this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new System.ArgumentNullException(nameof(configuracaoRabbitOptions));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void Registrar(Exception ex)
@@ -74,7 +77,10 @@ namespace SME.SERAp.Prova.Infra.Services
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
         }
     }
 }
