@@ -2,7 +2,6 @@
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
-using SME.SERAp.Prova.Infra.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +17,9 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<IEnumerable<ObterProvasRetornoDto>> Executar()
         {
-
             var claimsParaBuscar = new string[] { "ANO", "TIPOTURNO", "MODALIDADE", "RA" };
             var claimsDoUsuario = await mediator.Send(new ObterUsuarioLogadoInformacoesPorClaimsQuery(claimsParaBuscar));
 
@@ -62,19 +61,25 @@ namespace SME.SERAp.Prova.Aplicacao
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
             var turmasAluno = await mediator.Send(new ObterTurmasAlunoPorRaQuery(long.Parse(alunoRa)));
-            if (turmasAluno == null)
+            if (turmasAluno == null || !turmasAluno.Any())
                 throw new NegocioException("Turma do aluno não localizado");
 
-            var turmaAtual = turmasAluno.Where(t => t.Ano == int.Parse(alunoLogadoAno) 
-                                                    && t.Modalidade == int.Parse(alunoLogadoModalidade) 
+            var turmaAtual = turmasAluno.Where(t => t.Ano == alunoLogadoAno
+                                                    && t.Modalidade == int.Parse(alunoLogadoModalidade)
                                                     && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
+
+            if (turmaAtual == null) return default;
 
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade), turmaAtual.EtapaEja));
             var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
-            provas = JuntarListasProvas(provas, provasAdesao);            
+            provas = JuntarListasProvas(provas, provasAdesao);
 
-            provas = await TratarProvasPorTipoDeficiencia(provas, long.Parse(alunoRa));
+            var detalhes = await mediator.Send(new ObterDetalhesAlunoCacheQuery(long.Parse(alunoRa)));
+            if (detalhes.Deficiencias != null && detalhes.Deficiencias.Any())
+            {
+                provas = await TratarProvasPorTipoDeficiencia(provas, long.Parse(alunoRa));
+            }
 
             if (provas.Any())
             {
@@ -148,7 +153,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 retorno.AddRange(provas);
             if (provasAdesao != null && provasAdesao.Any())
                 retorno.AddRange(provasAdesao);
-            
+
             return retorno.Distinct();
         }
 
@@ -165,12 +170,12 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(IEnumerable<ProvaAnoDto> provas, List<int> deficienciasAluno)
         {
-            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.BAIXA_VISAO_OU_SUBNORMAL , (int)DeficienciaTipo.CEGUEIRA };
+            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.BAIXA_VISAO_OU_SUBNORMAL, (int)DeficienciaTipo.CEGUEIRA };
             var alunoNecessitaProvaComAudio = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
 
             var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
             if (!alunoNecessitaProvaComAudio)
-            {                
+            {
                 return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id));
             }
             return provas;
@@ -187,6 +192,6 @@ namespace SME.SERAp.Prova.Aplicacao
                 return provas.Where(a => !provasComVideo.Any(pa => pa == a.Id));
             }
             return provas;
-        }        
+        }
     }
 }
