@@ -6,6 +6,7 @@ using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
 using SME.SERAp.Prova.Dados.Interfaces;
 using SME.SERAp.Prova.Dados.Repositorios.Serap;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using SME.SERAp.Prova.Infra.Services;
 
@@ -62,7 +63,9 @@ namespace SME.SERAp.Prova.IoC
 
         private static void RegistrarServicos(IServiceCollection services)
         {
+            services.TryAddScoped<IServicoTelemetria, ServicoTelemetria>();
             services.TryAddScoped<IServicoLog, ServicoLog>();
+
         }
 
         private static void RegistrarCasosDeUso(IServiceCollection services)

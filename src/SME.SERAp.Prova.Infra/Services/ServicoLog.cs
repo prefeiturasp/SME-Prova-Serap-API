@@ -1,51 +1,88 @@
-﻿using Microsoft.ApplicationInsights;
-using Sentry;
-using SME.SERAp.Prova.Infra.EnvironmentVariables;
+﻿using RabbitMQ.Client;
+using SME.SERAp.Prova.Dominio.Entidades;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SME.SERAp.Prova.Dominio;
+using Microsoft.Extensions.Logging;
 
 namespace SME.SERAp.Prova.Infra.Services
 {
     public class ServicoLog : IServicoLog
     {
-        private readonly LogOptions logOptions;
-        private readonly TelemetryClient insightsClient;
-
-        public ServicoLog(LogOptions logOptions, TelemetryClient insightsClient)
+        private readonly ILogger<ServicoLog> logger;
+        private readonly IServicoTelemetria servicoTelemetria;
+        private readonly RabbitLogOptions configuracaoRabbitOptions;
+        public ServicoLog(IServicoTelemetria servicoTelemetria, RabbitLogOptions configuracaoRabbitOptions, ILogger<ServicoLog> logger)
         {
-            this.logOptions = logOptions ?? throw new ArgumentNullException(nameof(logOptions));
-            this.insightsClient = insightsClient ?? throw new ArgumentNullException(nameof(insightsClient));
-        }
-
-        public void Registrar(string mensagem)
-        {
-            using (SentrySdk.Init(logOptions.SentryDSN))
-            {
-                SentrySdk.CaptureMessage(mensagem);
-            }
+            this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
+            this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new System.ArgumentNullException(nameof(configuracaoRabbitOptions));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public void Registrar(Exception ex)
         {
-            using (SentrySdk.Init(logOptions.SentryDSN))
+            LogMensagem logMensagem = new LogMensagem("Exception --- ", LogNivel.Critico, ex.Message, ex.StackTrace);
+            Registrar(logMensagem);
+        }
+
+        public void Registrar(LogNivel nivel, string erro, string observacoes, string stackTrace)
+        {
+            LogMensagem logMensagem = new LogMensagem(erro, nivel, observacoes, stackTrace);
+            Registrar(logMensagem);
+
+        }
+
+        public void Registrar(string mensagem, Exception ex)
+        {
+            LogMensagem logMensagem = new LogMensagem(mensagem, LogNivel.Critico, ex.Message, ex.StackTrace);
+
+            Registrar(logMensagem);
+        }
+        private void Registrar(LogMensagem log)
+        {
+            var mensagem = JsonConvert.SerializeObject(log, new JsonSerializerSettings
             {
-                SentrySdk.CaptureException(ex);
+                NullValueHandling = NullValueHandling.Ignore
+
+            });
+
+            var body = Encoding.UTF8.GetBytes(mensagem);
+
+            servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
+        }
+
+        private void PublicarMensagem(byte[] body)
+        {
+            try
+            {
+                var factory = new ConnectionFactory
+                {
+                    HostName = configuracaoRabbitOptions.HostName,
+                    UserName = configuracaoRabbitOptions.UserName,
+                    Password = configuracaoRabbitOptions.Password,
+                    VirtualHost = configuracaoRabbitOptions.VirtualHost
+                };
+
+                using (var conexaoRabbit = factory.CreateConnection())
+                {
+                    using (IModel _channel = conexaoRabbit.CreateModel())
+                    {
+                        var props = _channel.CreateBasicProperties();
+                        props.Persistent = true;
+                        _channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
+                    }
+                }
             }
-        }
-
-        public void RegistrarAppInsights(string evento, string mensagem)
-        {
-            insightsClient.TrackEvent(evento,
-                new Dictionary<string, string>()
-                          {
-                             { DateTime.Now.ToLongDateString(), mensagem }
-                         });
-        }
-
-        public void RegistrarDependenciaAppInsights(string tipoDependencia, string alvo, string mensagem, DateTimeOffset inicio, TimeSpan duracao, bool sucesso)
-        {
-            insightsClient.TrackDependency(tipoDependencia, alvo, mensagem, inicio, duracao, sucesso);
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
         }
     }
 }
+
+
