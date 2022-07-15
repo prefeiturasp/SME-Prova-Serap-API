@@ -27,8 +27,7 @@ namespace SME.SERAp.Prova.Api.Middlewares
 
         public override void OnException(ExceptionContext context)
         {
-            var internalIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList?.Where(c => c.AddressFamily == AddressFamily.InterNetwork).ToString();
-
+            var internalIP = string.Join(", ", Dns.GetHostEntry(Dns.GetHostName()).AddressList?.Where(c => c.AddressFamily == AddressFamily.InterNetwork));
             switch (context.Exception)
             {
                 case NegocioException negocioException:
