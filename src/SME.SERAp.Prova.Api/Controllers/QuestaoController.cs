@@ -28,5 +28,14 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Content(await obterQuestoesCompletaPorIdsUseCase.Executar(ids), "application/json");
         }
+
+        [HttpGet("completas-legado")]
+        [ProducesResponseType(typeof(IEnumerable<QuestaoCompletaDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterCompletasPorLegadoId([FromQuery] long[] ids, [FromServices] IObterQuestoesCompletaPorLegadoIdsUseCase obterQuestoesCompletaPorLegadoIdsUseCase)
+        {
+            return Content(await obterQuestoesCompletaPorLegadoIdsUseCase.Executar(ids), "application/json");
+        }
     }
 }

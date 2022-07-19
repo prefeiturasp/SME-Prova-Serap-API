@@ -105,6 +105,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRevalidaTokenJwtAdmUseCase, RevalidaTokenJwtAdmUseCase>();
             services.TryAddScoped<IIncluirVersaoAppDispositivoUseCase, IncluirVersaoAppDispositivoUseCase>();
             services.TryAddScoped<IObterQuestoesCompletaPorIdsUseCase, ObterQuestoesCompletaPorIdsUseCase>();
+            services.TryAddScoped<IObterQuestoesCompletaPorLegadoIdsUseCase, ObterQuestoesCompletaPorLegadoIdsUseCase>();
+            services.TryAddScoped<IObterProvaDetalhesResumidoCadernoUseCase, ObterProvaDetalhesResumidoCadernoUseCase>();
         }
     }
 }

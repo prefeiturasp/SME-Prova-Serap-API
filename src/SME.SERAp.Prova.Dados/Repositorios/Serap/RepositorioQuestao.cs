@@ -124,7 +124,7 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select q.id as QuestaoId, q.caderno from questao q where q.prova_id = @provaId";
+                var query = @"select q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = @provaId";
                 return await conn.QueryAsync<QuestaoResumoProvaDto>(query, new { provaId });
             }
             finally
@@ -146,6 +146,27 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" where id = ANY(@ids); ");
 
                 return await conn.QueryAsync<QuestaoCompleta>(query.ToString(), new { ids });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorLegadoIdsAsync(long[] legadoIds)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = new StringBuilder();
+                // questão
+                query.AppendLine(" select questao_legado_id, max(json) as json ");
+                query.AppendLine(" from questao_completa ");
+                query.AppendLine(" where questao_legado_id = ANY(@legadoIds) ");
+                query.AppendLine(" group by questao_legado_id; ");
+
+                return await conn.QueryAsync<QuestaoCompleta>(query.ToString(), new { legadoIds });
             }
             finally
             {

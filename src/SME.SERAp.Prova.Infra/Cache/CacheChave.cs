@@ -30,6 +30,11 @@
         /// </summary>
         public const string QuestaoCompleta = "qc-{0}";
         /// <summary>
+        /// Questão completa legado
+        /// 0 - Questão id
+        /// </summary>
+        public const string QuestaoCompletaLegado = "qcl-{0}";
+        /// <summary>
         /// Prova
         /// 0 - Prova Id
         /// </summary>
