@@ -72,12 +72,34 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
+        public async Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaLegadoParaCacheAsync(long[] provaIds)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = new StringBuilder();
+                // questão
+                query.AppendLine(" select qc.questao_legado_id as id, max(qc.json) as json ");
+                query.AppendLine(" from questao q ");
+                query.AppendLine(" join questao_completa qc on qc.id = q.id ");
+                query.AppendLine(" where q.prova_id = ANY(@provaIds) ");
+                query.AppendLine(" group by qc.questao_legado_id; ");
+
+                return await SqlMapper.QueryAsync<QuestaoCompleta>(conn, query.ToString(), new { provaIds });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select q.prova_id as ProvaId, q.id as QuestaoId, q.caderno from questao q where q.prova_id = ANY(@provaIds)";
+                var query = @"select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds)";
                 return await SqlMapper.QueryAsync<QuestaoResumoProvaDto>(conn, query, new { provaIds });
             }
             finally

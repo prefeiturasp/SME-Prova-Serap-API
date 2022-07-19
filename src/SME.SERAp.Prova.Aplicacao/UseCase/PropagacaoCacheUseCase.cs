@@ -30,8 +30,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 Console.WriteLine($"~~> Inicializando WarmUp do cache as {dataHoraAtual}");
 
                 var minutosParaUmDia = (int)TimeSpan.FromDays(1).TotalMinutes;
-                if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
-                {
+                //if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
+                //{
                     progagandoCache = true;
                     await repositorioCache.SalvarRedisAsync(CacheChave.CachePropagado, true, minutosParaUmDia);
 
@@ -52,7 +52,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     if (provasIds.Any())
                     {
                         var questoesResumo = await repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds);
-                        foreach(var provaId in provasIds)
+                        foreach (var provaId in provasIds)
                         {
                             var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
                             await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questapResumoProva, minutosParaUmDia);
@@ -63,8 +63,14 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                         {
                             await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao.Json, minutosParaUmDia);
                         }
+
+                        var questoesCompletasLegado = await repositorioPropagacaoCache.ObterQuestaoCompletaLegadoParaCacheAsync(provasIds);
+                        foreach (var questao in questoesCompletasLegado)
+                        {
+                            await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompletaLegado, questao.Id), questao.Json, minutosParaUmDia);
+                        }
                     }
-                }
+                //}
 
                 Console.WriteLine($"~~> WarmUp do cache Finalizado as {DateTime.Now}");
             }
