@@ -35,7 +35,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [ValidaDto]
-       // [ChaveAutenticacaoApi]
+        [ChaveAutenticacaoApi]
         [HttpPost("dispositivo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
