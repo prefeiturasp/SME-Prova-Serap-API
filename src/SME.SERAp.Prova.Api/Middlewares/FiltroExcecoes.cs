@@ -39,6 +39,10 @@ namespace SME.SERAp.Prova.Api.Middlewares
                     servicoLog.Registrar(LogNivel.Negocio, context.Exception.Message, observacao, context.Exception.StackTrace);
                     context.Result = new ResultadoBaseResult(new RetornoBaseDto(validacaoException.Erros));
                     break;
+                case NaoAutorizadoException naoAutorizadoException:
+                    servicoLog.Registrar(LogNivel.Negocio, context.Exception.Message, internalIP, context.Exception.StackTrace);
+                    context.Result = new ResultadoBaseResult(context.Exception.Message, naoAutorizadoException.StatusCode);
+                    break;
                 default:
                     servicoLog.Registrar(LogNivel.Critico, context.Exception.Message, internalIP, context.Exception.StackTrace);
                     context.Result = new ResultadoBaseResult("Ocorreu um erro interno. Favor contatar o suporte.", 500);
