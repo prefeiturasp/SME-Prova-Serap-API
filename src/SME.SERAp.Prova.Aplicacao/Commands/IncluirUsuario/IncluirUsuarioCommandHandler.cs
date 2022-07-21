@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Interfaces;
+using SME.SERAp.Prova.Infra;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,13 +10,26 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class IncluirUsuarioCommandHandler : IRequestHandler<IncluirUsuarioCommand, bool>
     {
-        private readonly IRepositorioUsuario repositorioUsuario;
+        private readonly IRepositorioCache repositorioCache;
+        private readonly IMediator mediator;
 
-        public IncluirUsuarioCommandHandler(IRepositorioUsuario repositorioUsuario)
+        public IncluirUsuarioCommandHandler(IRepositorioCache repositorioCache,
+                                            IMediator mediator)
         {
-            this.repositorioUsuario = repositorioUsuario ?? throw new System.ArgumentNullException(nameof(repositorioUsuario));
+            this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
+            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
         public async Task<bool> Handle(IncluirUsuarioCommand request, CancellationToken cancellationToken)
-            => await repositorioUsuario.IncluirAsync(new Dominio.Usuario(request.Nome, request.Login)) > 0;
+        {
+            var usurioDto = new UsuarioDto
+            {
+                Login = request.Login,
+                Nome = request.Nome
+            };
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirUsuario, usurioDto));
+            await repositorioCache.SalvarRedisAsync(request.Login.ToString(), usurioDto);
+            return true;
+        }
+
     }
 }

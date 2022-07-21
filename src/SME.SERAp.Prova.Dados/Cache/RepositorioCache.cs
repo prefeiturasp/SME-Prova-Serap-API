@@ -97,8 +97,6 @@ namespace SME.SERAp.Prova.Dados.Cache
 
             return false;
         }
-
-
         public async Task SalvarRedisToJsonAsync(string nomeChave, string json, int minutosParaExpirar = 720)
         {
             try
