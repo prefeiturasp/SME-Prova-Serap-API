@@ -27,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 Nome = request.Nome
             };
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirUsuario, usurioDto));
-            await repositorioCache.SalvarRedisAsync(request.Login.ToString(), usurioDto);
+            await repositorioCache.SalvarRedisAsync(request.Login.ToString(), new Dominio.Usuario(request.Nome, request.Login));
             return true;
         }
 
