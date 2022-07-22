@@ -63,7 +63,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost("{provaId}/status-aluno")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+       // [Authorize("Bearer")]
         public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
         {
             return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));
