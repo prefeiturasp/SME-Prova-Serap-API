@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Aplicacao
             claims.Add(new Claim("TIPOTURNO", request.AlunoTurno.ToString()));
             claims.Add(new Claim("MODALIDADE", request.AlunoModalidade.ToString()));
 
-            var dataHoraExpiracao = now.AddDays(1);  //now.AddMinutes(double.Parse(jwtOptions.ExpiresInMinutes));
+            var dataHoraExpiracao = now.AddMinutes(double.Parse(jwtOptions.ExpiresInMinutes));
 
             var token = new JwtSecurityToken(
                 issuer: jwtOptions.Issuer,
