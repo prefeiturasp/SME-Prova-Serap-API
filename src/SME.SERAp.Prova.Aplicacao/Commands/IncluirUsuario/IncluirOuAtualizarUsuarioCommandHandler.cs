@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class IncluirUsuarioCommandHandler : IRequestHandler<IncluirUsuarioCommand, bool>
+    public class IncluirOuAtualizarUsuarioCommandHandler : IRequestHandler<IncluirOuAtualizarUsuarioCommand, bool>
     {
         private readonly IRepositorioCache repositorioCache;
         private readonly IMediator mediator;
 
-        public IncluirUsuarioCommandHandler(IRepositorioCache repositorioCache,
+        public IncluirOuAtualizarUsuarioCommandHandler(IRepositorioCache repositorioCache,
                                             IMediator mediator)
         {
             this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
-        public async Task<bool> Handle(IncluirUsuarioCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(IncluirOuAtualizarUsuarioCommand request, CancellationToken cancellationToken)
         {
             var usurioDto = new UsuarioDto
             {
@@ -27,7 +27,6 @@ namespace SME.SERAp.Prova.Aplicacao
                 Nome = request.Nome
             };
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirUsuario, usurioDto));
-            await repositorioCache.SalvarRedisAsync(request.Login.ToString(), new Dominio.Usuario(request.Nome, request.Login));
             return true;
         }
 
