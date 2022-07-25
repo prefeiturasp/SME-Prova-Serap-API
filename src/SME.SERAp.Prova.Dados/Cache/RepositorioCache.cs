@@ -54,6 +54,7 @@ namespace SME.SERAp.Prova.Dados.Cache
                     return MessagePackSerializer.Deserialize<T>(byteCache);
 
                 var dados = await buscarDados();
+                if(dados != null)
                 await SalvarRedisAsync(nomeChave, dados, minutosParaExpirar);
 
                 return dados;
@@ -97,8 +98,6 @@ namespace SME.SERAp.Prova.Dados.Cache
 
             return false;
         }
-
-
         public async Task SalvarRedisToJsonAsync(string nomeChave, string json, int minutosParaExpirar = 720)
         {
             try

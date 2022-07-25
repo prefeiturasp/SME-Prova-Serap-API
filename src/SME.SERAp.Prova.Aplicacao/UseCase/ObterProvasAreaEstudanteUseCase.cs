@@ -98,8 +98,15 @@ namespace SME.SERAp.Prova.Aplicacao
 
             foreach (var prova in provas)
             {
-                var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
+                string caderno = "A";
+                if (prova.PossuiBIB)
+                {
+                    caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(prova.Id, long.Parse(alunoRa)));
+                    if (string.IsNullOrEmpty(caderno))
+                        throw new NegocioException($"Usuário informado {alunoRa} não possui caderno para a prova {prova.Id}");
+                }
 
+                var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
                 if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
                 {
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
@@ -110,7 +117,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.ObterDataFimMais3Horas(),
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
-                        provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao));
+                        provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno));
                     continue;
                 }
 
@@ -129,7 +136,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno),
                         provaAluno?.CriadoEm, prova.Senha,
-                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao));
+                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno));
                 }
             }
 

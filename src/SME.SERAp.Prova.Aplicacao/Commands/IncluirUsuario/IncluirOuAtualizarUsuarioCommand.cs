@@ -2,9 +2,9 @@
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class IncluirUsuarioCommand : IRequest<bool>
+    public class IncluirOuAtualizarUsuarioCommand : IRequest<bool>
     {
-        public IncluirUsuarioCommand(long login, string nome)
+        public IncluirOuAtualizarUsuarioCommand(long login, string nome)
         {
             Login = login;
             Nome = nome;
