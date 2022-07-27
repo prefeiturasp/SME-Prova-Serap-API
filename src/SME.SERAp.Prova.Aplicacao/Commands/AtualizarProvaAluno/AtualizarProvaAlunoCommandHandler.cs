@@ -25,7 +25,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 await repositorioCache.RemoverRedisAsync(chaveProvaAluno);
 
             await repositorioCache.SalvarRedisAsync(chaveProvaAluno, request.ProvaAluno);
-            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.AlterarProvaAluno, request.ProvaAluno));
+            return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, request.ProvaAluno));
         }
     }
 }
