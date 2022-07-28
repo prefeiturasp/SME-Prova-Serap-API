@@ -20,11 +20,15 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
+            var dataInicio = DateTime.Now;
+
+            if (provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0)
+                dataInicio = (DateTime)provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
 
             if (provaStatus == null)
             {
-                return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status, 
-                    provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0 ? new DateTime(provaAlunoStatusDto.DataInicio.Value) : DateTime.Now, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0   ? new DateTime(provaAlunoStatusDto.DataFim.Value) : null));
+                return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status,
+                   dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null));
             }
             else
             {
@@ -33,8 +37,8 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 provaStatus.TipoDispositivo = provaAlunoStatusDto.TipoDispositivo.HasValue ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado;
                 provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
-                if((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
-                    provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null ? new DateTime(provaAlunoStatusDto.DataFim.Value) : DateTime.Now;
+                if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
+                    provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null  && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
 
                 return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
             }
