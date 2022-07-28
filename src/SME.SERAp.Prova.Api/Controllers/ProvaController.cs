@@ -54,7 +54,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet("{provaId}/status-aluno")]
         [ProducesResponseType(typeof(ProvaAlunoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+       [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvaStatusDoAluno(long provaId, [FromServices] IObterProvaAlunoUseCase obterProvaAlunoUseCase)
         {
             return Ok(await obterProvaAlunoUseCase.Executar(provaId));

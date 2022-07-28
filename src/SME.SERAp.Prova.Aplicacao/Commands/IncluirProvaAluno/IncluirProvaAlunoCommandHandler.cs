@@ -21,7 +21,11 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, DateTime.Now, request.FinalizadoEm, TipoDispositivo.NaoCadastrado);          
+          
+            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, request.CriadoEm, request.FinalizadoEm, TipoDispositivo.NaoCadastrado);
+            string chaveProvaAluno = request.ProvaId.ToString() + request.AlunoRa.ToString();
+
+            await repositorioCache.SalvarRedisAsync(chaveProvaAluno, entidade);
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, entidade));
             return true;        
         }
