@@ -13,6 +13,8 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<ProvaAluno>> ObterPorProvaIdsRaAsync(long[] provaIds, long alunoRa);
         Task<IEnumerable<ProvaAlunoAnoDto>> ObterProvasAnterioresAlunoPorRaAsync(long ra);
 
+        Task<ProvaAlunoDto> ObterProvaStatusPorProvaIdRaAsync(long provaId, long alunoRa);
+
 
     }
 }
