@@ -33,19 +33,9 @@ namespace SME.SERAp.Prova.Aplicacao
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
                 else throw new NaoAutorizadoException("Senha inválida", 412);
+                await mediator.Send(new IncluirOuAtualizarUsuarioCommand(autenticacaoDto.Login, ""));
+                retornoDto.UltimoLogin = DateTime.Now;
 
-                var verificaUsuario = await mediator.Send(new ObterUsuarioPorLoginQuery(aluno.Ra));
-
-                if (verificaUsuario == null)
-                {
-                    await mediator.Send(new IncluirUsuarioCommand(autenticacaoDto.Login, ""));
-                }
-                else
-                {
-                    verificaUsuario.AtualizaUltimoLogin();
-                    await mediator.Send(new AtualizarUsuarioCommand(verificaUsuario));
-                    retornoDto.UltimoLogin = verificaUsuario.UltimoLogin;
-                }
             }
             else throw new NaoAutorizadoException("Código EOL inválido", 411);
 

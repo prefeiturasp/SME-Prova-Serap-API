@@ -99,7 +99,7 @@ namespace SME.SERAp.Prova.Aplicacao
             foreach (var prova in provas)
             {
                 string caderno = "A";
-                if (prova.PossuiBIB)
+                if (prova.PossuiBIB && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(prova.Id, long.Parse(alunoRa)));
                     if (string.IsNullOrEmpty(caderno))
