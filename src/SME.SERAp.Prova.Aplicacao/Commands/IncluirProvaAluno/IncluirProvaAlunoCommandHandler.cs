@@ -24,9 +24,8 @@ namespace SME.SERAp.Prova.Aplicacao
           
             var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, request.CriadoEm, request.FinalizadoEm, TipoDispositivo.NaoCadastrado);
             string chaveProvaAluno = request.ProvaId.ToString() + request.AlunoRa.ToString();
-
-            await repositorioCache.SalvarRedisAsync(chaveProvaAluno, entidade);
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, entidade));
+            await repositorioCache.SalvarRedisAsync(chaveProvaAluno, entidade);
             return true;        
         }
     }
