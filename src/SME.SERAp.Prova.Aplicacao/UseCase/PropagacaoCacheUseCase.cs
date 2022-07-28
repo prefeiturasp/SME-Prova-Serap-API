@@ -30,8 +30,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 Console.WriteLine($"~~> Inicializando WarmUp do cache as {dataHoraAtual}");
 
                 var minutosParaUmDia = (int)TimeSpan.FromDays(1).TotalMinutes;
-                //if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
-                //{
+                if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
+                {
                     progagandoCache = true;
                     await repositorioCache.SalvarRedisAsync(CacheChave.CachePropagado, true, minutosParaUmDia);
 
@@ -70,7 +70,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                             await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompletaLegado, questao.Id), questao.Json, minutosParaUmDia);
                         }
                     }
-                //}
+                }
 
                 Console.WriteLine($"~~> WarmUp do cache Finalizado as {DateTime.Now}");
             }

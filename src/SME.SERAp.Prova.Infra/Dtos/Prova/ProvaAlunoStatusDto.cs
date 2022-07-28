@@ -8,6 +8,7 @@ namespace SME.SERAp.Prova.Infra
         {
             Status = status;
             DataFim = dataFim;
+            DataInicio = dataInicio;
             TipoDispositivo = tipoDispositivo;
         }
 

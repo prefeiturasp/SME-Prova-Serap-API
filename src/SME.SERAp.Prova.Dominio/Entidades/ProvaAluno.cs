@@ -4,6 +4,11 @@ namespace SME.SERAp.Prova.Dominio
 {
     public class ProvaAluno : EntidadeBase
     {
+
+        public ProvaAluno()
+        {
+            CriadoEm = DateTime.Now;
+        }
         public ProvaAluno(long provaId, ProvaStatus status, long alunoRa, DateTime criadoEm, DateTime? finalizadoEm, TipoDispositivo tipoDispositivo)
         {
             ProvaId = provaId;

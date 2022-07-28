@@ -1,6 +1,7 @@
 ﻿using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,12 +23,33 @@ namespace SME.SERAp.Prova.Dados
 
                 return await conn.QueryFirstOrDefaultAsync<ProvaAluno>(query, new { provaId, alunoRa });
             }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             finally
             {
                 conn.Close();
                 conn.Dispose();
             }
         }
+
+        public async Task<ProvaAlunoDto> ObterProvaStatusPorProvaIdRaAsync(long provaId, long alunoRa)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct pa.prova, pa.status from prova_aluno pa where pa.prova_id = @provaId and pa.aluno_ra = @alunoRa";
+
+                return await conn.QueryFirstOrDefaultAsync<ProvaAlunoDto>(query, new { provaId, alunoRa });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<IEnumerable<ProvaAluno>> ObterPorProvaIdsRaAsync(long[] provaIds, long alunoRa)
         {
             using var conn = ObterConexaoLeitura();
