@@ -13,17 +13,16 @@ namespace SME.SERAp.Prova.Aplicacao
         private readonly IMediator mediator;
         private readonly IServicoLog servicoLog;
 
-        public IncluirProvaAlunoUseCase(IMediator mediator)
+        public IncluirProvaAlunoUseCase(IMediator mediator, IServicoLog servicoLog)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
         }
+        
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
-
             try
             {
-
-
                 var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
@@ -35,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaStatus == null)
                 {
                     return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status,
-                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null));
+                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null, (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo)) ;
                 }
                 else
                 {
@@ -46,6 +45,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
                     if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
                         provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
+                    provaStatus.TipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo;
 
                     return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
                 }
@@ -55,9 +55,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
-                throw ex;
+                throw;
             }
-
         }
     }
 }
