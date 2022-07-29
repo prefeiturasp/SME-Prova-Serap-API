@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ObterProvasRetornoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+      //  [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvas([FromServices] IObterProvasAreaEstudanteUseCase obterProvasAreaEstudanteUseCase)
         {
             return Ok(await obterProvasAreaEstudanteUseCase.Executar());
@@ -54,7 +54,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet("{provaId}/status-aluno")]
         [ProducesResponseType(typeof(ProvaAlunoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-       [Authorize("Bearer")]
+      // [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvaStatusDoAluno(long provaId, [FromServices] IObterProvaAlunoUseCase obterProvaAlunoUseCase)
         {
             return Ok(await obterProvaAlunoUseCase.Executar(provaId));
@@ -63,7 +63,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost("{provaId}/status-aluno")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
+     //   [Authorize("Bearer")]
         public async Task<IActionResult> SalvarProvaStatusDoAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IIncluirProvaAlunoUseCase incluirProvaAlunoUseCase)
         {
             return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));

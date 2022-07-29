@@ -34,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaStatus == null)
                 {
                     return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status,
-                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null));
+                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null, (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo)) ;
                 }
                 else
                 {
@@ -45,6 +45,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
                     if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
                         provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
+                    provaStatus.TipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo;
 
                     return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
                 }
