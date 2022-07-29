@@ -20,10 +20,9 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<bool> Handle(IncluirCadernoAlunoCommand request, CancellationToken cancellationToken)
         {
             var id = await repositorioCadernoAluno.IncluirAsync(new Dominio.CadernoAluno(request.AlunoId, request.ProvaId, request.Caderno));
-
             if(id > 0)
             {
-                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.AlunoCadernoProva, request.ProvaId, request.Ra), request.Caderno);
+                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.AlunoCadernoProva, request.ProvaId, request.AlunoId), request.Caderno);
                 return true;
             }
 

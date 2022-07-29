@@ -14,5 +14,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<Dominio.ParametroSistema>> ObterParametrosParaCacheAsync();
         Task<IEnumerable<ProvaAnoDto>> ObterProvasAnosDatasEModalidadesParaCacheAsync();
         Task InserirTabelaJson(long questaoId, string json);
+        Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaLegadoParaCacheAsync(long[] provaIds);
     }
 }

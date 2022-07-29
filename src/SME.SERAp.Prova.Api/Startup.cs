@@ -11,14 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Prometheus;
 using RabbitMQ.Client;
-using Sentry;
 using SME.SERAp.Prova.Api.Configuracoes;
+using SME.SERAp.Prova.Api.Converters;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using SME.SERAp.Prova.IoC;
 using StackExchange.Redis;
-using System.IO.Compression;
 using System.Threading;
 
 namespace SME.SERAp.Prova.Api
@@ -35,7 +34,10 @@ namespace SME.SERAp.Prova.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+            });
 
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
@@ -45,18 +47,9 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(conexaoDadosVariaveis);
 
-            var sentryOptions = new SentryOptions();
-            Configuration.GetSection("Sentry").Bind(sentryOptions, c => c.BindNonPublicProperties = true);
-            services.AddSingleton(sentryOptions);
-
             var gitHubOptions = new GithubOptions();
             Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(gitHubOptions);
-
-            var logOptions = new LogOptions();
-            Configuration.GetSection("Logs").Bind(logOptions, c => c.BindNonPublicProperties = true);
-            logOptions.SentryDSN = sentryOptions.Dsn;
-            services.AddSingleton(logOptions);
 
             var telemetriaOptions = new TelemetriaOptions();
             Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
@@ -74,9 +67,30 @@ namespace SME.SERAp.Prova.Api
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
+          
+
             var conexaoRabbit = factory.CreateConnection();
 
             services.AddSingleton(conexaoRabbit);
+
+
+
+
+            var configuracaoRabbitLogOptions = new RabbitLogOptions();
+            Configuration.GetSection("RabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(configuracaoRabbitLogOptions);
+
+            var factoryRabbitLog = new ConnectionFactory
+            {
+                HostName = rabbitOptions.HostName,
+                UserName = rabbitOptions.UserName,
+                Password = rabbitOptions.Password,
+                VirtualHost = rabbitOptions.VirtualHost
+            };
+
+            var conexaoRabbitLog = factory.CreateConnection();
+
+            services.AddSingleton(conexaoRabbitLog);
 
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 
@@ -110,14 +124,13 @@ namespace SME.SERAp.Prova.Api
             RegistraClientesHttp.Registrar(services, gitHubOptions);
             RegistraDependencias.Registrar(services);
             RegistraAutenticacao.Registrar(services, jwtVariaveis);
-            RegistraMvc.Registrar(services, sentryOptions);
             RegistraDocumentacaoSwagger.Registrar(services);
 
             var serviceProvider = services.BuildServiceProvider();
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
             var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
             services.AddSingleton(servicoTelemetria);
-
+            RegistraMvc.Registrar(services, serviceProvider);
             DapperExtensionMethods.Init(servicoTelemetria);
 
             IniciarPropagacaoCache(services);

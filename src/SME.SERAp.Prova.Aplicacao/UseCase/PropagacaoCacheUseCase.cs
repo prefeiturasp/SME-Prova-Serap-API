@@ -1,4 +1,5 @@
 ﻿using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
@@ -51,7 +52,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     if (provasIds.Any())
                     {
                         var questoesResumo = await repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds);
-                        foreach(var provaId in provasIds)
+                        foreach (var provaId in provasIds)
                         {
                             var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
                             await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questapResumoProva, minutosParaUmDia);
@@ -62,6 +63,12 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                         {
                             await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompleta, questao.Id), questao.Json, minutosParaUmDia);
                         }
+
+                        var questoesCompletasLegado = await repositorioPropagacaoCache.ObterQuestaoCompletaLegadoParaCacheAsync(provasIds);
+                        foreach (var questao in questoesCompletasLegado)
+                        {
+                            await repositorioCache.SalvarRedisToJsonAsync(string.Format(CacheChave.QuestaoCompletaLegado, questao.Id), questao.Json, minutosParaUmDia);
+                        }
                     }
                 }
 
@@ -69,8 +76,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             }
             catch (Exception ex)
             {
-                servicoLog.Registrar($"Erro ao Propagar os dados para o cache durante o warmUp do pod. Erro original: {ex.Message}");
-                servicoLog.Registrar(ex);
+                servicoLog.Registrar("Erro ao Propagar os dados para o cache durante o warmUp do pod", ex);
 
                 if (progagandoCache)
                     await repositorioCache.RemoverRedisAsync(CacheChave.CachePropagado);
