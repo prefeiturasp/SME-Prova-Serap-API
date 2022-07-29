@@ -13,17 +13,16 @@ namespace SME.SERAp.Prova.Aplicacao
         private readonly IMediator mediator;
         private readonly IServicoLog servicoLog;
 
-        public IncluirProvaAlunoUseCase(IMediator mediator)
+        public IncluirProvaAlunoUseCase(IMediator mediator, IServicoLog servicoLog)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
         }
+        
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
-
             try
             {
-
-
                 var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
@@ -55,9 +54,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
-                throw ex;
+                throw;
             }
-
         }
     }
 }
