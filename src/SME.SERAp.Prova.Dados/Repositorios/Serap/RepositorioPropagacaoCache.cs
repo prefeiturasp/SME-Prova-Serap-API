@@ -6,7 +6,6 @@ using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,13 +35,13 @@ namespace SME.SERAp.Prova.Dados
             return conexao;
         }
 
-        public async Task<IEnumerable<Dominio.Prova>> ObterProvasLiberadasNoPeriodoParaCacheAsync(DateTime dataHoraAtual)
+        public async Task<IEnumerable<Dominio.Prova>> ObterProvasLiberadasNoPeriodoParaCacheAsync()
         {
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select * from prova where inicio_download <= @dataHoraAtual and fim >= @dataHoraAtual";
-                return await SqlMapper.QueryAsync<Dominio.Prova>(conn, query, new { dataHoraAtual });
+                var query = @"select * from prova where inicio_download::date <= current_date and fim::date >= current_date";
+                return await SqlMapper.QueryAsync<Dominio.Prova>(conn, query);
             }
             finally
             {
