@@ -12,5 +12,7 @@
         public const string IncluirProvaAluno = "serap.estudantes.provaAluno.incluir";
         public const string AlterarProvaAluno = "serap.estudantes.provaAluno.alterar";
         public const string RotaLogs = "ApplicationLog";
+
+        public const string ReabrirProvaAluno = "serap.estudantes.provaAluno.reabir";
     }
 }
