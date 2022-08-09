@@ -12,7 +12,6 @@ namespace SME.SERAp.Prova.Aplicacao
     {
         private readonly IRepositorioCache repositorioCache;
         private readonly IMediator mediator;
-     
 
         public IncluirProvaAlunoCommandHandler(IRepositorioCache repositorioCache, IMediator mediator)
         {
@@ -21,11 +20,11 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-          
             var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, request.CriadoEm, request.FinalizadoEm, TipoDispositivo.NaoCadastrado);
-            string chaveProvaAluno = request.ProvaId.ToString() + request.AlunoRa.ToString();
 
+            string chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaId, request.AlunoRa);
             await repositorioCache.SalvarRedisAsync(chaveProvaAluno, entidade);
+
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, entidade));
             return true;        
         }
