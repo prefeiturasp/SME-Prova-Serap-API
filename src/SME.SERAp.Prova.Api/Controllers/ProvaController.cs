@@ -72,7 +72,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpPost]
-        //[ChaveAutenticacaoApi]
+        [ChaveAutenticacaoApi]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(ProvaAlunoReabrirDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
