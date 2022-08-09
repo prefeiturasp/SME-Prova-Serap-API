@@ -37,7 +37,7 @@
                     result = await acao() as dynamic;
                     temporizadorApm.Stop();
 
-                    Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                    Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
                     {
                         span.SetLabel(telemetriaNome, telemetriaValor);
                         span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;

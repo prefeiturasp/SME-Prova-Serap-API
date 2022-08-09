@@ -13,6 +13,6 @@
         public const string AlterarProvaAluno = "serap.estudantes.provaAluno.alterar";
         public const string RotaLogs = "ApplicationLog";
 
-        public const string ReabrirProvaAluno = "serap.estudantes.provaAluno.reabir";
+        public const string ReabrirProvaAluno = "serap.estudantes.provaAluno.reabrir";
     }
 }
