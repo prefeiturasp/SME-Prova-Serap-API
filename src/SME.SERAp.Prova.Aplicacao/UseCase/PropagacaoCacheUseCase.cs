@@ -41,7 +41,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     var provasAnosDatasEModalidades = await repositorioPropagacaoCache.ObterProvasAnosDatasEModalidadesParaCacheAsync();
                     await repositorioCache.SalvarRedisAsync(CacheChave.ProvasAnosDatasEModalidades, provasAnosDatasEModalidades, minutosParaUmDia);
 
-                    var provas = await repositorioPropagacaoCache.ObterProvasLiberadasNoPeriodoParaCacheAsync(dataHoraAtual);
+                    var provas = await repositorioPropagacaoCache.ObterProvasLiberadasNoPeriodoParaCacheAsync();
                     foreach (var prova in provas)
                     {
                         await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.Prova, prova.Id), prova, minutosParaUmDia);

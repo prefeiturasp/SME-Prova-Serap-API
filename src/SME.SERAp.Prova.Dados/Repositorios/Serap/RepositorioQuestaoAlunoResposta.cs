@@ -36,10 +36,11 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select qar.* from questao_aluno_resposta qar
-                        inner join questao q on qar.questao_id = q.id
-                        where q.prova_id = @provaId and 
-                        aluno_ra = @alunoRa";
+                var query = @"select qar.questao_id, qar.alternativa_id, qar.criado_em
+                              from questao_aluno_resposta qar
+                              left join questao q on qar.questao_id = q.id
+                              where q.prova_id = @provaId 
+                                and qar.aluno_ra = @alunoRa";
 
                 return await conn.QueryAsync<QuestaoAlunoResposta>(query, new { provaId, alunoRa });
             }
