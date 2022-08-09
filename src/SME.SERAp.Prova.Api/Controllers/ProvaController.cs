@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos.Prova;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -54,7 +56,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpGet("{provaId}/status-aluno")]
         [ProducesResponseType(typeof(ProvaAlunoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-       [Authorize("Bearer")]
+        [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvaStatusDoAluno(long provaId, [FromServices] IObterProvaAlunoUseCase obterProvaAlunoUseCase)
         {
             return Ok(await obterProvaAlunoUseCase.Executar(provaId));
@@ -69,16 +71,16 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));
         }
 
-
-        [HttpGet]
-        [ProducesResponseType(typeof(QuestaoAlunoRespostaConsultarDto), 200)]
-        [ProducesResponseType(204)]
+        [HttpPost]
+        [ChaveAutenticacaoApi]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ProvaAlunoReabrirDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
-        [Route("{provaId}/respostas")]
-        public async Task<IActionResult> ObterRespostaPorProvaAluno(long provaId, [FromServices] IObterRespostasAlunoPorProvaIdUseCase obterRespostasAlunoPorProvaIdUseCase)
+        [Route("reabrir")]
+        public async Task<IActionResult> ObterRespostaPorProvaAluno([FromQuery]long provaId, [FromQuery] long[] alunoRA, [FromServices] IReabrirProvaAlunoUseCase reabrirProvaAlunoUseCase)
         {
-            return Ok(await obterRespostasAlunoPorProvaIdUseCase.Executar(provaId));
+            await reabrirProvaAlunoUseCase.Executar(provaId, alunoRA);
+            return Ok($"Solicitação de reabertura enviada para processamento para o(s) aluno(s)");
         }
     }
 }

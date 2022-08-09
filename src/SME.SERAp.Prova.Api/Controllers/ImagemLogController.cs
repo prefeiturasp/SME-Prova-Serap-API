@@ -1,11 +1,10 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Api.Filtros;
 using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.ImagemLog;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
 {

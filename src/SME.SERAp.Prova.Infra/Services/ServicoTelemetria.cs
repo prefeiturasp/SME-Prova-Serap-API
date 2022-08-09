@@ -37,16 +37,16 @@ namespace SME.SERAp.Prova.Infra
                 result = await acao() as dynamic;
                 temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                    Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                    {
+                        span.SetLabel(telemetriaNome, telemetriaValor);
+                        span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                    });
+                }
+                else
                 {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
-            }
-            else
-            {
-                result = await acao() as dynamic;
-            }
+                    result = await acao() as dynamic;
+                }
 
             if (telemetriaOptions.ApplicationInsights)
             {

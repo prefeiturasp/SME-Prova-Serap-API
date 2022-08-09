@@ -107,6 +107,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterQuestoesCompletaPorIdsUseCase, ObterQuestoesCompletaPorIdsUseCase>();
             services.TryAddScoped<IObterQuestoesCompletaPorLegadoIdsUseCase, ObterQuestoesCompletaPorLegadoIdsUseCase>();
             services.TryAddScoped<IObterProvaDetalhesResumidoCadernoUseCase, ObterProvaDetalhesResumidoCadernoUseCase>();
+
+            services.TryAddScoped<IReabrirProvaAlunoUseCase, ReabrirProvaAlunoUseCase>();
             services.TryAddScoped<IImagemLogUseCase, ImagemLogUseCase>();
         }
     }
