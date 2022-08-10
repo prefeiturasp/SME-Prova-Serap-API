@@ -71,13 +71,24 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await incluirProvaAlunoUseCase.Executar(provaId, provaAlunoStatusDto));
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(QuestaoAlunoRespostaConsultarDto), 200)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        [Route("{provaId}/respostas")]
+        public async Task<IActionResult> ObterRespostaPorProvaAluno(long provaId, [FromServices] IObterRespostasAlunoPorProvaIdUseCase obterRespostasAlunoPorProvaIdUseCase)
+        {
+            return Ok(await obterRespostasAlunoPorProvaIdUseCase.Executar(provaId));
+        }
+
         [HttpPost]
         [ChaveAutenticacaoApi]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(ProvaAlunoReabrirDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Route("reabrir")]
-        public async Task<IActionResult> ObterRespostaPorProvaAluno([FromQuery]long provaId, [FromQuery] long[] alunoRA, [FromServices] IReabrirProvaAlunoUseCase reabrirProvaAlunoUseCase)
+        public async Task<IActionResult> ReabrirProvaAluno([FromQuery]long provaId, [FromQuery] long[] alunoRA, [FromServices] IReabrirProvaAlunoUseCase reabrirProvaAlunoUseCase)
         {
             await reabrirProvaAlunoUseCase.Executar(provaId, alunoRA);
             return Ok($"Solicitação de reabertura enviada para processamento para o(s) aluno(s)");
