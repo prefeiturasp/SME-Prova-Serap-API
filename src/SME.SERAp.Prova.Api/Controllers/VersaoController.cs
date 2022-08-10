@@ -39,7 +39,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost("dispositivo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        public async Task<IActionResult> ObterUltimaVersaoApp([FromBody] VersaoAppDispositivoDto versaoAppDispositivoDto, [FromServices] IIncluirVersaoAppDispositivoUseCase obterUltimaVersaoUseCase)
+        public async Task<IActionResult> SalvarUltimaVersaoApp([FromBody] VersaoAppDispositivoDto versaoAppDispositivoDto, [FromServices] IIncluirVersaoAppDispositivoUseCase obterUltimaVersaoUseCase)
         {
             return Ok(await obterUltimaVersaoUseCase.Executar(versaoAppDispositivoDto));
         }
