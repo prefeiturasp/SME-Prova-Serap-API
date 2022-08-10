@@ -21,10 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(AtualizarProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            string chaveProvaAluno = request.ProvaAluno.ProvaId.ToString() + request.ProvaAluno.AlunoRA.ToString();
-            if (await repositorioCache.ExisteChaveAsync(chaveProvaAluno))
-                await repositorioCache.RemoverRedisAsync(chaveProvaAluno);
-        
+            string chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaAluno.ProvaId, request.ProvaAluno.AlunoRA);
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, request.ProvaAluno));
             await repositorioCache.SalvarRedisAsync(chaveProvaAluno, request.ProvaAluno);
             return true;

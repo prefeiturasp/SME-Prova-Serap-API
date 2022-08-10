@@ -34,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaStatus == null)
                 {
                     return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status,
-                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null, (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo)) ;
+                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null, provaAlunoStatusDto.TipoDispositivo!=null?(TipoDispositivo)provaAlunoStatusDto.TipoDispositivo:TipoDispositivo.NaoCadastrado)) ;
                 }
                 else
                 {

@@ -67,14 +67,8 @@ namespace SME.SERAp.Prova.Api
                 VirtualHost = rabbitOptions.VirtualHost
             };
 
-          
-
             var conexaoRabbit = factory.CreateConnection();
-
             services.AddSingleton(conexaoRabbit);
-
-
-
 
             var configuracaoRabbitLogOptions = new RabbitLogOptions();
             Configuration.GetSection("RabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
@@ -89,7 +83,6 @@ namespace SME.SERAp.Prova.Api
             };
 
             var conexaoRabbitLog = factory.CreateConnection();
-
             services.AddSingleton(conexaoRabbitLog);
 
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
@@ -143,12 +136,16 @@ namespace SME.SERAp.Prova.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseElasticApm(Configuration,
-               new SqlClientDiagnosticSubscriber(),
-               new HttpDiagnosticsSubscriber());
+            var telemetriaOptions = app.ApplicationServices.GetService<TelemetriaOptions>();
+            if (telemetriaOptions != null && telemetriaOptions.Apm)
+            {
+                app.UseElasticApm(Configuration,
+                   new SqlClientDiagnosticSubscriber(),
+                   new HttpDiagnosticsSubscriber());
 
-            var muxer = app.ApplicationServices.GetService<IConnectionMultiplexer>();
-            muxer.UseElasticApm();
+                var muxer = app.ApplicationServices.GetService<IConnectionMultiplexer>();
+                muxer.UseElasticApm();
+            }
 
             app.UseResponseCompression();
             app.UseSwagger();
