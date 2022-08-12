@@ -16,12 +16,14 @@
 
     public class QuestaoOrdemDto
     {
-        public QuestaoOrdemDto(long questaoLegadoId, int ordem)
+        public QuestaoOrdemDto(long questaoId, long questaoLegadoId, int ordem)
         {
+            QuestaoId = questaoId;
             QuestaoLegadoId = questaoLegadoId;
             Ordem = ordem;
         }
 
+        public long QuestaoId { get; set; }
         public long QuestaoLegadoId { get; set; }
         public int Ordem { get; set; }
     }
