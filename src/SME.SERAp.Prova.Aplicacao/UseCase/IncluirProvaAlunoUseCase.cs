@@ -54,7 +54,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             catch (Exception ex)
             {
-                servicoLog.Registrar($"ProvaId = {provaId} -- AlunoRA = {alunoRa} Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
+                servicoLog.Registrar($"ProvaId = {provaId} -- AlunoRA = {alunoRa} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
                 throw;
             }
