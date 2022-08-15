@@ -37,7 +37,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 retornoDto.UltimoLogin = DateTime.Now;
 
             }
-            else throw new NaoAutorizadoException("Código EOL inválido", 411);
+            else throw new NaoAutorizadoException($"Código EOL {autenticacaoDto.Login} inválido", 411);
 
             return retornoDto;
         }

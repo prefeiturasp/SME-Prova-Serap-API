@@ -21,9 +21,10 @@ namespace SME.SERAp.Prova.Aplicacao
         
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
+            long alunoRa = 0;
             try
             {
-                var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+                alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
                 var dataInicio = DateTime.Now;
@@ -53,7 +54,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             catch (Exception ex)
             {
-                servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
+                servicoLog.Registrar($"ProvaId = {provaId} -- AlunoRA = {alunoRa} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
                 throw;
             }
