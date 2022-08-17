@@ -35,7 +35,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesResumo = questoesResumo.Where(t => t.Caderno == caderno);
             }
 
-            var questoesIds = questoesResumo.Select(t => new QuestaoOrdemDto(t.QuestaoLegadoId, t.Ordem)).OrderBy(t => t.Ordem).ToArray();
+            var questoesIds = questoesResumo.Select(t => new QuestaoOrdemDto(t.QuestaoId, t.QuestaoLegadoId, t.Ordem)).OrderBy(t => t.Ordem).ToArray();
 
             long[] contextosIds = Array.Empty<long>();
             var contextosResumo = await mediator.Send(new ObterContextoResumoPorProvaIdQuery(provaId));
