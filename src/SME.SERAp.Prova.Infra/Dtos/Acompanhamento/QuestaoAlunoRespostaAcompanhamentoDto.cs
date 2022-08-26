@@ -16,6 +16,7 @@ namespace SME.SERAp.Prova.Infra
             QuestaoId = questaoId;
             AlternativaId = alternativaId;
             Tempo = tempo;
+            Consolidar = true;
         }
 
         public long ProvaId { get; set; }
