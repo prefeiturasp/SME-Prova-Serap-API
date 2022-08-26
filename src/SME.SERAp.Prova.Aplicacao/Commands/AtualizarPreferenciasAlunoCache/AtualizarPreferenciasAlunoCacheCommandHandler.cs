@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Handle(AtualizarPreferenciasAlunoCacheCommand request, CancellationToken cancellationToken)
         {
-            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.PreferenciasAluno, request.AlunoRA), request.Dto);
+            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.MeusDados, request.AlunoRA), request.Dto);
             return true;
         }
     }
