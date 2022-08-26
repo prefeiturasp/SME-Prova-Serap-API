@@ -21,8 +21,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, dto));
 
-                var dtoAcompanhamento = new QuestaoAlunoRespostaAcompanhamentoDto(0, dto.AlunoRa, dto.QuestaoId, dto.AlternativaId, dto.TempoRespostaAluno);
-                await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompanhamentoProvaAlunoRespostaTratar, dtoAcompanhamento));
+                var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, dto.AlunoRa, dto.QuestaoId, dto.AlternativaId, dto.TempoRespostaAluno);
+                await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
             }
             return true;
         }
