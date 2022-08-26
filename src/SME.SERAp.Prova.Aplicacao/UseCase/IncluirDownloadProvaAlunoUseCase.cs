@@ -17,6 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
             downloadProvaAlunoDto.AlunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.DownloadProvaAlunoTratar, new DownloadProvaAlunoFilaDto(Dominio.DownloadProvaAlunoSituacao.Incluir, downloadProvaAlunoDto, null)));
+            await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompanhamentoProvaAlunoDownloadTratar, downloadProvaAlunoDto));
 
             return downloadProvaAlunoDto.Codigo;
         }
