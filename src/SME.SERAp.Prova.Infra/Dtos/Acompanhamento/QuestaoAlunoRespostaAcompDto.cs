@@ -1,15 +1,15 @@
 ﻿
 namespace SME.SERAp.Prova.Infra
 {
-    public class QuestaoAlunoRespostaAcompanhamentoDto
+    public class QuestaoAlunoRespostaAcompDto
     {
 
-        public QuestaoAlunoRespostaAcompanhamentoDto()
+        public QuestaoAlunoRespostaAcompDto()
         {
 
         }
 
-        public QuestaoAlunoRespostaAcompanhamentoDto(long provaId, long alunoRa, long questaoId, long? alternativaId, int? tempo)
+        public QuestaoAlunoRespostaAcompDto(long provaId, long alunoRa, long questaoId, long? alternativaId, int? tempo)
         {
             ProvaId = provaId;
             AlunoRa = alunoRa;

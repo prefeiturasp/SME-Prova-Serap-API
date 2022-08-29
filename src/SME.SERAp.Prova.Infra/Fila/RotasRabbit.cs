@@ -14,8 +14,7 @@
         public const string RotaLogs = "ApplicationLog";
 
         public const string ReabrirProvaAluno = "serap.estudantes.provaAluno.reabrir";
-
-        public const string AcompanhamentoProvaAlunoRespostaTratar = "serap.estudante.acomp.prova.aluno.resposta.tratar";
-        public const string AcompanhamentoProvaAlunoDownloadTratar = "serap.estudante.acomp.prova.aluno.download.tratar";
+        public const string AcompProvaAlunoRespostaTratar = "serap.estudante.acomp.prova.aluno.resposta.tratar";
+        public const string AcompProvaAlunoInicioFimTratar = "serap.estudante.acomp.prova.aluno.inicio.fim.tratar";
     }
 }
