@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
         }
-        
+
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
             try
@@ -33,22 +33,15 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 if (provaStatus == null)
                 {
-                    return await mediator.Send(new IncluirProvaAlunoCommand(provaId, alunoRa, (ProvaStatus)provaAlunoStatusDto.Status,
-                       dataInicio, provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null, provaAlunoStatusDto.TipoDispositivo!=null?(TipoDispositivo)provaAlunoStatusDto.TipoDispositivo:TipoDispositivo.NaoCadastrado)) ;
+                    return await IncluirProva(provaId, alunoRa, provaAlunoStatusDto, dataInicio);
                 }
                 else
                 {
-                    if (provaStatus.Status == Dominio.ProvaStatus.Finalizado)
+                    if (provaStatus.Status == ProvaStatus.Finalizado)
                         throw new NegocioException("Esta prova já foi finalizada", 411);
-
-                    provaStatus.TipoDispositivo = provaAlunoStatusDto.TipoDispositivo.HasValue ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado;
-                    provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
-                    if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
-                        provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
-                    provaStatus.TipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo;
-
-                    return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
+                    return await AtualizarProva(provaAlunoStatusDto, provaStatus);
                 }
+
             }
 
             catch (Exception ex)
@@ -57,6 +50,36 @@ namespace SME.SERAp.Prova.Aplicacao
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
                 throw;
             }
+        }
+
+        private async Task<bool> AtualizarProva(ProvaAlunoStatusDto provaAlunoStatusDto, ProvaAluno provaStatus)
+        {
+            provaStatus.TipoDispositivo = provaAlunoStatusDto.TipoDispositivo.HasValue ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado;
+            provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
+            if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
+                provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
+            provaStatus.TipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo;
+
+            await PublicarAcompProvaAlunoInicioFimTratar(provaStatus.ProvaId, provaStatus.AlunoRA, (int)provaStatus.Status, provaStatus.CriadoEm, provaStatus.FinalizadoEm);
+            return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
+        }
+
+        private async Task<bool> IncluirProva(long provaId, long alunoRa, ProvaAlunoStatusDto provaAlunoStatusDto, DateTime dataInicio)
+        {
+            var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null;
+            await PublicarAcompProvaAlunoInicioFimTratar(provaId, alunoRa, provaAlunoStatusDto.Status, dataInicio, dataFim);
+            return await mediator.Send(new IncluirProvaAlunoCommand(provaId, 
+                                                                    alunoRa, 
+                                                                    (ProvaStatus)provaAlunoStatusDto.Status,
+                                                                    dataInicio,
+                                                                    dataFim, 
+                                                                    provaAlunoStatusDto.TipoDispositivo != null ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado));
+        }
+
+        private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status, DateTime? criadoEm, DateTime? finalizadoEm)
+        {
+            var provaAlunoAcompDto = new ProvaAlunoAcompDto(provaId, alunoRa, status, criadoEm, finalizadoEm);
+            await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
     }
 }
