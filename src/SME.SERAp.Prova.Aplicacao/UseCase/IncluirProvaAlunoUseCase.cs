@@ -23,9 +23,9 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             try
             {
-                var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
+                var dadosAlunoLogado = await mediator.Send(new ObterDadosAlunoLogadoQuery());
 
-                var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
+                var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
                 var dataInicio = DateTime.Now;
 
                 if (provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0)
@@ -33,7 +33,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 if (provaStatus == null)
                 {
-                    return await IncluirProva(provaId, alunoRa, provaAlunoStatusDto, dataInicio);
+                    return await IncluirProva(provaId, dadosAlunoLogado.Ra, provaAlunoStatusDto, dataInicio);
                 }
                 else
                 {
@@ -68,11 +68,11 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null;
             await PublicarAcompProvaAlunoInicioFimTratar(provaId, alunoRa, provaAlunoStatusDto.Status, dataInicio, dataFim);
-            return await mediator.Send(new IncluirProvaAlunoCommand(provaId, 
-                                                                    alunoRa, 
+            return await mediator.Send(new IncluirProvaAlunoCommand(provaId,
+                                                                    alunoRa,
                                                                     (ProvaStatus)provaAlunoStatusDto.Status,
                                                                     dataInicio,
-                                                                    dataFim, 
+                                                                    dataFim,
                                                                     provaAlunoStatusDto.TipoDispositivo != null ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado));
         }
 

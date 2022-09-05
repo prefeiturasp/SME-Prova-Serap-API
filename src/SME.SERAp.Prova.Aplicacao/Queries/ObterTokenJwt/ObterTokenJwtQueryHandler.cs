@@ -27,6 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
             claims.Add(new Claim("ANO", request.AlunoAno.ToString()));
             claims.Add(new Claim("TIPOTURNO", request.AlunoTurno.ToString()));
             claims.Add(new Claim("MODALIDADE", request.AlunoModalidade.ToString()));
+            claims.Add(new Claim("DISPOSITIVO_ID", request.AlunoDispositivoId.ToString()));
 
             var dataHoraExpiracao = now.AddMinutes(double.Parse(jwtOptions.ExpiresInMinutes));
 
