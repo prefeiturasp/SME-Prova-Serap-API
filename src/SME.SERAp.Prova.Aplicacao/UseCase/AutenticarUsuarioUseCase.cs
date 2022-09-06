@@ -39,7 +39,14 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             else throw new NaoAutorizadoException("Código EOL inválido", 411);
 
+            await PublicarFilaSalvarUsuarioDispositivoLogin(aluno.Ra, autenticacaoDto.Dispositivo, aluno.TurmaId);
             return retornoDto;
+        }
+
+        private async Task PublicarFilaSalvarUsuarioDispositivoLogin(long ra, string dispositivoId, long? turmaId)
+        {
+            var usuarioDispositivo = new UsuarioDispositivoLoginDto(ra, dispositivoId != null ? dispositivoId : string.Empty, turmaId);
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarUsuarioDispositivoLogin, usuarioDispositivo));
         }
     }
 }

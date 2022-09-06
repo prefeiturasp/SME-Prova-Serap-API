@@ -27,7 +27,8 @@ namespace SME.SERAp.Prova.Aplicacao
             claims.Add(new Claim("ANO", request.AlunoAno.ToString()));
             claims.Add(new Claim("TIPOTURNO", request.AlunoTurno.ToString()));
             claims.Add(new Claim("MODALIDADE", request.AlunoModalidade.ToString()));
-            claims.Add(new Claim("DISPOSITIVO_ID", request.AlunoDispositivoId.ToString()));
+            if (!string.IsNullOrEmpty(request.AlunoDispositivoId))
+                claims.Add(new Claim("DISPOSITIVO_ID", request.AlunoDispositivoId.ToString()));
 
             var dataHoraExpiracao = now.AddMinutes(double.Parse(jwtOptions.ExpiresInMinutes));
 
@@ -44,7 +45,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 );
 
             var tokenGerado = new JwtSecurityTokenHandler()
-                      .WriteToken(token);            
+                      .WriteToken(token);
 
 
             return await Task.FromResult((tokenGerado, dataHoraExpiracao));
