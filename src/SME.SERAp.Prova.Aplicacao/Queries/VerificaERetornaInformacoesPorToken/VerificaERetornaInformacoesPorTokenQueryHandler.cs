@@ -47,8 +47,8 @@ namespace SME.SERAp.Prova.Aplicacao
                         var ano = principal.Claims.FirstOrDefault(c => c.Type == "ANO").Value;
                         var tipoTurno = int.Parse(principal.Claims.FirstOrDefault(c => c.Type == "TIPOTURNO").Value);
                         var modalidade = int.Parse(principal.Claims.FirstOrDefault(c => c.Type == "MODALIDADE").Value);
-                        return await Task.FromResult(new InformacoesTokenDto(ra, ano, tipoTurno, modalidade));
-                        
+                        var dispositivo = principal.HasClaim(c => c.Type == "DISPOSITIVO_ID") ? principal.Claims.FirstOrDefault(c => c.Type == "DISPOSITIVO_ID").Value : string.Empty;
+                        return await Task.FromResult(new InformacoesTokenDto(ra, ano, tipoTurno, modalidade, dispositivo));
                     }
                     else throw new NaoAutorizadoException("Token inválido");
                 }

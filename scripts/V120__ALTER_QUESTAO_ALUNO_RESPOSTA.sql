@@ -1,0 +1,1 @@
+alter table questao_aluno_resposta ADD COLUMN IF NOT exists dispositivo_id varchar;

@@ -19,11 +19,7 @@ public class IncluirVersaoAppDispositivoCommandValidator : AbstractValidator<Inc
     {
         RuleFor(c => c.VersaoAppDispositivo.VersaoDescricao)
            .NotEmpty()
-           .WithMessage("A Descrição da versão deve ser informado.");
-
-        RuleFor(c => c.VersaoAppDispositivo.DispositivoImei)
-           .NotEmpty()
-           .WithMessage("O Código IMEI do dispositivo deve ser informado.");
+           .WithMessage("A Descrição da versão deve ser informado.");        
 
         RuleFor(c => c.VersaoAppDispositivo.AtualizadoEm)
             .NotEmpty()
