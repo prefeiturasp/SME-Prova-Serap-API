@@ -1,5 +1,4 @@
-﻿using MessagePack;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SME.SERAp.Prova.Infra
 {
@@ -15,5 +14,6 @@ namespace SME.SERAp.Prova.Infra
         [Range(1, long.MaxValue, ErrorMessage = "A data em ticks deve ser maior do que {1}")]
         public long DataHoraRespostaTicks { get; set; }
         public int? TempoRespostaAluno { get; set; }
+        public string DispositivoId { get; set; }
     }
 }

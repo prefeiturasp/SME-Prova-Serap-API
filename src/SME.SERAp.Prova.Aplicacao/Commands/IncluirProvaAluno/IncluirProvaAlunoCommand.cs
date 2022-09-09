@@ -6,7 +6,7 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class IncluirProvaAlunoCommand : IRequest<bool>
     {
-        public IncluirProvaAlunoCommand(long provaId, long alunoRa, ProvaStatus status, DateTime criadoEm, DateTime? finalizadoEm, TipoDispositivo tipoDispositivo)
+        public IncluirProvaAlunoCommand(long provaId, long alunoRa, ProvaStatus status, DateTime criadoEm, DateTime? finalizadoEm, TipoDispositivo tipoDispositivo, string dispositivoId)
         {
             ProvaId = provaId;
             AlunoRa = alunoRa;
@@ -14,6 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
             FinalizadoEm = finalizadoEm;
             CriadoEm = criadoEm;
             TipoDispositivo = tipoDispositivo;
+            DispositivoId = dispositivoId;
         }
 
         public long ProvaId { get; set; }
@@ -21,7 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public ProvaStatus Status { get; set; }
         public DateTime? FinalizadoEm { get; set; }
         public DateTime CriadoEm { get; set; }
-
         public TipoDispositivo TipoDispositivo { get; set; }
+        public string DispositivoId { get; set; }
     }
 }
