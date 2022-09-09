@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dados.Interfaces;
 using SME.SERAp.Prova.Infra;
 using System;
 using System.Threading;
@@ -26,10 +25,12 @@ namespace SME.SERAp.Prova.Aplicacao
             request.VersaoAppDispositivo.VersaoCodigo,
             request.VersaoAppDispositivo.VersaoDescricao,
             request.VersaoAppDispositivo.DispositivoImei,
-            request.VersaoAppDispositivo.AtualizadoEm);
+            request.VersaoAppDispositivo.AtualizadoEm,
+            request.VersaoAppDispositivo.DispositivoId);
 
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirVersaoDispositivoApp, versaoAppDispositivo));
-            await repositorioCache.SalvarRedisAsync(versaoAppDispositivo.DispositivoImei.ToString(), versaoAppDispositivo);
+            if (versaoAppDispositivo.DispositivoImei != null && !string.IsNullOrEmpty(versaoAppDispositivo.DispositivoImei))
+                await repositorioCache.SalvarRedisAsync(versaoAppDispositivo.DispositivoImei.ToString(), versaoAppDispositivo);
 
             return true;
         }

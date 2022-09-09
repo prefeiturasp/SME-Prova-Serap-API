@@ -8,5 +8,7 @@ namespace SME.SERAp.Prova.Infra
         public string Ano { get; set; }
         public int TipoTurno { get; set; }
         public Modalidade Modalidade { get; set; }
+        public long? TurmaId { get; set; }
+
     }
 }

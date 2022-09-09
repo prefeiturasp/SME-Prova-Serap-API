@@ -16,6 +16,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Frequencia).ToColumn("frequencia");
             Map(c => c.TipoDispositivo).ToColumn("tipo_dispositivo");
             Map(c => c.FinalizadoEm).ToColumn("finalizado_em");
+            Map(c => c.DispositivoId).ToColumn("dispositivo_id");
         }
     }
 }
