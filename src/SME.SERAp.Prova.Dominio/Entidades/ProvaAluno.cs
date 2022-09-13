@@ -9,7 +9,7 @@ namespace SME.SERAp.Prova.Dominio
         {
             CriadoEm = DateTime.Now;
         }
-        public ProvaAluno(long provaId, ProvaStatus status, long alunoRa, DateTime criadoEm, DateTime? finalizadoEm, TipoDispositivo tipoDispositivo, string dispositivoId)
+        public ProvaAluno(long provaId, ProvaStatus status, long alunoRa, DateTime criadoEm, DateTime? finalizadoEm, TipoDispositivo tipoDispositivo, string dispositivoId, DateTime criadoEmServidor)
         {
             ProvaId = provaId;
             Status = status;
@@ -18,6 +18,7 @@ namespace SME.SERAp.Prova.Dominio
             FinalizadoEm = finalizadoEm;
             TipoDispositivo = tipoDispositivo;
             DispositivoId = dispositivoId;
+            CriadoEmServidor = criadoEmServidor;
         }
 
         public long ProvaId { get; set; }
@@ -28,6 +29,7 @@ namespace SME.SERAp.Prova.Dominio
         public FrequenciaAluno Frequencia { get; set; }
         public TipoDispositivo TipoDispositivo { get; set; }
         public string DispositivoId { get; set; }
-
+        public DateTime? CriadoEmServidor { get; set; }
+        public DateTime? FinalizadoEmServidor { get; set; }
     }
 }
