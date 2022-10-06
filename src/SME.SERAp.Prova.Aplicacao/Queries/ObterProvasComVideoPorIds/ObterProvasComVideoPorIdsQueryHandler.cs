@@ -20,7 +20,10 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<long[]> Handle(ObterProvasComVideoPorIdsQuery request, CancellationToken cancellationToken)
         {
             var provasComTipoDeficiencia = await repositorioTipoDeficiencia.ObterPorProvaIds(request.Ids);
-            return provasComTipoDeficiencia.Where(a => a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA || a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA)
+            return provasComTipoDeficiencia
+                .Where(a => 
+                    a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA || 
+                    a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA)
                 .Select(a => a.ProvaId).ToArray();
         }
     }
