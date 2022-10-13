@@ -131,26 +131,26 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select
-	                            p.descricao,
-	                            p.Id,
-	                            p.total_Itens totalItens,
-	                            p.inicio_download as InicioDownload,
-	                            p.inicio,
-	                            p.fim,
-	                            p.Tempo_Execucao TempoExecucao,
-	                            case when pa.modalidade is not null then pa.modalidade else p.modalidade end Modalidade,
-	                            p.Senha,
-	                            p.possui_bib PossuiBIB,
-	                            pa.ano,
-                                pa.etapa_eja EtapaEja,
-                                p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
-                                p.ultima_atualizacao as UltimaAtualizacao
-                            from
-	                            prova p
-                            inner join prova_ano pa 
-                                on pa.prova_id = p.id
-                             where (p.ocultar_prova = false or ocultar_prova is null)
-                               and (aderir_todos or aderir_todos is null)";
+                                  p.descricao,
+                                  p.Id,
+                                  p.total_Itens totalItens,
+                                  p.inicio_download as InicioDownload,
+                                  p.inicio,
+                                  p.fim,
+                                  p.Tempo_Execucao TempoExecucao,
+                                  case when pa.modalidade is not null then pa.modalidade else p.modalidade end Modalidade,
+                                  p.Senha,
+                                  p.possui_bib PossuiBIB,
+                                  pa.ano,
+                                  pa.etapa_eja EtapaEja,
+                                  p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
+                                  p.ultima_atualizacao as UltimaAtualizacao,
+                                  tp.para_estudante_com_deficiencia as deficiente
+                              from prova p
+                              inner join prova_ano pa on pa.prova_id = p.id
+                              inner join tipo_prova tp on tp.id = p.tipo_prova_id 
+                              where (p.ocultar_prova = false or ocultar_prova is null)
+                                and (aderir_todos or aderir_todos is null)";
 
                 return await SqlMapper.QueryAsync<ProvaAnoDto>(conn, query);
             }

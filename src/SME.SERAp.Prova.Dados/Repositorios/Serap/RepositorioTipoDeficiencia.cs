@@ -73,9 +73,8 @@ namespace SME.SERAp.Prova.Dados
                                     td.legado_id LegadoId,
                                     td.codigo_eol CodigoEol,
                                     td.nome Nome
-                                from tipo_deficiencia td
-                                inner join aluno_deficiencia ad 
-                                    on td.id = ad.deficiencia_id
+                                from aluno_deficiencia ad 
+                                inner join tipo_deficiencia td on td.id = ad.deficiencia_id
                                 where ad.aluno_ra = @alunoRa;";
 
                 return await conn.QueryAsync<TipoDeficiencia>(query, new { alunoRa });

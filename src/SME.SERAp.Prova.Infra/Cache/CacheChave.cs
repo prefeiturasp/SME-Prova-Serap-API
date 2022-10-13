@@ -98,5 +98,11 @@
         /// 1 - Código ra do aluno
         /// </summary>
         public const string AlunoProva = "al-prova-{0}-{1}";
+
+        /// <summary>
+        /// Deficiencias do aluno
+        /// 0 - Código ra do aluno
+        /// </summary>
+        public const string AlunoDeficiencia = "al-def-{0}";
     }
 }
