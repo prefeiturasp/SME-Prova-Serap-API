@@ -179,16 +179,15 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Modalidade,
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
-                                p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao
-                            from
-	                            prova p
-                            inner join prova_ano pa 
-                                on pa.prova_id = p.id
-                            inner join prova_adesao pd 
-                            	on p.id = pd.prova_id                            
-                             where (p.ocultar_prova = false or ocultar_prova is null)
-                               and not aderir_todos
-                               and pd.aluno_ra = @alunoRa;";
+                                p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao,
+                                tp.para_estudante_com_deficiencia as deficiente
+                            from prova p
+                            inner join prova_ano pa on pa.prova_id = p.id 
+                            inner join prova_adesao pd on p.id = pd.prova_id                            
+                            inner join tipo_prova tp on tp.id = p.tipo_prova_id
+                            where (p.ocultar_prova = false or ocultar_prova is null)
+                              and not aderir_todos
+                              and pd.aluno_ra = @alunoRa;";
 
                 var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
                 return retorno.ToList();
