@@ -62,7 +62,7 @@ namespace SME.SERAp.Prova.Dados
                             from aluno a
                             left join turma t on t.id = a.turma_id 
                             where a.ra = @ra and t.ano_letivo = @anoLetivo
-                            and a.situacao in(1,6,10)";
+                            and a.situacao in(1,6,10,13,5)";
 
                 return await conn.QueryFirstOrDefaultAsync<ObterAlunoAtivoRetornoDto>(query, new { ra, anoLetivo = DateTime.Now.Year });
             }
