@@ -294,9 +294,9 @@ namespace SME.SERAp.Prova.Dados
                     //-> Adesão
                     where.AppendLine(" or exists(select 1 ");
                     where.AppendLine("           from prova_adesao pa3 ");
-                    where.AppendLine("           left join aluno a3 on a3.ra = pa3.aluno_ra ");
-                    where.AppendLine("           left join turma ta3 on ta3.id = a3.turma_id ");
-                    where.AppendLine("           left join ue u3 on u3.id = ta3.ue_id ");
+                    where.AppendLine("           join aluno a3 on a3.ra = pa3.aluno_ra ");
+                    where.AppendLine("           join turma ta3 on ta3.id = a3.turma_id and ta3.ue_id = pa3.ue_id ");
+                    where.AppendLine("           join ue u3 on u3.id = ta3.ue_id ");
 
                     where.AppendLine("           where pa3.prova_id = p.id ");
                     where.AppendLine("             and ta3.modalidade_codigo = p.modalidade ");
