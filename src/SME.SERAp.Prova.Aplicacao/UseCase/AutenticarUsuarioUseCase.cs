@@ -28,7 +28,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (podeGerarToken)
                 {
                     var tokenDtExpiracao =
-                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno, (int)aluno.Modalidade));
+                        await mediator.Send(new ObterTokenJwtQuery(autenticacaoDto.Login, aluno.Ano, aluno.TipoTurno, (int)aluno.Modalidade, autenticacaoDto.Dispositivo));
                     retornoDto.Token = tokenDtExpiracao.Item1;
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
@@ -39,7 +39,14 @@ namespace SME.SERAp.Prova.Aplicacao
             }
             else throw new NaoAutorizadoException($"Código EOL {autenticacaoDto.Login} inválido", 411);
 
+            await PublicarFilaSalvarUsuarioDispositivoLogin(aluno.Ra, autenticacaoDto.Dispositivo, aluno.TurmaId);
             return retornoDto;
+        }
+
+        private async Task PublicarFilaSalvarUsuarioDispositivoLogin(long ra, string dispositivoId, long? turmaId)
+        {
+            var usuarioDispositivo = new UsuarioDispositivoLoginDto(ra, dispositivoId != null ? dispositivoId : string.Empty, turmaId);
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarUsuarioDispositivoLogin, usuarioDispositivo));
         }
     }
 }

@@ -17,7 +17,11 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var tokenInformacoes = await mediator.Send(new VerificaERetornaInformacoesPorTokenQuery(revalidaTokenDto.Token));            
 
-            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(tokenInformacoes.Ra, tokenInformacoes.Ano, tokenInformacoes.TipoTurno, tokenInformacoes.Modalidade));
+            var tokenDataExpiracao = await mediator.Send(new ObterTokenJwtQuery(tokenInformacoes.Ra, 
+                                                                                tokenInformacoes.Ano, 
+                                                                                tokenInformacoes.TipoTurno, 
+                                                                                tokenInformacoes.Modalidade, 
+                                                                                tokenInformacoes.Dispositivo));
 
             return new UsuarioAutenticacaoDto(tokenDataExpiracao.Item1, tokenDataExpiracao.Item2);
         }
