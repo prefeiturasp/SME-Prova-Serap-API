@@ -25,7 +25,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpDelete]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        //[ChaveAutenticacaoApi]
+        [ChaveAutenticacaoApi]
         public async Task<IActionResult> ExcluirDownloads(Guid[] codigos, [FromServices] IExcluirDownloadProvaAlunoUseCase excluirDownloadsProvaAlunoUseCase)
         {
             return Ok(await excluirDownloadsProvaAlunoUseCase.Executar(codigos));

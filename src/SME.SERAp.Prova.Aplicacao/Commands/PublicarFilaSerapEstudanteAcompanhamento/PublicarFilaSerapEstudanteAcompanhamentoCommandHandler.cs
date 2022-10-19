@@ -10,16 +10,18 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class PublicarFilaSerapEstudantesCommandHandler : IRequestHandler<PublicarFilaSerapEstudantesCommand, bool>
+    public class PublicarFilaSerapEstudanteAcompanhamentoCommandHandler : IRequestHandler<PublicarFilaSerapEstudanteAcompanhamentoCommand, bool>
     {
+
         private readonly IConnection connectionRabbit;
         private readonly IMediator mediator;
-        public PublicarFilaSerapEstudantesCommandHandler(IConnection connectionRabbit)
+
+        public PublicarFilaSerapEstudanteAcompanhamentoCommandHandler(IConnection connectionRabbit)
         {
             this.connectionRabbit = connectionRabbit ?? throw new ArgumentNullException(nameof(connectionRabbit));
         }
 
-        public Task<bool> Handle(PublicarFilaSerapEstudantesCommand request, CancellationToken cancellationToken)
+        public Task<bool> Handle(PublicarFilaSerapEstudanteAcompanhamentoCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -32,14 +34,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     var props = canal.CreateBasicProperties();
                     props.Persistent = true;
-                    canal.BasicPublish(ExchangeRabbit.SerapEstudante, request.Fila, props, body);
+                    canal.BasicPublish(ExchangeRabbit.SerapEstudanteAcompanhamento, request.Fila, props, body);
                 }
 
                 return Task.FromResult(true);
             }
             catch (Exception ex)
             {
-                mediator.Send(new SalvarLogViaRabbitCommand($"Erros: PublicarFilaSerapEstudantesCommand -- Estudantes: Fila -> {request.Fila}", LogNivel.Critico, ex.Message));
+                mediator.Send(new SalvarLogViaRabbitCommand($"Erros: PublicarFilaSerapEstudanteAcompanhamentoCommand: Fila -> {request.Fila}", LogNivel.Critico, ex.Message));
                 return Task.FromResult(false);
             }
         }

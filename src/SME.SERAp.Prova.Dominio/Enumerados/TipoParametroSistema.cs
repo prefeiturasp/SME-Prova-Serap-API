@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace SME.SERAp.Prova.Dominio
+﻿namespace SME.SERAp.Prova.Dominio
 {
     public enum TipoParametroSistema
     {
@@ -19,6 +16,8 @@ namespace SME.SERAp.Prova.Dominio
         FimProvaTurnoVespertino = 12,
         FimProvaTurnoNoite = 13,
         FimProvaTurnoIntegral = 14,
+        TipoEscolaSerap = 15,
+        ToleranciaDataHoraServidor = 16
     }
 
     public static class TipoParametroSistemaExtension

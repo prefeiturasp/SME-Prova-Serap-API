@@ -23,6 +23,7 @@ namespace SME.SERAp.Prova.Infra
         public int EtapaEja { get; set; }
         public int? QuantidadeRespostaSincronizacao { get; set; }
         public DateTime UltimaAtualizacao { get; set; }
+        public bool Deficiente { get; set; }
 
         public DateTime ObterDataInicioMais3Horas()
         {

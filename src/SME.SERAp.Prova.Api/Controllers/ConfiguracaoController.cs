@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -18,5 +19,15 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterTelasBoasVindasUseCase.Executar());
         }
+
+        [HttpGet("datahora")]
+        [ProducesResponseType(typeof(DataHoraServidorDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterDataHoraServidor([FromServices] IObterDataHoraServidorUseCase obterDataHoraServidorUseCase)
+        {
+            return Ok(await obterDataHoraServidorUseCase.Executar());
+        }
+
     }
 }
