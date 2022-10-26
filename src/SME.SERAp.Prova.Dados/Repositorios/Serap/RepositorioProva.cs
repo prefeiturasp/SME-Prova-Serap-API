@@ -179,16 +179,15 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Modalidade,
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
-                                p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao
-                            from
-	                            prova p
-                            inner join prova_ano pa 
-                                on pa.prova_id = p.id
-                            inner join prova_adesao pd 
-                            	on p.id = pd.prova_id                            
-                             where (p.ocultar_prova = false or ocultar_prova is null)
-                               and not aderir_todos
-                               and pd.aluno_ra = @alunoRa;";
+                                p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao,
+                                tp.para_estudante_com_deficiencia as deficiente
+                            from prova p
+                            inner join prova_ano pa on pa.prova_id = p.id 
+                            inner join prova_adesao pd on p.id = pd.prova_id                            
+                            inner join tipo_prova tp on tp.id = p.tipo_prova_id
+                            where (p.ocultar_prova = false or ocultar_prova is null)
+                              and not aderir_todos
+                              and pd.aluno_ra = @alunoRa;";
 
                 var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
                 return retorno.ToList();
@@ -246,7 +245,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");                
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
@@ -268,6 +267,13 @@ namespace SME.SERAp.Prova.Dados
 
                 if (perfil != null && !string.IsNullOrEmpty(login))
                 {
+                    //-> Permissões por grupo
+                    where.Append(@" and not exists(select 1 from prova_grupo_permissao pgp
+                                                        inner join grupo_serap_coresso g on pgp.grupo_id = g.id
+                                                        where pgp.prova_id = p.id
+                                                              and g.id_coresso = @perfil
+                                                              and pgp.ocultar_prova = true)");
+
                     //-> Abrangência
                     where.AppendLine(" and (exists(select 1 ");
                     where.AppendLine("             from prova_ano pa2 ");
@@ -295,9 +301,9 @@ namespace SME.SERAp.Prova.Dados
                     //-> Adesão
                     where.AppendLine(" or exists(select 1 ");
                     where.AppendLine("           from prova_adesao pa3 ");
-                    where.AppendLine("           left join aluno a3 on a3.ra = pa3.aluno_ra ");
-                    where.AppendLine("           left join turma ta3 on ta3.id = a3.turma_id ");
-                    where.AppendLine("           left join ue u3 on u3.id = ta3.ue_id ");
+                    where.AppendLine("           join aluno a3 on a3.ra = pa3.aluno_ra ");
+                    where.AppendLine("           join turma ta3 on ta3.id = a3.turma_id and ta3.ue_id = pa3.ue_id ");
+                    where.AppendLine("           join ue u3 on u3.id = ta3.ue_id ");
 
                     where.AppendLine("           where pa3.prova_id = p.id ");
                     where.AppendLine("             and ta3.modalidade_codigo = p.modalidade ");

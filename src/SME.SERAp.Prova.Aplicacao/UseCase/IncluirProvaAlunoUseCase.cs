@@ -23,6 +23,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
+            long alunoRa = 0;
             try
             {
                 await ObterDadosAlunoLogado();
