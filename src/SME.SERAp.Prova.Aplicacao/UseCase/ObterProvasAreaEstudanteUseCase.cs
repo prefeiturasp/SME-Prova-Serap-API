@@ -161,12 +161,14 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private async Task<IEnumerable<ProvaAnoDto>> TratarProvasPorTipoDeficiencia(IEnumerable<ProvaAnoDto> provas, long alunoRa)
         {
-            var provasRetorno = provas;
-            var detalhes = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
+            var provasRetorno = provas; 
+            var detalhes = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa)); 
             if (detalhes.Deficiencias != null && detalhes.Deficiencias.Any())
             {
-                provasRetorno = await TratarProvasComAudio(provasRetorno.ToList(), detalhes.Deficiencias);
-                provasRetorno = await TratarProvasComVideo(provasRetorno.ToList(), detalhes.Deficiencias);
+                provasRetorno = await TratarProvasComVideo(provasRetorno.ToList(), detalhes.Deficiencias); 
+                if (!provasRetorno.Any()) 
+                    provasRetorno = await TratarProvasComAudio(provasRetorno.ToList(), detalhes.Deficiencias);
+
                 return provasRetorno;
             }
 
@@ -180,7 +182,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
 
-            if (alunoNecessitaProvaComAudio)
+            if (alunoNecessitaProvaComAudio) 
                 return provas.Where(a => provasComAudio.Any(pa => pa == a.Id));
 
             return provas.Where(a => !provasComAudio.Any(pa => pa == a.Id));
@@ -188,7 +190,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(IEnumerable<ProvaAnoDto> provas, int[] deficienciasAluno)
         {
-            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA, (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA };
+            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA, (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA, (int)DeficienciaTipo.SURDO_CEGUEIRA };
             var alunoNecessitaProvaComVideo = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
 
             var provasComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(provas.Select(a => a.Id).ToArray()));

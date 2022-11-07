@@ -245,7 +245,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");                
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
@@ -267,6 +267,13 @@ namespace SME.SERAp.Prova.Dados
 
                 if (perfil != null && !string.IsNullOrEmpty(login))
                 {
+                    //-> Permissões por grupo
+                    where.Append(@" and not exists(select 1 from prova_grupo_permissao pgp
+                                                        inner join grupo_serap_coresso g on pgp.grupo_id = g.id
+                                                        where pgp.prova_id = p.id
+                                                              and g.id_coresso = @perfil
+                                                              and pgp.ocultar_prova = true)");
+
                     //-> Abrangência
                     where.AppendLine(" and (exists(select 1 ");
                     where.AppendLine("             from prova_ano pa2 ");

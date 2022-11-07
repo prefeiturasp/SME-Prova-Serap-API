@@ -161,7 +161,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = new StringBuilder();
                 // questão
-                query.AppendLine(" select questao_legado_id, max(json) as json ");
+                query.AppendLine(" select questao_legado_id as id, max(json) as json ");
                 query.AppendLine(" from questao_completa ");
                 query.AppendLine(" where questao_legado_id = ANY(@legadoIds) ");
                 query.AppendLine(" group by questao_legado_id; ");
