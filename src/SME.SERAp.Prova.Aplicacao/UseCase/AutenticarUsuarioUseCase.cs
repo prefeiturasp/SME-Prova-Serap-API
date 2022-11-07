@@ -36,6 +36,11 @@ namespace SME.SERAp.Prova.Aplicacao
                 await mediator.Send(new IncluirOuAtualizarUsuarioCommand(autenticacaoDto.Login, ""));
                 retornoDto.UltimoLogin = DateTime.Now;
 
+                //-> força renovação dos cache.
+                await mediator.Send(new RemoverCacheCommand(string.Format(CacheChave.Aluno, aluno.Ra)));
+                await mediator.Send(new RemoverCacheCommand(string.Format(CacheChave.MeusDados, aluno.Ra)));
+                await mediator.Send(new RemoverCacheCommand(string.Format(CacheChave.AlunoDeficiencia, aluno.Ra)));
+                await mediator.Send(new RemoverCacheCommand(string.Format(CacheChave.PreferenciasAluno, aluno.Ra)));
             }
             else throw new NaoAutorizadoException($"Código EOL {autenticacaoDto.Login} inválido", 411);
 
