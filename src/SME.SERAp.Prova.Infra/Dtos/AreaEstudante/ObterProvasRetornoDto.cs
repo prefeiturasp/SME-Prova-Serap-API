@@ -7,7 +7,8 @@ namespace SME.SERAp.Prova.Infra
     {
         public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime? dataInicioDownload, DateTime dataInicio, DateTime? dataFim, long id, int tempoExecucao, 
             int tempoExtra, int tempoAlerta, int tempoTotal, DateTime? dataInicioProvaAluno, string senha, Modalidade modalidade, DateTime? dataFimProvaAluno, 
-            int? quantidadeRespostaSincronizacao, DateTime ultimaAlteracao, string caderno)
+            int? quantidadeRespostaSincronizacao, DateTime ultimaAlteracao, string caderno, bool provaComProficiencia = false, bool apresentarResultados = false, 
+            bool apresentarResultadosPorItem = false)
         {
             Id = id;
             Descricao = descricao;
@@ -27,6 +28,9 @@ namespace SME.SERAp.Prova.Infra
             QuantidadeRespostaSincronizacao = quantidadeRespostaSincronizacao;
             UltimaAlteracao = ultimaAlteracao;
             Caderno = caderno;
+            ProvaComProficiencia = provaComProficiencia;
+            ApresentarResultados = apresentarResultados;
+            ApresentarResultadosPorItem = apresentarResultadosPorItem;
         }
 
         public long Id { get; set; }
@@ -47,6 +51,9 @@ namespace SME.SERAp.Prova.Infra
         public int? QuantidadeRespostaSincronizacao { get; set; }
         public DateTime UltimaAlteracao { get; set; }
         public string Caderno { get; set; }
+        public bool ProvaComProficiencia { get; set; }
+        public bool ApresentarResultados { get; set; }
+        public bool ApresentarResultadosPorItem { get; set; }
     }
 }
 

@@ -147,7 +147,10 @@ namespace SME.SERAp.Prova.Dados
                                 pa.etapa_eja EtapaEja,
                                 p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
                                 p.ultima_atualizacao as UltimaAtualizacao,
-                                tp.para_estudante_com_deficiencia as deficiente
+                                tp.para_estudante_com_deficiencia as deficiente,
+                                p.prova_com_proficiencia ProvaComProficiencia,
+                                p.apresentar_resultados ApresentarResultados,
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
                             inner join tipo_prova tp on tp.id = p.tipo_prova_id 
@@ -180,7 +183,10 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
                                 p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao,
-                                tp.para_estudante_com_deficiencia as deficiente
+                                tp.para_estudante_com_deficiencia as deficiente,
+                                p.prova_com_proficiencia ProvaComProficiencia,
+                                p.apresentar_resultados ApresentarResultados,
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id 
                             inner join prova_adesao pd on p.id = pd.prova_id                            

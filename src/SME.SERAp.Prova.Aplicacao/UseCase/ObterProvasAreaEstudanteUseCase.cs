@@ -112,7 +112,8 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.ObterDataFimMais3Horas(),
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
-                        provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno));
+                        provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
+                        prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem));
                     continue;
                 }
 
@@ -131,7 +132,8 @@ namespace SME.SERAp.Prova.Aplicacao
                         prova.Id, prova.TempoExecucao,
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno),
                         provaAluno?.CriadoEm, prova.Senha,
-                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno));
+                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
+                        prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem));
                 }
             }
 
