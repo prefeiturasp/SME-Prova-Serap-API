@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dados;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,18 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<List<int>> Handle(ObterCodigoEolDeficienciasAlunoPorRaQuery request, CancellationToken cancellationToken)
         {
-            var deficienciasAluno = await repositorioCache.ObterRedisAsync(string.Format(CacheChave.AlunoDeficiencia, request.AlunoRa),() => repositorioTipoDeficiencia.ObterPorAlunoRa(request.AlunoRa));
-            return deficienciasAluno.Select(d => d.CodigoEol).ToList();
+            var deficienciasAluno = await repositorioCache.ObterRedisAsync(string.Format(CacheChave.AlunoDeficiencia, request.AlunoRa), () => repositorioTipoDeficiencia.ObterPorAlunoRa(request.AlunoRa));
+
+            var surdezCodigoEol = deficienciasAluno.Select(d => d.CodigoEol).ToList();
+
+            //TODO Remover este tratamento e corrigir no aplicativo. Adiciona a deficiencia de sudez para exibir o video no aplicativo.
+            if (surdezCodigoEol.Any(t => t == (int)DeficienciaTipo.SURDO_CEGUEIRA) &&
+                !surdezCodigoEol.Any(t => t == (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA || t == (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA))
+            {
+                surdezCodigoEol.Add((int)DeficienciaTipo.SURDEZ_LEVE_MODERADA);
+            }
+
+            return surdezCodigoEol;
         }
     }
 }
