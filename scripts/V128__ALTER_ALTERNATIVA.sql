@@ -1,0 +1,1 @@
+alter table alternativa add if not exists correta bool default false;

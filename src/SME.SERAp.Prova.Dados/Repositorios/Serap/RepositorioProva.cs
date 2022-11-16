@@ -379,5 +379,36 @@ namespace SME.SERAp.Prova.Dados
 
             return retorno;
         }
+
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, int caderno)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct
+                                    q.questao_legado_id as IdQuestaoLegado, 
+                                    q.enunciado as DescricaoQuestao, 
+                                    q.ordem as OrdemQuestao, 
+                                    qar.alternativa_id as AlternativaAluno,
+                                    a.correta AlternativaCorreta,
+                                    app.proficiencia  as Proficiencia
+                                 from questao_aluno_resposta qar
+                                 left join questao q on qar.questao_id = q.id
+                                 left join alternativa a on a.id = qar.alternativa_id 
+                                 left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra 
+                                  and app.prova_id = q.prova_id
+                                where q.prova_id = @provaId 
+                                    and qar.aluno_ra = @alunoRa
+                                    and q.caderno = @caderno
+                                    order by q.ordem";
+
+                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno = Convert.ToString(caderno) });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

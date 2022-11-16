@@ -20,7 +20,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProvaResultadoResumoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterProvasAnteriores(long provaId, int caderno, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
+        public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, int caderno, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
         {
             return Ok(await obterProvaResultadoResumoUseCase.Executar(provaId, caderno));
         }
