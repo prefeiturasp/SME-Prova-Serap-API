@@ -14,6 +14,9 @@ namespace SME.SERAp.Prova.Dominio
         SURDEZ_LEVE_MODERADA = 5,
 
         [Display(Name = "SURDEZ SEVERA/PROFUNDA")]
-        SURDEZ_SEVERA_PROFUNDA = 6
+        SURDEZ_SEVERA_PROFUNDA = 6,
+
+        [Display(Name = "SURDOCEGUEIRA")]
+        SURDO_CEGUEIRA = 14,
     }
 }

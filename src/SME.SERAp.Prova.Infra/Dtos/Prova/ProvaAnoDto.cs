@@ -24,6 +24,9 @@ namespace SME.SERAp.Prova.Infra
         public int? QuantidadeRespostaSincronizacao { get; set; }
         public DateTime UltimaAtualizacao { get; set; }
         public bool Deficiente { get; set; }
+        public bool ProvaComProficiencia { get; set; }
+        public bool ApresentarResultados { get; set; }
+        public bool ApresentarResultadosPorItem { get; set; }
 
         public DateTime ObterDataInicioMais3Horas()
         {
