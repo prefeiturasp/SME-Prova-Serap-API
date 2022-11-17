@@ -380,7 +380,7 @@ namespace SME.SERAp.Prova.Dados
             return retorno;
         }
 
-        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, int caderno)
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, string caderno)
         {
             using var conn = ObterConexaoLeitura();
             try
@@ -402,7 +402,7 @@ namespace SME.SERAp.Prova.Dados
                                     and q.caderno = @caderno
                                     order by q.ordem";
 
-                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno = Convert.ToString(caderno) });
+                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno });
             }
             finally
             {
