@@ -1,0 +1,1 @@
+ALTER TABLE prova ADD COLUMN IF NOT exists prova_id_origem_caderno int8 NULL;
