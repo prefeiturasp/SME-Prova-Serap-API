@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -50,5 +51,31 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<QuestaoCompletaResultadoDto> ObterResultadoQuestaoAsync(long alunoRa, long provaId, long questaoLegadoId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct
+                                        a2.id as AlternativaCorretaId,
+                                        qar.alternativa_id as AlternativaRespostaId
+                                from questao_aluno_resposta qar
+                                    left join questao q on qar.questao_id = q.id
+                                    left join alternativa a on a.id = qar.alternativa_id
+                                    left join alternativa a2 on a2.questao_id = q.id and a2.correta
+                                where q.prova_id = @provaId
+                                and qar.aluno_ra = @alunoRa
+                                and q.questao_legado_id = @questaoLegadoId";
+
+                return await conn.QueryFirstOrDefaultAsync<QuestaoCompletaResultadoDto>(query, new { alunoRa, provaId, questaoLegadoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
     }
 }

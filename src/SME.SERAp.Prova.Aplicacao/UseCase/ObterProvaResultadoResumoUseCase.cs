@@ -16,7 +16,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<ProvaResultadoResumoDto>> Executar(long provaId, int caderno)
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> Executar(long provaId, string caderno)
         {
             var ra = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             return await mediator.Send(new ObterProvaResultadoResumoQuery(provaId, caderno, ra));
