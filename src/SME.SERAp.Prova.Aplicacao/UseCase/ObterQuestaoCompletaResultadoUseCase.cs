@@ -3,6 +3,7 @@ using SME.SERAp.Prova.Infra;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -28,11 +29,11 @@ namespace SME.SERAp.Prova.Aplicacao
             return questaoCompletaResultado;
         }
 
-        private async Task<string> ObterJsonQuestaoCompleta(long questaoLegadoId)
+        private async Task<QuestaoCompletaDto> ObterJsonQuestaoCompleta(long questaoLegadoId)
         {
             var questoes = await mediator.Send(new ObterQuestaoCompletaPorLegadoIdQuery(new long[] { questaoLegadoId }));
             if (questoes == null || !questoes.Any()) return null;
-            return questoes.FirstOrDefault();
+            return JsonConvert.DeserializeObject<QuestaoCompletaDto>(questoes.FirstOrDefault());
         }
     }
 }

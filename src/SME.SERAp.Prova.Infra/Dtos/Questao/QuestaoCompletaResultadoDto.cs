@@ -7,7 +7,7 @@
 
         }
 
-        public string Questao { get; set; }
+        public QuestaoCompletaDto Questao { get; set; }
         public long AlternativaCorretaId { get; set; }
         public long AlternativaRespostaId { get; set; }
 
