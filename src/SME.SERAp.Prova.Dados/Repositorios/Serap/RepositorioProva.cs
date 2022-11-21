@@ -147,7 +147,10 @@ namespace SME.SERAp.Prova.Dados
                                 pa.etapa_eja EtapaEja,
                                 p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
                                 p.ultima_atualizacao as UltimaAtualizacao,
-                                tp.para_estudante_com_deficiencia as deficiente
+                                tp.para_estudante_com_deficiencia as deficiente,
+                                p.prova_com_proficiencia ProvaComProficiencia,
+                                p.apresentar_resultados ApresentarResultados,
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
                             inner join tipo_prova tp on tp.id = p.tipo_prova_id 
@@ -180,7 +183,10 @@ namespace SME.SERAp.Prova.Dados
 	                            p.Senha,
 	                            p.possui_bib PossuiBIB,
                                 p.qtd_itens_sincronizacao_respostas as quantidadeRespostaSincronizacao,
-                                tp.para_estudante_com_deficiencia as deficiente
+                                tp.para_estudante_com_deficiencia as deficiente,
+                                p.prova_com_proficiencia ProvaComProficiencia,
+                                p.apresentar_resultados ApresentarResultados,
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id 
                             inner join prova_adesao pd on p.id = pd.prova_id                            
@@ -372,6 +378,37 @@ namespace SME.SERAp.Prova.Dados
             }
 
             return retorno;
+        }
+
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, string caderno)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct
+                                    q.questao_legado_id as IdQuestaoLegado, 
+                                    q.enunciado as DescricaoQuestao, 
+                                    q.ordem as OrdemQuestao, 
+                                    qar.alternativa_id as AlternativaAluno,
+                                    a.correta AlternativaCorreta,
+                                    app.proficiencia  as Proficiencia
+                                 from questao_aluno_resposta qar
+                                 left join questao q on qar.questao_id = q.id
+                                 left join alternativa a on a.id = qar.alternativa_id 
+                                 left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra 
+                                  and app.prova_id = q.prova_id
+                                where q.prova_id = @provaId 
+                                    and qar.aluno_ra = @alunoRa
+                                    and q.caderno = @caderno
+                                    order by q.ordem";
+
+                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
         }
     }
 }

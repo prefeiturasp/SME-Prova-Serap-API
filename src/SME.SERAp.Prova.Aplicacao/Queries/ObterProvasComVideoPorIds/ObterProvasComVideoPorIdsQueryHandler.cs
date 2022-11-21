@@ -23,7 +23,9 @@ namespace SME.SERAp.Prova.Aplicacao
             return provasComTipoDeficiencia
                 .Where(a => 
                     a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA || 
-                    a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA)
+                    a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA ||
+                    a.DeficienciaCodigoEol == (int)DeficienciaTipo.SURDO_CEGUEIRA)
+                    
                 .Select(a => a.ProvaId).ToArray();
         }
     }
