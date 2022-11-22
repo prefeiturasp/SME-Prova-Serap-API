@@ -20,9 +20,18 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProvaResultadoResumoDto>), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, int caderno, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
+        public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, string caderno, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
         {
             return Ok(await obterProvaResultadoResumoUseCase.Executar(provaId, caderno));
+        }
+
+        [HttpGet("{provaId}/{questaoLegadoId}/questao-completa")]
+        [ProducesResponseType(typeof(QuestaoCompletaResultadoDto), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterQuestaoCompletaResultado(long provaId, long questaoLegadoId, [FromServices] IObterQuestaoCompletaResultadoUseCase obterQuestaoCompletaResultadoUseCase)
+        {
+            return Ok(await obterQuestaoCompletaResultadoUseCase.Executar(provaId, questaoLegadoId));
         }
     }
 }
