@@ -8,7 +8,7 @@ namespace SME.SERAp.Prova.Infra
         public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime? dataInicioDownload, DateTime dataInicio, DateTime? dataFim, long id, int tempoExecucao, 
             int tempoExtra, int tempoAlerta, int tempoTotal, DateTime? dataInicioProvaAluno, string senha, Modalidade modalidade, DateTime? dataFimProvaAluno, 
             int? quantidadeRespostaSincronizacao, DateTime ultimaAlteracao, string caderno, bool provaComProficiencia = false, bool apresentarResultados = false, 
-            bool apresentarResultadosPorItem = false)
+            bool apresentarResultadosPorItem = false, bool formatoTai = false, long? formatoTaiItem = null, bool formatoTaiAvancarSemResponder = false, bool formatoTaiVoltarItemAnterior = false)
         {
             Id = id;
             Descricao = descricao;
@@ -31,6 +31,10 @@ namespace SME.SERAp.Prova.Infra
             ProvaComProficiencia = provaComProficiencia;
             ApresentarResultados = apresentarResultados;
             ApresentarResultadosPorItem = apresentarResultadosPorItem;
+            FormatoTai = formatoTai;
+            FormatoTaiItem = formatoTaiItem;
+            FormatoTaiAvancarSemResponder = formatoTaiAvancarSemResponder;
+            FormatoTaiVoltarItemAnterior = formatoTaiVoltarItemAnterior;
         }
 
         public long Id { get; set; }
@@ -53,7 +57,10 @@ namespace SME.SERAp.Prova.Infra
         public string Caderno { get; set; }
         public bool ProvaComProficiencia { get; set; }
         public bool ApresentarResultados { get; set; }
-        public bool ApresentarResultadosPorItem { get; set; }
+        public bool ApresentarResultadosPorItem { get; set; }        
+        public bool FormatoTai { get; set; }
+        public long? FormatoTaiItem { get; set; }
+        public bool FormatoTaiAvancarSemResponder { get; set; }
+        public bool FormatoTaiVoltarItemAnterior { get; set; }
     }
 }
-
