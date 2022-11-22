@@ -6,7 +6,7 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterProvaResultadoResumoQuery : IRequest<IEnumerable<ProvaResultadoResumoDto>>
     {
-        public ObterProvaResultadoResumoQuery(long provaId, int caderno, long alunoRa)
+        public ObterProvaResultadoResumoQuery(long provaId, string caderno, long alunoRa)
         {
             ProvaId = provaId;
             Caderno = caderno;
@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public long ProvaId { get; set; }
         public long AlunoRa { get; set; }
-        public int Caderno { get; set; }
+        public string Caderno { get; set; }
 
     }
 }
