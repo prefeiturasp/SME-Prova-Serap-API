@@ -251,7 +251,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");                
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
@@ -380,29 +380,29 @@ namespace SME.SERAp.Prova.Dados
             return retorno;
         }
 
-        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, string caderno)
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa)
         {
             using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct
-                                    q.questao_legado_id as IdQuestaoLegado, 
-                                    q.enunciado as DescricaoQuestao, 
-                                    q.ordem as OrdemQuestao, 
-                                    a.numeracao as AlternativaAluno,
-                                    a.correta AlternativaCorreta,
-                                    app.proficiencia  as Proficiencia
-                                 from questao q
-                                 left join questao_aluno_resposta qar on qar.questao_id = q.id
-                                 left join alternativa a on a.id = qar.alternativa_id 
-                                 left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra 
-                                  and app.prova_id = q.prova_id
-                                where q.prova_id = @provaId 
-                                    and qar.aluno_ra = @alunoRa
-                                    and q.caderno = @caderno
-                                    order by q.ordem";
+                                     q.questao_legado_id as IdQuestaoLegado, 
+                                     q.enunciado as DescricaoQuestao, 
+                                     q.ordem as OrdemQuestao, 
+                                     q.tipo as TipoQuestao,
+                                     a.numeracao as AlternativaAluno,
+                                     a.correta AlternativaCorreta,
+                                     case when qar.resposta is null then false else true end as respostaConstruidaRespondida,
+                                     app.proficiencia  as Proficiencia
+                              from questao q
+                              left join questao_aluno_resposta qar on qar.questao_id = q.id
+                              left join alternativa a on a.id = qar.alternativa_id 
+                              left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra and app.prova_id = q.prova_id
+                              where q.prova_id = @provaId
+                                and qar.aluno_ra = @alunoRa
+                              order by q.ordem";
 
-                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno });
+                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa });
             }
             finally
             {
