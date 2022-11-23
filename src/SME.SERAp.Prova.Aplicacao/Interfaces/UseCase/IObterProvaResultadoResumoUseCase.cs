@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IObterProvaResultadoResumoUseCase
     {
-        Task<IEnumerable<ProvaResultadoResumoDto>> Executar(long provaId, int caderno);
+        Task<IEnumerable<ProvaResultadoResumoDto>> Executar(long provaId);
     }
 }
