@@ -389,11 +389,11 @@ namespace SME.SERAp.Prova.Dados
                                     q.questao_legado_id as IdQuestaoLegado, 
                                     q.enunciado as DescricaoQuestao, 
                                     q.ordem as OrdemQuestao, 
-                                    qar.alternativa_id as AlternativaAluno,
+                                    a.numeracao as AlternativaAluno,
                                     a.correta AlternativaCorreta,
                                     app.proficiencia  as Proficiencia
-                                 from questao_aluno_resposta qar
-                                 left join questao q on qar.questao_id = q.id
+                                 from questao q
+                                 left join questao_aluno_resposta qar on qar.questao_id = q.id
                                  left join alternativa a on a.id = qar.alternativa_id 
                                  left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra 
                                   and app.prova_id = q.prova_id
