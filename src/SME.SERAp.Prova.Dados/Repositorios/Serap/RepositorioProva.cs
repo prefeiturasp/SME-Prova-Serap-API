@@ -390,13 +390,14 @@ namespace SME.SERAp.Prova.Dados
                                      q.enunciado as DescricaoQuestao, 
                                      q.ordem as OrdemQuestao, 
                                      q.tipo as TipoQuestao,
-                                     a.numeracao as AlternativaAluno,
-                                     a.correta AlternativaCorreta,
+                                     a2.numeracao as AlternativaAluno,
+                                     a2.correta AlternativaCorreta,
                                      case when qar.resposta is null then false else true end as respostaConstruidaRespondida,
                                      app.proficiencia  as Proficiencia
                               from questao q
                               left join questao_aluno_resposta qar on qar.questao_id = q.id
                               left join alternativa a on a.id = qar.alternativa_id 
+                              left join alternativa a2 on a2.questao_id = qar.questao_id and a2.ordem = a.ordem
                               left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra and app.prova_id = q.prova_id
                               where q.prova_id = @provaId
                                 and qar.aluno_ra = @alunoRa

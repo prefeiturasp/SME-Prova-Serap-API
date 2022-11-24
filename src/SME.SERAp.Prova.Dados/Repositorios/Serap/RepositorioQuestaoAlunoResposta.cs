@@ -58,12 +58,13 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select distinct
-                                     a.id as AlternativaCorretaId,
-                                     qar.alternativa_id as AlternativaRespostaId,
+                                     a.ordem as OrdemAlternativaCorreta,
+                                     a2.ordem as OrdemAlternativaResposta,
                                      qar.resposta as RespostaConstruida
                              from questao q
-                             left join questao_aluno_resposta qar on qar.questao_id = q.id
                              left join alternativa a on a.questao_id = q.id and a.correta
+                             left join questao_aluno_resposta qar on qar.questao_id = q.id
+                             left join alternativa a2 on a2.id = qar.alternativa_id
                              where q.prova_id = @provaId
                                and q.questao_legado_id = @questaoLegadoId
                                and qar.aluno_ra = @alunoRa";
