@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using SME.SERAp.Prova.Infra;
+using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IIniciarProvaTaiUseCase
     {
-        public Task<bool> Executar(long provaId);
+        public Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto);
     }
 }

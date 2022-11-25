@@ -5,9 +5,6 @@ using SME.SERAp.Prova.Infra.Dtos.Aluno;
 using SME.SERAp.Prova.Infra.Exceptions;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao.UseCase
@@ -36,20 +33,26 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                 if (provaStatus == null)
                 {
-                    return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
+                    var conexaoApiR = await mediator.Send(new TesteConexaoApiRQuery());
+                    if (conexaoApiR)
+                    {
+                        provaAlunoStatusDto.Status = (int)ProvaStatus.Iniciado;
+                        return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
+                    }                        
+                    return false;
                 }
                 else
                 {
-                    if (provaStatus.Status == ProvaStatus.Finalizado)
-                        throw new NegocioException("Esta prova já foi finalizada", 411);
+                    string status = provaStatus.Status == ProvaStatus.Finalizado ? "finalizada" : "iniciada";
+                    throw new NegocioException($"Esta prova já foi {status}", 411);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio {provaAlunoStatusDto.DataInicio} -- DataFim, {provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
                 throw;
-            }            
+            }
         }
         private async Task ObterDadosAlunoLogado()
         {
@@ -58,7 +61,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
         private async Task<bool> IncluirProvaAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, DateTime dataInicio)
         {
             var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null;
-            await PublicarAcompProvaAlunoInicioFimTratar(provaId, dadosAlunoLogado.Ra, provaAlunoStatusDto.Status, dataInicio, dataFim);
+            await PublicarAcompProvaAlunoInicioFimTratar(provaId, dadosAlunoLogado.Ra, (int)provaAlunoStatusDto.Status, dataInicio, dataFim);
             return await mediator.Send(new IncluirProvaAlunoCommand(provaId,
                                                                     dadosAlunoLogado.Ra,
                                                                     (ProvaStatus)provaAlunoStatusDto.Status,
