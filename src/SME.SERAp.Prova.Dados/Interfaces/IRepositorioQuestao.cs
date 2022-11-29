@@ -15,5 +15,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoPorProvaIdAsync(long provaId);
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorIdsAsync(long[] ids);
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorLegadoIdsAsync(long[] legadoIds);
+        Task<long> ObterUltimaQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa);
     }
 }
