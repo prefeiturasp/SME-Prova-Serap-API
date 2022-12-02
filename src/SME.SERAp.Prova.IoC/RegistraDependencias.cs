@@ -52,6 +52,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
+            services.TryAddScoped<IRepositorioAlunoProvaProficiencia, RepositorioAlunoProvaProficiencia>();
+
 
             services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
             services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
