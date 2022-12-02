@@ -174,5 +174,28 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<long> ObterUltimaQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select q.id 
+                              from questao q 
+                              left join caderno_aluno ca on ca.prova_id = q.prova_id and ca.caderno = q.caderno 
+                              left join aluno a on a.id = ca.aluno_id 
+                              where q.prova_id = @provaId 
+                                and a.ra = @alunoRa 
+                                and q.ordem <> 999  
+                              order by q.ordem desc limit 1";
+
+                return await conn.QueryFirstOrDefaultAsync<long>(query.ToString(), new { provaId, alunoRa });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
