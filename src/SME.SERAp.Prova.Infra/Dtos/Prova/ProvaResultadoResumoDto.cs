@@ -12,8 +12,8 @@
         public int OrdemQuestao { get; set; }
         public int TipoQuestao { get; set; }
         public string AlternativaAluno { get; set; }
-        public bool AlternativaCorreta { get; set; }
+        public string AlternativaCorreta { get; set; }
+        public bool Correta { get; set; }
         public bool RespostaConstruidaRespondida { get; set; }
-        public decimal? Proficiencia { get; set; }
     }
 }

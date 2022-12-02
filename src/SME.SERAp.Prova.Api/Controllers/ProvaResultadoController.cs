@@ -12,7 +12,7 @@ namespace SME.SERAp.Prova.Api.Controllers
     public class ProvaResultadoController : ControllerBase
     {
         [HttpGet("{provaId}/resumo")]
-        [ProducesResponseType(typeof(IEnumerable<ProvaResultadoResumoDto>), 200)]
+        [ProducesResponseType(typeof(ProvaResultadoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
