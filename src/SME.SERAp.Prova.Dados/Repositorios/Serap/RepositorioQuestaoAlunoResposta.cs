@@ -63,11 +63,10 @@ namespace SME.SERAp.Prova.Dados
                                      qar.resposta as RespostaConstruida
                              from questao q
                              left join alternativa a on a.questao_id = q.id and a.correta
-                             left join questao_aluno_resposta qar on qar.questao_id = q.id
+                             left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = @alunoRa
                              left join alternativa a2 on a2.id = qar.alternativa_id
                              where q.prova_id = @provaId
-                               and q.questao_legado_id = @questaoLegadoId
-                               and qar.aluno_ra = @alunoRa";
+                               and q.questao_legado_id = @questaoLegadoId";
 
                 return await conn.QueryFirstOrDefaultAsync<QuestaoCompletaResultadoDto>(query, new { alunoRa, provaId, questaoLegadoId });
             }
