@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Infra;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -39,6 +40,15 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             var questaoCompletaJson = await obterQuestaoProvaTaiUseCase.Executar(provaId);
             return Content(questaoCompletaJson, "application/json");
+        }
+
+        [HttpGet("{provaId}/resumo")]
+        [ProducesResponseType(typeof(IEnumerable<ProvaTaiResultadoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterProvaTaiResultadoResumo(long provaId, [FromServices] IObterProvaTaiResultadoResumoUseCase obterProvaTaiResultadoResumoUseCase)
+        {
+            return Ok(await obterProvaTaiResultadoResumoUseCase.Executar(provaId));
         }
     }
 }
