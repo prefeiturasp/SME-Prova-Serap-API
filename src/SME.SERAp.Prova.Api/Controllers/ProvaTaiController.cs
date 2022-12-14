@@ -18,7 +18,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> verificaConexaoR(IVerificaConexaoComServicoRUseCase verificaConexaoComServicoRUseCase)
+        public async Task<IActionResult> verificaConexaoR([FromServices] IVerificaConexaoComServicoRUseCase verificaConexaoComServicoRUseCase)
         {
             return Ok(await verificaConexaoComServicoRUseCase.Executar());
         }
