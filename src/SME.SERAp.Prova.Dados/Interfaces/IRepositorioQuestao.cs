@@ -1,5 +1,6 @@
 ﻿using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos.Questao;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,5 +17,6 @@ namespace SME.SERAp.Prova.Dados
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorIdsAsync(long[] ids);
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaPorLegadoIdsAsync(long[] legadoIds);
         Task<long> ObterUltimaQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa);
+        Task<IEnumerable<QuestaoTaiDto>> ObterQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa);
     }
 }

@@ -18,5 +18,8 @@
         public const string AcompProvaAlunoInicioFimTratar = "serap.estudante.acomp.prova.aluno.inicio.fim.tratar";
         public const string AcompanhamentoProvaAlunoDownloadTratar = "serap.estudante.acomp.prova.aluno.download.tratar";
         public const string TratarUsuarioDispositivoLogin = "serap.estudantes.usuario.dispositivo.login.tratar";
+
+        public const string TratarOrdemQuestaoAlunoProvaTai = "serap.estudante.prova.tai.ordem.questao.aluno.tratar";
+        public const string TratarProficienciaAlunoProvaTai = "serap.estudante.prova.tai.proficiencia.aluno.tratar";
     }
 }

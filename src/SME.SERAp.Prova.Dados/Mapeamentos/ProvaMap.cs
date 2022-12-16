@@ -22,6 +22,9 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Senha).ToColumn("senha");
             Map(c => c.PossuiBIB).ToColumn("possui_bib");
             Map(c => c.TotalCadernos).ToColumn("total_cadernos");
+            Map(c => c.DisciplinaId).ToColumn("disciplina_id");
+            Map(c => c.FormatoTai).ToColumn("formato_tai");
+            Map(c => c.ProvaFormatoTaiItem).ToColumn("formato_tai_item");
         }
     }
 }
