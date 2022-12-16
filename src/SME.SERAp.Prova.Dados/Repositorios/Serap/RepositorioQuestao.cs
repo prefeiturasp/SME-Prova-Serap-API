@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos.Questao;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System.Collections.Generic;
 using System.Linq;
@@ -190,6 +191,33 @@ namespace SME.SERAp.Prova.Dados
                               order by q.ordem desc limit 1";
 
                 return await conn.QueryFirstOrDefaultAsync<long>(query.ToString(), new { provaId, alunoRa });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<QuestaoTaiDto>> ObterQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select q.id, 
+	                                 q.ordem,
+                                     qt.discriminacao, 
+                                     qt.dificuldade as ProporcaoAcertos, 
+                                     qt.acerto_casual as AcertoCasual
+                              from questao q 
+                              left join caderno_aluno ca on ca.prova_id = q.prova_id and ca.caderno = q.caderno 
+                              left join aluno a on a.id = ca.aluno_id 
+                              left join questao_tri qt on qt.questao_id = q.id
+                              where q.prova_id = @provaId 
+                                and a.ra = @alunoRa 
+                              order by q.ordem";
+
+                return await conn.QueryAsync<QuestaoTaiDto>(query, new { provaId, alunoRa });
             }
             finally
             {

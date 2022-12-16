@@ -77,5 +77,28 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
+        public async Task<IEnumerable<QuestaoAlternativaAlunoRespostaDto>> QuestaoAlternativaAlunoRespostaTaiAsync(long alunoRa, long provaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select q.id, 
+ 	                                 al.id as alternativaCorreta, 
+	                                 qar.alternativa_id as alternativaRespondida
+                              from questao q
+                              left join caderno_aluno ca on ca.prova_id = q.prova_id and ca.caderno = q.caderno 
+                              left join aluno a on a.id = ca.aluno_id 
+                              left join alternativa al on al.questao_id = q.id and al.correta 
+                              left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = a.ra
+                              where q.prova_id = @alunoRa and a.ra = @provaId";
+
+                return await conn.QueryAsync<QuestaoAlternativaAlunoRespostaDto>(query, new { alunoRa, provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

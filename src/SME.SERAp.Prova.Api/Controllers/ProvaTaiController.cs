@@ -30,5 +30,14 @@ namespace SME.SERAp.Prova.Api.Controllers
             var questaoCompletaJson = await obterQuestaoProvaTaiUseCase.Executar(provaId);
             return Content(questaoCompletaJson, "application/json");
         }
+
+        [HttpPost("{provaId}/proximo")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> Proximo(long provaId, [FromBody] QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, [FromServices] IObterProximaQuestaoProvaTaiUseCase obterQuestaoProvaTaiUseCase)
+        {
+            return Ok(await obterQuestaoProvaTaiUseCase.Executar(provaId, questaoAlunoRespostaSincronizarDto));
+        }
     }
 }

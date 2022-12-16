@@ -33,5 +33,27 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<decimal> ObterUltimaProficienciaAlunoPorProvaIdAsync(long provaId, long alunoRa)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                var query = @"select proficiencia  
+                              from aluno_prova_proficiencia app
+                              where and app.ra = @alunoRa 
+                                and app.proficiencia > 0 
+                                and app.prova_id = @provaId
+                              order by ultima_atualizacao desc limit 1";
+
+                return await conn.QueryFirstOrDefaultAsync<decimal>(query, new { provaId, alunoRa });
+
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }
