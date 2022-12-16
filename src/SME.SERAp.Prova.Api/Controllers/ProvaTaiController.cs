@@ -48,8 +48,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterQuestao(long provaId, [FromServices] IObterQuestaoProvaTaiUseCase obterQuestaoProvaTaiUseCase)
         {
-            var questaoCompletaJson = await obterQuestaoProvaTaiUseCase.Executar(provaId);
-            return Content(questaoCompletaJson, "application/json");
+            return Ok(await obterQuestaoProvaTaiUseCase.Executar(provaId));
         }
 
         [HttpPost("{provaId}/proximo")]

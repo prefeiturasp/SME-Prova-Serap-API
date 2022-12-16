@@ -61,10 +61,10 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     ProximaQuestao = long.Parse(resposta[0]),
                     Ordem = int.Parse(resposta[1]),
-                    ParA = decimal.Parse(resposta[3]),
-                    ParB = decimal.Parse(resposta[4]),
-                    ParC = decimal.Parse(resposta[5]),
-                    Proficiencia = decimal.Parse(resposta[6])
+                    ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
+                    ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
+                    ParC = decimal.Parse(resposta[5], CultureInfo.InvariantCulture),
+                    Proficiencia = decimal.Parse(resposta[6], CultureInfo.InvariantCulture)
                 };
             }
 

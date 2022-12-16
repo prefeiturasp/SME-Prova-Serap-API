@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio;
+using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -12,7 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
         }
 
-        public async Task<string> Executar(long provaId)
+        public async Task<QuestaoCompletaDto> Executar(long provaId)
         {
             var dadosAlunoLogado = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
@@ -27,9 +29,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 .OrderBy(t => t.Ordem)
                 .LastOrDefault();
 
-            var questaoCompleta = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(new long[] { ultimaQuestao.Id }));
+            var json = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(new long[] { ultimaQuestao.Id }));
 
-            return questaoCompleta.FirstOrDefault();
+            var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json.FirstOrDefault(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true});
+            questaoCompleta.Ordem = ultimaQuestao.Ordem == 0 ? 0 : ultimaQuestao.Ordem - 1;
+
+            return questaoCompleta;
         }
     }
 }

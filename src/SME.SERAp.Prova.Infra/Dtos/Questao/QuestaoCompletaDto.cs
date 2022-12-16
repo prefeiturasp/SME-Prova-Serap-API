@@ -5,6 +5,7 @@ namespace SME.SERAp.Prova.Infra
     public class QuestaoCompletaDto : DtoBase
     {
         public long Id { get; set; }
+        public long QuestaoLegadoId { get; set; }
         public string Titulo { get; set; }
         public string Descricao { get; set; }
         public int Ordem { get; set; }
