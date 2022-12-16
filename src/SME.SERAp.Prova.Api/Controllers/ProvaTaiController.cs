@@ -68,14 +68,5 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterProvaTaiResultadoResumoUseCase.Executar(provaId));
         }
-
-        [HttpGet("{provaId}/resumo")]
-        [ProducesResponseType(typeof(IEnumerable<ProvaTaiResultadoDto>), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
-        public async Task<IActionResult> ObterProvaTaiResultadoResumo(long provaId, [FromServices] IObterProvaTaiResultadoResumoUseCase obterProvaTaiResultadoResumoUseCase)
-        {
-            return Ok(await obterProvaTaiResultadoResumoUseCase.Executar(provaId));
-        }
     }
 }
