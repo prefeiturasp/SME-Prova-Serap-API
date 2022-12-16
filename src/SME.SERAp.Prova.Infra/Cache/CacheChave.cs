@@ -1,7 +1,14 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
+
     public static class CacheChave
     {
+        public static string ObterChave(string chave, params object[] parametros)
+        {
+            return string.Format(chave, parametros);
+        }
+
+
         public const string CachePropagado = "cache-propagado";
         /// <summary>
         /// Questões resumidas da prova
@@ -104,5 +111,26 @@
         /// 0 - Código ra do aluno
         /// </summary>
         public const string AlunoDeficiencia = "al-def-{0}";
+
+        /// <summary>
+        /// Questões Amostra Tai Aluno
+        /// 0 - Código ra do aluno
+        /// 1 - Código da Prova
+        /// </summary>
+        public const string QuestaoAmostraTaiAluno = "al-q-tai-prova-{0}-{1}";
+
+        /// <summary>
+        /// Ultima Proficiencia do aluno na prova
+        /// 0 - Código ra do aluno
+        /// 1 - Código da Prova
+        /// </summary>
+        public const string UltimaProficienciaProva = "al-prof-prova-{0}-{1}";
+
+        /// <summary>
+        /// Resposta Amostra Tai Aluno
+        /// 0 - Código ra do aluno
+        /// 1 - Código da Prova
+        /// </summary>
+        public const string RespostaAmostraTaiAluno = "al-q-tai-prova-resposta-{0}-{1}";
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
-using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,11 +14,11 @@ namespace SME.SERAp.Prova.Api.Controllers
         public ProvaTaiController() { }
 
 
-        [HttpGet("existe-conexao-R")]
+        [HttpGet("existe-conexao-r")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> verificaConexaoR([FromServices] IVerificaConexaoComServicoRUseCase verificaConexaoComServicoRUseCase)
+        public async Task<IActionResult> VerificaConexaoR([FromServices] IVerificaConexaoComServicoRUseCase verificaConexaoComServicoRUseCase)
         {
             return Ok(await verificaConexaoComServicoRUseCase.Executar());
         }
@@ -49,8 +48,25 @@ namespace SME.SERAp.Prova.Api.Controllers
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterQuestao(long provaId, [FromServices] IObterQuestaoProvaTaiUseCase obterQuestaoProvaTaiUseCase)
         {
-            var questaoCompletaJson = await obterQuestaoProvaTaiUseCase.Executar(provaId);
-            return Content(questaoCompletaJson, "application/json");
+            return Ok(await obterQuestaoProvaTaiUseCase.Executar(provaId));
+        }
+
+        [HttpPost("{provaId}/proximo")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> Proximo(long provaId, [FromBody] QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, [FromServices] IObterProximaQuestaoProvaTaiUseCase obterQuestaoProvaTaiUseCase)
+        {
+            return Ok(await obterQuestaoProvaTaiUseCase.Executar(provaId, questaoAlunoRespostaSincronizarDto));
+        }
+
+        [HttpGet("{provaId}/resumo")]
+        [ProducesResponseType(typeof(IEnumerable<ProvaTaiResultadoDto>), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [Authorize("Bearer")]
+        public async Task<IActionResult> ObterProvaTaiResultadoResumo(long provaId, [FromServices] IObterProvaTaiResultadoResumoUseCase obterProvaTaiResultadoResumoUseCase)
+        {
+            return Ok(await obterProvaTaiResultadoResumoUseCase.Executar(provaId));
         }
 
         [HttpGet("{provaId}/resumo")]
