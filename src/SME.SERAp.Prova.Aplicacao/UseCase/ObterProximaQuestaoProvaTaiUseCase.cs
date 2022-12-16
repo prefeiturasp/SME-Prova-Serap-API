@@ -31,8 +31,12 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> obter itens respondidos do aluno
             var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, questaoAlunoRespostaSincronizarDto.AlunoRa));
 
+            //-> atualiza a resposta do aluno no cache.
+            var alunoRespostasAtualizado = alunoRespostas.ToList();
+            alunoRespostasAtualizado.Where(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId).FirstOrDefault().AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId.GetValueOrDefault();
+
             questoesAluno = questoesAluno.OrderBy(t => t.Id);
-            alunoRespostas = alunoRespostas.OrderBy(t => t.QuestaoId);
+            alunoRespostasAtualizado = alunoRespostasAtualizado.OrderBy(t => t.QuestaoId).ToList();
 
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
@@ -44,20 +48,22 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesAluno.Select(t => t.AcertoCasual).ToArray(),
                 "", "", "", "",
                 (int)prova.ProvaFormatoTaiItem,
-                alunoRespostas.Select(t => t.AlternativaResposta).ToArray(),
-                alunoRespostas.Select(t => t.AlternativaCorreta).ToArray(),
-                alunoRespostas.Select(t => t.QuestaoId).ToArray()
-                ));
+                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
+                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
+                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray()
+                )
+            );
 
             await AtualizarDadosBanco(provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
 
-            await AtualizarDadosCache(provaId, aluno, questoesAluno, alunoRespostas, questaoAlunoRespostaSincronizarDto, retorno);
+            await AtualizarDadosCache(provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
             //-> Se o id retornado do tai ja foi aplicado finaliza a prova.
             return alunoRespostas.Any(t => t.QuestaoId != retorno.ProximaQuestao);
         }
 
-        private async Task AtualizarDadosCache(long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno, IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
+        private async Task AtualizarDadosCache(long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
+            IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
         {
             //-> atualiza a lista de itens do aluno
             var questoesAlunoAtualizado = questoesAluno.ToList();
@@ -70,15 +76,12 @@ namespace SME.SERAp.Prova.Aplicacao
             var nomeChaveUltimaProficienciaAluno = CacheChave.ObterChave(CacheChave.UltimaProficienciaProva, aluno.Ra, provaId);
             await mediator.Send(new SalvarCacheCommand(nomeChaveUltimaProficienciaAluno, retorno.Proficiencia));
 
-            //-> atualiza a resposta do aluno no cache.
-            var alunoRespostasAtualizado = alunoRespostas.ToList();
-            alunoRespostas.Where(t => t.QuestaoId == retorno.ProximaQuestao).FirstOrDefault().AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId.GetValueOrDefault();
-
             var nomeChaveRespostaAluno = CacheChave.ObterChave(CacheChave.RespostaAmostraTaiAluno, aluno.Ra, provaId);
             await mediator.Send(new SalvarCacheCommand(nomeChaveRespostaAluno, alunoRespostas));
         }
 
-        private async Task AtualizarDadosBanco(long provaId, QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Dominio.Prova prova, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
+        private async Task AtualizarDadosBanco(long provaId, QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Dominio.Prova prova,
+            Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
         {
             //-> Serap estudantes
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));

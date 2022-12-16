@@ -41,7 +41,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = @"select proficiencia  
                               from aluno_prova_proficiencia app
-                              where and app.ra = @alunoRa 
+                              where app.ra = @alunoRa 
                                 and app.proficiencia > 0 
                                 and app.prova_id = @provaId
                               order by ultima_atualizacao desc limit 1";

@@ -82,7 +82,7 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select q.id, 
+                var query = @"select q.id as questaoId, 
  	                                 al.id as alternativaCorreta, 
 	                                 qar.alternativa_id as alternativaRespondida
                               from questao q
@@ -90,7 +90,7 @@ namespace SME.SERAp.Prova.Dados
                               left join aluno a on a.id = ca.aluno_id 
                               left join alternativa al on al.questao_id = q.id and al.correta 
                               left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = a.ra
-                              where q.prova_id = @alunoRa and a.ra = @provaId";
+                              where q.prova_id = @provaId and a.ra = @alunoRa";
 
                 return await conn.QueryAsync<QuestaoAlternativaAlunoRespostaDto>(query, new { alunoRa, provaId });
             }

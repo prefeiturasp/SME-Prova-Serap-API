@@ -26,7 +26,7 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Clear();
-                HttpResponseMessage response = await client.GetAsync(apiROptions.UrlQuestao);
+                HttpResponseMessage response = await client.PostAsync(apiROptions.UrlQuestao, new StringContent("teste"));
 
                 if (response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                     return true;
