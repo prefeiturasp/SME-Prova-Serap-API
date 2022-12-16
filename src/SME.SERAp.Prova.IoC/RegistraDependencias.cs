@@ -117,6 +117,9 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IIniciarProvaTaiUseCase, IniciarProvaTaiUseCase>();
             services.TryAddScoped<IObterQuestaoProvaTaiUseCase, ObterQuestaoProvaTaiUseCase>();
             services.TryAddScoped<IObterProximaQuestaoProvaTaiUseCase, ObterProximaQuestaoProvaTaiUseCase>();
+            services.TryAddScoped<IFinalizarProvaTaiUseCase, FinalizarProvaTaiUseCase>();
+            services.TryAddScoped<IObterProvaTaiResultadoResumoUseCase, ObterProvaTaiResultadoResumoUseCase>();
+            services.TryAddScoped<IVerificaConexaoComServicoRUseCase,VerificaConexaoComServicoRUseCase>();
         }
     }
 }

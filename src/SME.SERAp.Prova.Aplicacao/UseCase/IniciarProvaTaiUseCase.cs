@@ -33,13 +33,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                 if (provaStatus == null)
                 {
-                    var conexaoApiR = await mediator.Send(new TesteConexaoApiRQuery());
-                    if (conexaoApiR)
-                    {
-                        provaAlunoStatusDto.Status = (int)ProvaStatus.Iniciado;
-                        return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
-                    }                        
-                    return false;
+                    provaAlunoStatusDto.Status = (int)ProvaStatus.Iniciado;
+                    return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
                 else
                 {
