@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos.Questao;
+using SME.SERAp.Prova.Infra.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +24,10 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> dados do aluno 
             var aluno = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(aluno.Ra));
+
+            var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, aluno.Ra));
+            if (provaStatus == null || provaStatus.Status != ProvaStatus.Iniciado)
+                throw new NegocioException($"Esta prova precisa ser iniciada.", 411);
 
             //-> obter ultima proficiencia do aluno
             var proficiencia = await mediator.Send(new ObterUltimaProficienciaPorProvaQuery(provaId, questaoAlunoRespostaSincronizarDto.AlunoRa));
@@ -59,7 +66,33 @@ namespace SME.SERAp.Prova.Aplicacao
             await AtualizarDadosCache(provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
             //-> Se o id retornado do tai ja foi aplicado finaliza a prova.
-            return alunoRespostas.Any(t => t.QuestaoId != retorno.ProximaQuestao);
+            var finalizar = alunoRespostas.Any(t => t.QuestaoId != retorno.ProximaQuestao);
+
+            if (finalizar)
+            {
+                provaStatus.Status = ProvaStatus.Finalizado;
+                provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
+                await FinalizarProvaAluno(aluno.Ra, provaStatus);
+            }
+
+            return finalizar;
+        }
+
+        private async Task FinalizarProvaAluno(long ra, ProvaAluno provaAluno)
+        {
+            await mediator.Send(new AtualizarProvaAlunoCommand(provaAluno));
+            await PublicarAcompProvaAlunoInicioFimTratar(provaAluno.ProvaId, ra, (int)provaAluno.Status, provaAluno.CriadoEm, provaAluno.FinalizadoEm);
+        }
+
+        private static DateTime ObterDatafim(long? DataFim)
+        {
+            return (DataFim != null && DataFim > 0) ? new DateTime(DataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
+        }
+
+        private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status, DateTime? criadoEm, DateTime? finalizadoEm)
+        {
+            var provaAlunoAcompDto = new ProvaAlunoAcompDto(provaId, alunoRa, status, criadoEm, finalizadoEm);
+            await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
 
         private async Task AtualizarDadosCache(long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
