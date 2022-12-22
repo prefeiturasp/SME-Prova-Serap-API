@@ -2,6 +2,7 @@
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -18,10 +19,34 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<IEnumerable<ProvaTaiResultadoDto>> Executar(long provaId)
         {
             var ra = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-            var resumo = await mediator.Send(new ObterProvaTaiResultadoResumoQuery(provaId, ra));
-            if (resumo != null && resumo.Any())
-                return resumo.Where(r => !string.IsNullOrEmpty(r.AlternativaAluno));
-            return default;
+
+            //-> obter itens da amostra do aluno
+            var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, ra));
+
+            //-> obter itens respondidos do aluno
+            var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, ra));
+
+            var ids = alunoRespostas.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray();
+            var jsons = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(ids));
+
+            var retorno = new List<ProvaTaiResultadoDto>();
+            foreach(var json in jsons)
+            {
+                var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+                var questao = questoesAluno.FirstOrDefault(t => t.Id == questaoCompleta.Id);
+                var resposta = alunoRespostas.FirstOrDefault(t => t.QuestaoId == questaoCompleta.Id);
+                var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaCorreta));
+
+                retorno.Add(new ProvaTaiResultadoDto()
+                {
+                    DescricaoQuestao = questaoCompleta.Descricao,
+                    OrdemQuestao = questao.Ordem,
+                    AlternativaAluno = alternativa.Numeracao
+                });
+            }
+
+            return retorno;
         }
     }
 }
