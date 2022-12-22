@@ -66,16 +66,16 @@ namespace SME.SERAp.Prova.Aplicacao
             await AtualizarDadosCache(provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
             //-> Se o id retornado do tai ja foi aplicado finaliza a prova.
-            var finalizar = alunoRespostas.Any(t => t.QuestaoId != retorno.ProximaQuestao);
+            var continuarProva = alunoRespostas.Any(t => t.QuestaoId != retorno.ProximaQuestao);
 
-            if (finalizar)
+            if (!continuarProva)
             {
                 provaStatus.Status = ProvaStatus.Finalizado;
                 provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
                 await FinalizarProvaAluno(aluno.Ra, provaStatus);
             }
 
-            return finalizar;
+            return continuarProva;
         }
 
         private async Task FinalizarProvaAluno(long ra, ProvaAluno provaAluno)
