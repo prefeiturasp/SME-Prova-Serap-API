@@ -63,8 +63,8 @@ namespace SME.SERAp.Prova.Aplicacao
                     Ordem = int.Parse(resposta[1]),
                     ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
                     ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
-                    ParC = decimal.Parse(resposta[5], CultureInfo.InvariantCulture),
-                    Proficiencia = decimal.Parse(resposta[6], CultureInfo.InvariantCulture)
+                    ParC = Convert.ToDecimal(resposta[5], CultureInfo.InvariantCulture),
+                    Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture)
                 };
             }
 
