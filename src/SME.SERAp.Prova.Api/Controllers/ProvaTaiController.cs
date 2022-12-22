@@ -13,7 +13,6 @@ namespace SME.SERAp.Prova.Api.Controllers
     {
         public ProvaTaiController() { }
 
-
         [HttpGet("existe-conexao-r")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
@@ -23,7 +22,6 @@ namespace SME.SERAp.Prova.Api.Controllers
             return Ok(await verificaConexaoComServicoRUseCase.Executar());
         }
 
-
         [HttpPost("{provaId}/iniciar-prova")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
@@ -31,15 +29,6 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> IniciarProva(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IIniciarProvaTaiUseCase iniciarProvaTaiUseCase)
         {
             return Ok(await iniciarProvaTaiUseCase.Executar(provaId, provaAlunoStatusDto));
-        }
-
-        [HttpPost("{provaId}/finalizar-prova")]
-        [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [Authorize("Bearer")]
-        public async Task<IActionResult> FinalizarProva(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, [FromServices] IFinalizarProvaTaiUseCase finalizarProvaTaiUseCase)
-        {
-            return Ok(await finalizarProvaTaiUseCase.Executar(provaId, provaAlunoStatusDto));
         }
 
         [HttpPost("{provaId}/obter-questao")]
