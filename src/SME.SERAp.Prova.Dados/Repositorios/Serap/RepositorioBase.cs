@@ -27,6 +27,7 @@ namespace SME.SERAp.Prova.Dados
         }
         protected IDbConnection ObterConexaoLeitura()
         {
+
             var conexao = new NpgsqlConnection(connectionStrings.ApiSerapLeitura);
             conexao.Open();
             return conexao;
