@@ -12,11 +12,13 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class PublicarFilaSerapEstudantesCommandHandler : IRequestHandler<PublicarFilaSerapEstudantesCommand, bool>
     {
+
         private readonly IConnection connectionRabbit;
         private readonly IMediator mediator;
-        public PublicarFilaSerapEstudantesCommandHandler(IConnection connectionRabbit)
+        public PublicarFilaSerapEstudantesCommandHandler(IConnection connectionRabbit, IMediator mediator)
         {
             this.connectionRabbit = connectionRabbit ?? throw new ArgumentNullException(nameof(connectionRabbit));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public Task<bool> Handle(PublicarFilaSerapEstudantesCommand request, CancellationToken cancellationToken)
