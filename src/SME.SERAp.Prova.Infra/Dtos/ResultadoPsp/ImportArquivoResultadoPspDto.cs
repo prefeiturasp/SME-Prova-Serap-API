@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SME.SERAp.Prova.Infra
+﻿namespace SME.SERAp.Prova.Infra
 {
     public class ImportArquivoResultadoPspDto : DtoBase
     {
@@ -13,8 +7,8 @@ namespace SME.SERAp.Prova.Infra
 
         }
 
-        public long ProcessoId { get; set; }
-        public string TabelaResultados { get; set; }
+        public string NomeArquivo { get; set; }
+        public string PathArquivo { get; set; }
 
     }
 }

@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -19,6 +16,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         }
 
         [HttpPost("upload-arquivo")]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [DisableRequestSizeLimit]
         [RequestSizeLimit(268435456)]
@@ -28,6 +26,15 @@ namespace SME.SERAp.Prova.Api.Controllers
                                                                     [FromServices] IImportarArquivoResultadoPspUseCase importarArquivoResultadoPspUseCase)
         {
             return Ok(await importarArquivoResultadoPspUseCase.Executar(arquivo, arquivoResultadoDto));
+        }
+
+        [HttpGet("processo/{processoId}/tipo-resultado/{tipoResultado}/tratar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]        
+        public async Task<IActionResult> TratarImportacao(long processoId, int tipoResultado,
+                                                          [FromServices] ITratarImportacaoResultadoPspUseCase tratarImportacaoResultadoPspUseCase)
+        {
+            return Ok(await tratarImportacaoResultadoPspUseCase.Executar(processoId, tipoResultado));
         }
     }
 }

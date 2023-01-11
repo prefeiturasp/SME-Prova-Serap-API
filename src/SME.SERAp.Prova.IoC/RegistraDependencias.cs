@@ -121,6 +121,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterProvaTaiResultadoResumoUseCase, ObterProvaTaiResultadoResumoUseCase>();
             services.TryAddScoped<IVerificaConexaoComServicoRUseCase,VerificaConexaoComServicoRUseCase>();
             services.TryAddScoped<IImportarArquivoResultadoPspUseCase, ImportarArquivoResultadoPspUseCase>();
+            services.TryAddScoped<ITratarImportacaoResultadoPspUseCase, TratarImportacaoResultadoPspUseCase>();
         }
     }
 }
