@@ -18,9 +18,7 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost("upload-arquivo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [DisableRequestSizeLimit]
-        [RequestSizeLimit(268435456)]
-        [RequestFormLimits(MultipartBodyLengthLimit = 268435456)]
+        [DisableRequestSizeLimit]        
         public async Task<IActionResult> UploadArquivoResultadosPsp([FromForm] IFormFile arquivo, 
                                                                     [FromForm] ImportArquivoResultadoPspDto arquivoResultadoDto,
                                                                     [FromServices] IImportarArquivoResultadoPspUseCase importarArquivoResultadoPspUseCase)

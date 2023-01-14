@@ -8,7 +8,6 @@
         }
 
         public string NomeArquivo { get; set; }
-        public string PathArquivo { get; set; }
 
     }
 }
