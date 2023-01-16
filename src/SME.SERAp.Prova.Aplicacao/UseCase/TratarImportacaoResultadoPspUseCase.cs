@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 string fila = ObterFilaPorTipoResultadoPsp((TipoResultadoPsp)tipoResultado);
                 if (string.IsNullOrEmpty(fila)) return false;
 
-                await mediator.Send(new PublicarFilaSerapCommand(fila, processoId));
+                await mediator.Send(new PublicarFilaSerapEstudantesCommand(fila, processoId));
 
                 return true;
             }
