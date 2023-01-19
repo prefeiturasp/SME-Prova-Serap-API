@@ -83,14 +83,14 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select q.id as questaoId, 
- 	                                 al.id as alternativaCorreta, 
-	                                 qar.alternativa_id as alternativaRespondida
-                              from questao q
-                              left join caderno_aluno ca on ca.prova_id = q.prova_id and ca.caderno = q.caderno 
-                              left join aluno a on a.id = ca.aluno_id 
+                                     al.id as alternativaCorreta, 
+                                     qar.alternativa_id as alternativaRespondida
+                              from aluno a
+                              left join caderno_aluno ca on ca.aluno_id = a.id 
+                              left join questao q on q.caderno = ca.caderno 
                               left join alternativa al on al.questao_id = q.id and al.correta 
                               left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = a.ra
-                              where q.prova_id = @provaId and a.ra = @alunoRa";
+                              where a.ra = @alunoRa and q.prova_id = @provaId";
 
                 return await conn.QueryAsync<QuestaoAlternativaAlunoRespostaDto>(query, new { alunoRa, provaId });
             }
