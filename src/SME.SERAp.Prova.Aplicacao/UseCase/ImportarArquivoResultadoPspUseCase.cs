@@ -23,12 +23,12 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (arquivoResultadoDto == null) return false;
                 if (string.IsNullOrEmpty(arquivoResultadoDto.NomeArquivo)) return false;
 
-                string caminhoBaseArquivos = $"{Environment.GetEnvironmentVariable("PathArquivos")}\\ResultadoPsp";
+                string caminhoBaseArquivos = $"{Environment.GetEnvironmentVariable("PathArquivos")}/ResultadoPsp";
                 if (!Directory.Exists(caminhoBaseArquivos))
                 {
                     Directory.CreateDirectory(caminhoBaseArquivos);
                 }
-                using (FileStream filestream = File.Create($"{caminhoBaseArquivos}\\{arquivoResultadoDto.NomeArquivo}"))
+                using (FileStream filestream = File.Create($"{caminhoBaseArquivos}/{arquivoResultadoDto.NomeArquivo}"))
                 {
                     await arquivo.CopyToAsync(filestream);
                     filestream.Flush();

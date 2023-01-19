@@ -30,23 +30,28 @@ namespace SME.SERAp.Prova.Aplicacao
             var jsons = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(ids));
 
             var retorno = new List<ProvaTaiResultadoDto>();
-            foreach(var json in jsons)
+            foreach (var json in jsons)
             {
                 var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
                 var questao = questoesAluno.FirstOrDefault(t => t.Id == questaoCompleta.Id);
                 var resposta = alunoRespostas.FirstOrDefault(t => t.QuestaoId == questaoCompleta.Id);
-                var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaCorreta));
+                var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaResposta.GetValueOrDefault()));
 
                 retorno.Add(new ProvaTaiResultadoDto()
                 {
                     DescricaoQuestao = questaoCompleta.Descricao,
                     OrdemQuestao = questao.Ordem,
-                    AlternativaAluno = alternativa.Numeracao
+                    AlternativaAluno = alternativa?.Numeracao
                 });
             }
 
-            return retorno;
+            int ordem = 0;
+            return retorno.OrderBy(t => t.OrdemQuestao).Select(t =>
+            {
+                t.OrdemQuestao = ++ordem;
+                return t;
+            });
         }
     }
 }
