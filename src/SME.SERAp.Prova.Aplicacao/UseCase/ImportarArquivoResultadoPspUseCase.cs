@@ -9,9 +9,12 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ImportarArquivoResultadoPspUseCase : AbstractUseCase, IImportarArquivoResultadoPspUseCase
     {
-        public ImportarArquivoResultadoPspUseCase(IMediator mediator) : base(mediator)
-        {
 
+        private readonly PathOptions pathOptions;
+
+        public ImportarArquivoResultadoPspUseCase(IMediator mediator, PathOptions pathOptions) : base(mediator)
+        {
+            this.pathOptions = pathOptions ?? throw new ArgumentNullException(nameof(pathOptions));
         }
 
         public async Task<bool> Executar(IFormFile arquivo, ImportArquivoResultadoPspDto arquivoResultadoDto)
@@ -23,7 +26,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (arquivoResultadoDto == null) return false;
                 if (string.IsNullOrEmpty(arquivoResultadoDto.NomeArquivo)) return false;
 
-                string caminhoBaseArquivos = $"{Environment.GetEnvironmentVariable("PathArquivos")}/ResultadoPsp";
+                string caminhoBaseArquivos = $"{pathOptions.PathArquivos}/ResultadoPsp";
                 if (!Directory.Exists(caminhoBaseArquivos))
                 {
                     Directory.CreateDirectory(caminhoBaseArquivos);
