@@ -6,6 +6,7 @@ namespace SME.SERAp.Prova.Infra
     {
         public long QuestaoId { get; set; }
         public long Id { get; set; }
+        public long AlternativaLegadoId { get; set; }
         public string Descricao { get; set; }
         public int Ordem { get; set; }
         public string Numeracao { get; set; }
