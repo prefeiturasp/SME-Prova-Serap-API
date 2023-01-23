@@ -125,8 +125,22 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = @provaId";
-                return await conn.QueryAsync<QuestaoResumoProvaDto>(query, new { provaId });
+                var query = new StringBuilder();
+                query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = @provaId;");
+                query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = @provaId;");
+
+                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaId }))
+                {
+                    var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
+                    var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
+
+                    foreach(var questao in questoes)
+                    {
+                        questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+                    }
+
+                    return questoes;   
+                }
             }
             finally
             {
@@ -162,10 +176,10 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = new StringBuilder();
                 // questão
-                query.AppendLine(" select questao_legado_id as id, max(json) as json ");
+                query.AppendLine(" select questao_legado_id, json ");
                 query.AppendLine(" from questao_completa ");
                 query.AppendLine(" where questao_legado_id = ANY(@legadoIds) ");
-                query.AppendLine(" group by questao_legado_id; ");
+                query.AppendLine(" order by id desc limit 1 ");
 
                 return await conn.QueryAsync<QuestaoCompleta>(query.ToString(), new { legadoIds });
             }
