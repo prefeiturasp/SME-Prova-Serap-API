@@ -39,6 +39,10 @@ namespace SME.SERAp.Prova.Api
                 options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
             });
 
+            var pathOptions = new PathOptions();
+            Configuration.GetSection("Path").Bind(pathOptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(pathOptions);
+
             var jwtVariaveis = new JwtOptions();
             Configuration.GetSection(nameof(JwtOptions)).Bind(jwtVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(jwtVariaveis);

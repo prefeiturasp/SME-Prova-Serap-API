@@ -37,7 +37,9 @@ namespace SME.SERAp.Prova.Aplicacao
             switch (tipoResultado)
             {
                 case TipoResultadoPsp.ResultadoAluno:
-                    return RotasRabbit.TratarResultadoAlunoPsp;
+                    return RotasRabbit.ImportarResultadoAlunoPsp;
+                case TipoResultadoPsp.ResultadoSme:
+                    return RotasRabbit.ImportarResultadoSmePsp;
                 default:
                     return string.Empty;
             }
