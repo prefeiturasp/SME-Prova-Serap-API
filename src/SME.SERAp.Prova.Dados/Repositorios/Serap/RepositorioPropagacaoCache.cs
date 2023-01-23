@@ -6,6 +6,7 @@ using SME.SERAp.Prova.Infra.EnvironmentVariables;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -95,11 +96,26 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
+
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds)";
-                return await SqlMapper.QueryAsync<QuestaoResumoProvaDto>(conn, query, new { provaIds });
+                var query = new StringBuilder();
+                query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
+                query.Append(" select q.id as QuestaoId, a.id, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
+
+                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
+                {
+                    var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
+                    var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
+
+                    foreach (var questao in questoes)
+                    {
+                        questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+                    }
+
+                    return questoes;
+                }
             }
             finally
             {
