@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 namespace SME.SERAp.Prova.Api.Controllers
 {
     [ApiController]
+    [ChaveAutenticacaoApi]
     [Route("/api/v1/resultados-psp")]
     public class ResultadoPspController : Controller
     {
