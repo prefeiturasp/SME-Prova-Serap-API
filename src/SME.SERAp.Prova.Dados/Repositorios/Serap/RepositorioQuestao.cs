@@ -175,11 +175,11 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = new StringBuilder();
-                // questão
-                query.AppendLine(" select questao_legado_id, json ");
-                query.AppendLine(" from questao_completa ");
-                query.AppendLine(" where questao_legado_id = ANY(@legadoIds) ");
-                query.AppendLine(" order by id desc limit 1 ");
+
+                // obtem sempre a ultima questão importada.
+                query.AppendLine(" select qc.questao_legado_id as id, json ");
+                query.AppendLine(" from questao_completa qc ");
+                query.AppendLine(" where qc.id in (select max(id) as id from questao_completa where questao_legado_id = ANY(@legadoIds) group by questao_legado_id) ");
 
                 return await conn.QueryAsync<QuestaoCompleta>(query.ToString(), new { legadoIds });
             }
