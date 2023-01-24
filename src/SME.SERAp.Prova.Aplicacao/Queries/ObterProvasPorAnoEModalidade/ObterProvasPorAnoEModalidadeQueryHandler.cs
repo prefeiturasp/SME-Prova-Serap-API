@@ -26,8 +26,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 return provas.Where(a =>
                     a.Inicio.Year == request.AnoLetivo &&
-                    (!EhEjaCieja(a.Modalidade) && (int)a.Modalidade == request.Modalidade && a.Ano == request.Ano) ||
-                    ((int)a.Modalidade == request.Modalidade && a.Ano == request.Ano && a.EtapaEja == request.EtapaEja));
+                    ((!EhEjaCieja(a.Modalidade) && (int)a.Modalidade == request.Modalidade && a.Ano == request.Ano) ||
+                    ((int)a.Modalidade == request.Modalidade && a.Ano == request.Ano && a.EtapaEja == request.EtapaEja)));
             }
 
             return default;
