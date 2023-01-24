@@ -70,7 +70,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             if (turmaAtual == null) return default;
 
-            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade), turmaAtual.EtapaEja));
+            var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade), turmaAtual.EtapaEja, turmaAtual.AnoLetivo));
             var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
 
             provas = JuntarListasProvas(provas, provasAdesao);
