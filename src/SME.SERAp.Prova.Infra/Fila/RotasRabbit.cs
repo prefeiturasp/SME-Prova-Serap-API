@@ -26,5 +26,6 @@
         public const string ImportarResultadoSmePsp = "serap.resultados.psp.resultado.sme";
         public const string ImportarResultadoDrePsp = "serap.resultados.psp.resultado.dre";
         public const string ImportarResultadoEscolaPsp = "serap.resultados.psp.resultado.escola";
+        public const string ImportarResultadoTurmaPsp = "serap.resultados.psp.resultado.turma";
     }
 }
