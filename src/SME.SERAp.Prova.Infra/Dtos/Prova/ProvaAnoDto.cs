@@ -31,6 +31,8 @@ namespace SME.SERAp.Prova.Infra
         public long? FormatoTaiItem { get; set; }
         public bool FormatoTaiAvancarSemResponder { get; set; }
         public bool FormatoTaiVoltarItemAnterior { get; set; }
+        public bool ExibirAudio { get; set; }
+        public bool ExibirVideo { get; set; }
 
         public DateTime ObterDataInicioMais3Horas()
         {
