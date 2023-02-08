@@ -147,21 +147,30 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select
-                                  p.descricao,
-                                  p.Id,
-                                  p.total_Itens totalItens,
-                                  p.inicio_download as InicioDownload,
-                                  p.inicio,
-                                  p.fim,
-                                  p.Tempo_Execucao TempoExecucao,
-                                  case when pa.modalidade is not null then pa.modalidade else p.modalidade end Modalidade,
-                                  p.Senha,
-                                  p.possui_bib PossuiBIB,
-                                  pa.ano,
-                                  pa.etapa_eja EtapaEja,
-                                  p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
-                                  p.ultima_atualizacao as UltimaAtualizacao,
-                                  tp.para_estudante_com_deficiencia as deficiente
+                                p.descricao,
+                                p.Id,
+                                p.total_Itens totalItens,
+                                p.inicio_download as InicioDownload,
+                                p.inicio,
+                                p.fim,
+                                p.Tempo_Execucao TempoExecucao,
+                                case when pa.modalidade is not null then pa.modalidade else p.modalidade end Modalidade,
+                                p.Senha,
+                                p.possui_bib PossuiBIB,
+                                pa.ano,
+                                pa.etapa_eja EtapaEja,
+                                p.qtd_itens_sincronizacao_respostas as  quantidadeRespostaSincronizacao,
+                                p.ultima_atualizacao as UltimaAtualizacao,
+                                tp.para_estudante_com_deficiencia as deficiente,
+                                p.prova_com_proficiencia ProvaComProficiencia,
+                                p.apresentar_resultados ApresentarResultados,
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem,
+                                p.formato_tai FormatoTai,
+                                p.formato_tai_item FormatoTaiItem,
+                                p.formato_tai_avancar_sem_responder FormatoTaiAvancarSemResponder,
+                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior,
+                                p.exibir_video as ExibirVideo,
+                                p.exibir_audio as ExibirAudio
                               from prova p
                               inner join prova_ano pa on pa.prova_id = p.id
                               inner join tipo_prova tp on tp.id = p.tipo_prova_id 

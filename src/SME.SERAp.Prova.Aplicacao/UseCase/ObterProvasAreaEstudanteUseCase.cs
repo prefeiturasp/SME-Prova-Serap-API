@@ -114,7 +114,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
                         provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, prova.ExibirVideo, prova.ExibirAudio));
                     continue;
                 }
 
@@ -135,7 +135,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         provaAluno?.CriadoEm, prova.Senha,
                         prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, prova.ExibirVideo, prova.ExibirAudio));
                 }
             }
 
@@ -168,44 +168,23 @@ namespace SME.SERAp.Prova.Aplicacao
             var detalhes = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
             if (detalhes.Deficiencias != null && detalhes.Deficiencias.Any())
             {
-                var provasRetorno = await TratarProvasComVideo(provas, detalhes.Deficiencias);
+                var provasDeficienteIds = provas
+                    .Where(t => t.Deficiente)
+                    .Select(s => s.Id)
+                    .Distinct()
+                    .ToArray();
 
-                if (!provasRetorno.Any())
-                    provasRetorno = await TratarProvasComAudio(provas, detalhes.Deficiencias);
+                var provasDeficienciasAluno = await mediator.Send(new ObterProvasPorDeficienciaQuery(provasDeficienteIds, detalhes.Deficiencias));
 
-                if (provasRetorno.Any())
-                    return provasRetorno;
+                if (provasDeficienciasAluno != null && provasDeficienciasAluno.Any())
+                {
+                    return provas.Where(x => provasDeficienciasAluno.Contains(x.Id));
+                }
+
+                return default;
             }
 
             return provas.Where(a => !a.Deficiente);
-        }
-
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComAudio(IEnumerable<ProvaAnoDto> provas, int[] deficienciasAluno)
-        {
-            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.BAIXA_VISAO_OU_SUBNORMAL, (int)DeficienciaTipo.CEGUEIRA };
-            var alunoNecessitaProvaComAudio = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
-
-            if (alunoNecessitaProvaComAudio)
-            {
-                var provasComAudio = await mediator.Send(new ObterProvasComAudioPorIdsQuery(provas.Select(a => a.Id).ToArray()));
-                return provas.Where(a => provasComAudio.Any(pa => pa == a.Id));
-            }
-
-            return new List<ProvaAnoDto>();
-        }
-
-        private async Task<IEnumerable<ProvaAnoDto>> TratarProvasComVideo(IEnumerable<ProvaAnoDto> provas, int[] deficienciasAluno)
-        {
-            int[] tiposDeficiencia = new int[] { (int)DeficienciaTipo.SURDEZ_LEVE_MODERADA, (int)DeficienciaTipo.SURDEZ_SEVERA_PROFUNDA, (int)DeficienciaTipo.SURDO_CEGUEIRA };
-            var alunoNecessitaProvaComVideo = deficienciasAluno.Any(d => tiposDeficiencia.Any(td => td == d));
-
-            if (alunoNecessitaProvaComVideo)
-            {
-                var provasComVideo = await mediator.Send(new ObterProvasComVideoPorIdsQuery(provas.Select(a => a.Id).ToArray()));
-                return provas.Where(a => provasComVideo.Any(pa => pa == a.Id));
-            }
-
-            return new List<ProvaAnoDto>();
         }
     }
 }
