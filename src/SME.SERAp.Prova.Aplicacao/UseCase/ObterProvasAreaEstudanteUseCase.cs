@@ -77,7 +77,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             provas = await TratarProvasPorTipoDeficiencia(provas, long.Parse(alunoRa));
 
-            if (provas.Any())
+            if (provas != null && provas.Any())
                 return await ObterProvasRetorno(tempoExtra, tempoAlerta, alunoRa, provas);
 
             return default;
@@ -93,6 +93,11 @@ namespace SME.SERAp.Prova.Aplicacao
 
             foreach (var prova in provas)
             {
+                // TODO funcionalidade de audio e video bloqueada somente para provas com deficiencia, liberar esta funcionalidade para as demais provas 
+                // após testes de carga com videos e audios.
+                var exibirVideo = prova.ExibirVideo && prova.Deficiente;
+                var exibirAudio = prova.ExibirAudio && prova.Deficiente;
+
                 string caderno = "A";
                 if (prova.PossuiBIB && DateTime.Now.Date <= prova.Fim.Date)
                 {
@@ -114,7 +119,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
                         provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, prova.ExibirVideo, prova.ExibirAudio));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirVideo));
                     continue;
                 }
 
@@ -135,7 +140,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         provaAluno?.CriadoEm, prova.Senha,
                         prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, prova.ExibirVideo, prova.ExibirAudio));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirVideo));
                 }
             }
 
@@ -180,8 +185,6 @@ namespace SME.SERAp.Prova.Aplicacao
                 {
                     return provas.Where(x => provasDeficienciasAluno.Contains(x.Id));
                 }
-
-                return default;
             }
 
             return provas.Where(a => !a.Deficiente);
