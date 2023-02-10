@@ -119,7 +119,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno), provaAluno?.CriadoEm, prova.Senha, prova.Modalidade,
                         provaAluno.FinalizadoEm, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirVideo));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirAudio));
                     continue;
                 }
 
@@ -140,7 +140,7 @@ namespace SME.SERAp.Prova.Aplicacao
                         provaAluno?.CriadoEm, prova.Senha,
                         prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
                         prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirVideo));
+                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirAudio));
                 }
             }
 
