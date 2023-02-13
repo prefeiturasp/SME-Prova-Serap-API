@@ -58,15 +58,15 @@ namespace SME.SERAp.Prova.Dados
             try
             {
                 var query = @"select distinct
-                                        a2.id as AlternativaCorretaId,
-                                        qar.alternativa_id as AlternativaRespostaId
-                                from questao_aluno_resposta qar
-                                    left join questao q on qar.questao_id = q.id
-                                    left join alternativa a on a.id = qar.alternativa_id
-                                    left join alternativa a2 on a2.questao_id = q.id and a2.correta
-                                where q.prova_id = @provaId
-                                and qar.aluno_ra = @alunoRa
-                                and q.questao_legado_id = @questaoLegadoId";
+                                     a.ordem as OrdemAlternativaCorreta,
+                                     a2.ordem as OrdemAlternativaResposta,
+                                     qar.resposta as RespostaConstruida
+                             from questao q
+                             left join alternativa a on a.questao_id = q.id and a.correta
+                             left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = @alunoRa
+                             left join alternativa a2 on a2.id = qar.alternativa_id
+                             where q.prova_id = @provaId
+                               and q.questao_legado_id = @questaoLegadoId";
 
                 return await conn.QueryFirstOrDefaultAsync<QuestaoCompletaResultadoDto>(query, new { alunoRa, provaId, questaoLegadoId });
             }
@@ -77,5 +77,28 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
+        public async Task<IEnumerable<QuestaoAlternativaAlunoRespostaDto>> QuestaoAlternativaAlunoRespostaTaiAsync(long alunoRa, long provaId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select q.id as questaoId, 
+                                     al.id as alternativaCorreta, 
+                                     qar.alternativa_id as alternativaRespondida
+                              from aluno a
+                              left join caderno_aluno ca on ca.aluno_id = a.id 
+                              left join questao q on q.caderno = ca.caderno 
+                              left join alternativa al on al.questao_id = q.id and al.correta 
+                              left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = a.ra
+                              where a.ra = @alunoRa and q.prova_id = @provaId";
+
+                return await conn.QueryAsync<QuestaoAlternativaAlunoRespostaDto>(query, new { alunoRa, provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

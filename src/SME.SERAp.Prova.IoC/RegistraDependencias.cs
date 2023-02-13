@@ -52,6 +52,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioVersaoApp, RepositorioVersaoApp>();
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
+            services.TryAddScoped<IRepositorioAlunoProvaProficiencia, RepositorioAlunoProvaProficiencia>();
+
 
             services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
             services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
@@ -112,6 +114,14 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterDataHoraServidorUseCase, ObterDataHoraServidorUseCase>();
             services.TryAddScoped<IObterProvaResultadoResumoUseCase, ObterProvaResultadoResumoUseCase>();
             services.TryAddScoped<IObterQuestaoCompletaResultadoUseCase, ObterQuestaoCompletaResultadoUseCase>();
+            services.TryAddScoped<IIniciarProvaTaiUseCase, IniciarProvaTaiUseCase>();
+            services.TryAddScoped<IObterQuestaoProvaTaiUseCase, ObterQuestaoProvaTaiUseCase>();
+            services.TryAddScoped<IObterProximaQuestaoProvaTaiUseCase, ObterProximaQuestaoProvaTaiUseCase>();
+            services.TryAddScoped<IFinalizarProvaTaiUseCase, FinalizarProvaTaiUseCase>();
+            services.TryAddScoped<IObterProvaTaiResultadoResumoUseCase, ObterProvaTaiResultadoResumoUseCase>();
+            services.TryAddScoped<IVerificaConexaoComServicoRUseCase,VerificaConexaoComServicoRUseCase>();
+            services.TryAddScoped<IImportarArquivoResultadoPspUseCase, ImportarArquivoResultadoPspUseCase>();
+            services.TryAddScoped<ITratarImportacaoResultadoPspUseCase, TratarImportacaoResultadoPspUseCase>();
         }
     }
 }

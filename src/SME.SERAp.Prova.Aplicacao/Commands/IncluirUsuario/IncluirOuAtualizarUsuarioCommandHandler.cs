@@ -21,6 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
         public async Task<bool> Handle(IncluirOuAtualizarUsuarioCommand request, CancellationToken cancellationToken)
         {
+
             var usurioDto = new UsuarioDto
             {
                 Login = request.Login,

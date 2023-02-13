@@ -11,18 +11,13 @@ namespace SME.SERAp.Prova.Api.Controllers
     [ApiController]
     public class ProvaResultadoController : ControllerBase
     {
-        public ProvaResultadoController()
-        {
-
-        }
-
-        [HttpGet("{provaId}/{caderno}/resumo")]
-        [ProducesResponseType(typeof(IEnumerable<ProvaResultadoResumoDto>), 200)]
+        [HttpGet("{provaId}/resumo")]
+        [ProducesResponseType(typeof(ProvaResultadoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
-        public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, string caderno, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
+        public async Task<IActionResult> ObterProvaResultadoResumo(long provaId, [FromServices] IObterProvaResultadoResumoUseCase obterProvaResultadoResumoUseCase)
         {
-            return Ok(await obterProvaResultadoResumoUseCase.Executar(provaId, caderno));
+            return Ok(await obterProvaResultadoResumoUseCase.Executar(provaId));
         }
 
         [HttpGet("{provaId}/{questaoLegadoId}/questao-completa")]

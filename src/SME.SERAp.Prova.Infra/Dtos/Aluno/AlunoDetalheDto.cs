@@ -2,6 +2,7 @@
 {
     public class AlunoDetalheDto : DtoBase
     {
+        public long AlunoId { get; set; }
         public string DreAbreviacao { get; set; }
         public string Escola { get; set; }
         public string Turma { get; set; }
