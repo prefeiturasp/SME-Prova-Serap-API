@@ -35,5 +35,9 @@ namespace SME.SERAp.Prova.Dominio
         public string Senha { get; set; }
         public bool PossuiBIB { get; set; }
         public Modalidade Modalidade { get; set; }
+        public long? DisciplinaId { get; set; }
+        public bool FormatoTai { get; set; }
+        public ProvaFormatoTaiItem? ProvaFormatoTaiItem { get; set; }
+
     }
 }

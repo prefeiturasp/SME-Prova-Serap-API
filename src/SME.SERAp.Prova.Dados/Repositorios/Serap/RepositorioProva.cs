@@ -150,7 +150,11 @@ namespace SME.SERAp.Prova.Dados
                                 tp.para_estudante_com_deficiencia as deficiente,
                                 p.prova_com_proficiencia ProvaComProficiencia,
                                 p.apresentar_resultados ApresentarResultados,
-                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem,
+                                p.formato_tai FormatoTai,
+                                p.formato_tai_item FormatoTaiItem,
+                                p.formato_tai_avancar_sem_responder FormatoTaiAvancarSemResponder,
+                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
                             inner join tipo_prova tp on tp.id = p.tipo_prova_id 
@@ -186,7 +190,11 @@ namespace SME.SERAp.Prova.Dados
                                 tp.para_estudante_com_deficiencia as deficiente,
                                 p.prova_com_proficiencia ProvaComProficiencia,
                                 p.apresentar_resultados ApresentarResultados,
-                                p.apresentar_resultados_por_item ApresentarResultadosPorItem
+                                p.apresentar_resultados_por_item ApresentarResultadosPorItem,
+                                p.formato_tai FormatoTai,
+                                p.formato_tai_item FormatoTaiItem,
+                                p.formato_tai_avancar_sem_responder FormatoTaiAvancarSemResponder,
+                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id 
                             inner join prova_adesao pd on p.id = pd.prova_id                            
@@ -251,7 +259,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");                
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
@@ -380,29 +388,58 @@ namespace SME.SERAp.Prova.Dados
             return retorno;
         }
 
-        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa, string caderno)
+        public async Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select distinct 
+	                            q.questao_legado_id as IdQuestaoLegado, 
+                                q.enunciado as DescricaoQuestao, 
+                                q.ordem as OrdemQuestao, 
+                                q.tipo as TipoQuestao,
+                                a.numeracao as AlternativaAluno,
+                                a2.numeracao as AlternativaCorreta,
+                                a.correta,
+                                case when qar.resposta is null then false else true end as respostaConstruidaRespondida
+                            from questao q
+                            left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = @alunoRa
+                            left join alternativa a on a.id = qar.alternativa_id
+                            left join alternativa a2 on a2.questao_id = q.id and a2.correta 
+                            where q.prova_id = @provaId
+                            order by q.ordem";
+
+                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<IEnumerable<ProvaTaiResultadoDto>> ObterResultadoResumoProvaTaiAsync(long provaId, long alunoRa)
         {
             using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select distinct
-                                    q.questao_legado_id as IdQuestaoLegado, 
-                                    q.enunciado as DescricaoQuestao, 
-                                    q.ordem as OrdemQuestao, 
-                                    qar.alternativa_id as AlternativaAluno,
-                                    a.correta AlternativaCorreta,
-                                    app.proficiencia  as Proficiencia
-                                 from questao_aluno_resposta qar
-                                 left join questao q on qar.questao_id = q.id
-                                 left join alternativa a on a.id = qar.alternativa_id 
-                                 left join aluno_prova_proficiencia app on app.ra = qar.aluno_ra 
-                                  and app.prova_id = q.prova_id
-                                where q.prova_id = @provaId 
-                                    and qar.aluno_ra = @alunoRa
-                                    and q.caderno = @caderno
-                                    order by q.ordem";
+									q.enunciado as DescricaoQuestao, 
+									q.ordem as OrdemQuestao,
+									a.numeracao as AlternativaAluno
+								from aluno alu 
+								inner join caderno_aluno ca on alu.id = ca.aluno_id 
+								inner join prova p on p.id = ca.prova_id
+								inner join questao q on q.caderno = ca.caderno
+								left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
+								left join alternativa a on a.id = qar.alternativa_id
+								where p.formato_tai = true
+									and alu.ra = @alunoRa
+									and p.id = @provaId
+                                    and q.ordem != 999
+                                order by q.ordem";
 
-                return await conn.QueryAsync<ProvaResultadoResumoDto>(query, new { provaId, alunoRa, caderno });
+                return await conn.QueryAsync<ProvaTaiResultadoDto>(query, new { provaId, alunoRa });
             }
             finally
             {

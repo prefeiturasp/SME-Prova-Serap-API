@@ -47,6 +47,10 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("ConnectionStrings").Bind(conexaoDadosVariaveis, c => c.BindNonPublicProperties = true);
             services.AddSingleton(conexaoDadosVariaveis);
 
+            var apiROptions = new ApiROptions();
+            Configuration.GetSection(ApiROptions.Secao).Bind(apiROptions, c => c.BindNonPublicProperties = true);
+            services.AddSingleton(apiROptions);
+
             var gitHubOptions = new GithubOptions();
             Configuration.GetSection("Github").Bind(gitHubOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(gitHubOptions);

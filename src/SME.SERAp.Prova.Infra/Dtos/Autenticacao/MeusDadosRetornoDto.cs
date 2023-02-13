@@ -1,10 +1,10 @@
-﻿using MessagePack;
-using SME.SERAp.Prova.Dominio;
+﻿using SME.SERAp.Prova.Dominio;
 
 namespace SME.SERAp.Prova.Infra
 {
     public class MeusDadosRetornoDto : DtoBase
     {
+        public long AlunoId { get; set; }
         public string DreAbreviacao { get; set; }
         public string Escola { get; set; }
         public string Turma { get; set; }
@@ -19,6 +19,7 @@ namespace SME.SERAp.Prova.Infra
         public int[] Deficiencias { get; set; }
 
         public MeusDadosRetornoDto(
+            long alunoId,
             string dreAbreviacao, 
             string escola, 
             string turma, 
@@ -32,6 +33,7 @@ namespace SME.SERAp.Prova.Infra
             int fimTurno,
             int[] deficiencias)
         {
+            AlunoId = alunoId;
             DreAbreviacao = dreAbreviacao;
             Escola = escola;
             Turma = turma;

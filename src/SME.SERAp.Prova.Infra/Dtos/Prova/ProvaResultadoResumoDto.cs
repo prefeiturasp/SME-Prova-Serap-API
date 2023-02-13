@@ -10,8 +10,10 @@
         public long IdQuestaoLegado { get; set; }
         public string DescricaoQuestao { get; set; }
         public int OrdemQuestao { get; set; }
-        public long AlternativaAluno { get; set; }
-        public bool AlternativaCorreta { get; set; }
-        public decimal? Proficiencia { get; set; }
+        public int TipoQuestao { get; set; }
+        public string AlternativaAluno { get; set; }
+        public string AlternativaCorreta { get; set; }
+        public bool Correta { get; set; }
+        public bool RespostaConstruidaRespondida { get; set; }
     }
 }

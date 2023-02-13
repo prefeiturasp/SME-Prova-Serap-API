@@ -43,6 +43,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 var deficienciasAluno = await mediator.Send(new ObterCodigoEolDeficienciasAlunoPorRaQuery(usuarioLogadoRa));
 
                 return new MeusDadosRetornoDto(
+                    alunoDetalhes.AlunoId,
                     alunoDetalhes.DreAbreviacao,
                     alunoDetalhes.Escola,
                     alunoDetalhes.Turma,

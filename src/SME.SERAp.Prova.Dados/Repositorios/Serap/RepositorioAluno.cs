@@ -37,7 +37,8 @@ namespace SME.SERAp.Prova.Dados
                                   u.nome as escola, 
                                   t.nome as turma, 
                                   al.nome, 
-                                  al.nome_social as nomesocial
+                                  al.nome_social as nomesocial,
+                                  al.id as alunoId  
                               from aluno as al 
                               left join turma as t on t.id = al.turma_id 
                               left join ue as u on u.id = t.ue_id
