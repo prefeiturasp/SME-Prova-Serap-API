@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 string fila = ObterFilaPorTipoResultadoPsp((TipoResultadoPsp)tipoResultado);
                 if (string.IsNullOrEmpty(fila)) return false;
 
-                await mediator.Send(new PublicarFilaSerapCommand(fila, processoId));
+                await mediator.Send(new PublicarFilaSerapEstudantesCommand(fila, processoId));
 
                 return true;
             }
@@ -37,7 +37,9 @@ namespace SME.SERAp.Prova.Aplicacao
             switch (tipoResultado)
             {
                 case TipoResultadoPsp.ResultadoAluno:
-                    return RotasRabbit.TratarResultadoAlunoPsp;
+                    return RotasRabbit.ImportarResultadoAlunoPsp;
+                case TipoResultadoPsp.ResultadoSme:
+                    return RotasRabbit.ImportarResultadoSmePsp;
                 default:
                     return string.Empty;
             }

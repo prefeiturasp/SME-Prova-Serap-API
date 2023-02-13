@@ -22,6 +22,7 @@
         public const string TratarOrdemQuestaoAlunoProvaTai = "serap.estudante.prova.tai.ordem.questao.aluno.tratar";
         public const string TratarProficienciaAlunoProvaTai = "serap.estudante.prova.tai.proficiencia.aluno.tratar";
 
-        public const string TratarResultadoAlunoPsp = "serap.resultados.psp.resultado.aluno";
+        public const string ImportarResultadoAlunoPsp = "serap.resultados.psp.resultado.aluno";
+        public const string ImportarResultadoSmePsp = "serap.resultados.psp.resultado.sme";
     }
 }
