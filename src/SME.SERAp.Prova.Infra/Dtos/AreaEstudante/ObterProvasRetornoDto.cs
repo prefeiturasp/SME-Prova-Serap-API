@@ -5,10 +5,11 @@ namespace SME.SERAp.Prova.Infra
 {
     public class ObterProvasRetornoDto : DtoBase
     {
-        public ObterProvasRetornoDto(string descricao, int itensQuantidade,int status, DateTime? dataInicioDownload, DateTime dataInicio, DateTime? dataFim, long id, int tempoExecucao, 
-            int tempoExtra, int tempoAlerta, int tempoTotal, DateTime? dataInicioProvaAluno, string senha, Modalidade modalidade, DateTime? dataFimProvaAluno, 
-            int? quantidadeRespostaSincronizacao, DateTime ultimaAlteracao, string caderno, bool provaComProficiencia = false, bool apresentarResultados = false, 
-            bool apresentarResultadosPorItem = false, bool formatoTai = false, long? formatoTaiItem = null, bool formatoTaiAvancarSemResponder = false, bool formatoTaiVoltarItemAnterior = false)
+        public ObterProvasRetornoDto(string descricao, int itensQuantidade, int status, DateTime? dataInicioDownload, DateTime dataInicio, DateTime? dataFim,
+            long id, int tempoExecucao, int tempoExtra, int tempoAlerta, int tempoTotal, DateTime? dataInicioProvaAluno, string senha, Modalidade modalidade,
+            DateTime? dataFimProvaAluno, int? quantidadeRespostaSincronizacao, DateTime ultimaAlteracao, string caderno, bool provaComProficiencia = false,
+            bool apresentarResultados = false, bool apresentarResultadosPorItem = false, bool formatoTai = false, long? formatoTaiItem = null,
+            bool formatoTaiAvancarSemResponder = false, bool formatoTaiVoltarItemAnterior = false, bool exibirVideo = false, bool exibirAudio = false)
         {
             Id = id;
             Descricao = descricao;
@@ -35,6 +36,8 @@ namespace SME.SERAp.Prova.Infra
             FormatoTaiItem = formatoTaiItem;
             FormatoTaiAvancarSemResponder = formatoTaiAvancarSemResponder;
             FormatoTaiVoltarItemAnterior = formatoTaiVoltarItemAnterior;
+            ExibirVideo = exibirVideo;
+            ExibirAudio = exibirAudio;
         }
 
         public long Id { get; set; }
@@ -44,7 +47,7 @@ namespace SME.SERAp.Prova.Infra
         public int TempoExtra { get; set; }
         public string Senha { get; }
         public int TempoAlerta { get; set; }
-        public int TempoTotal { get; set; }        
+        public int TempoTotal { get; set; }
         public int Status { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime? DataInicioDownload { get; set; }
@@ -57,10 +60,12 @@ namespace SME.SERAp.Prova.Infra
         public string Caderno { get; set; }
         public bool ProvaComProficiencia { get; set; }
         public bool ApresentarResultados { get; set; }
-        public bool ApresentarResultadosPorItem { get; set; }        
+        public bool ApresentarResultadosPorItem { get; set; }
         public bool FormatoTai { get; set; }
         public long? FormatoTaiItem { get; set; }
         public bool FormatoTaiAvancarSemResponder { get; set; }
         public bool FormatoTaiVoltarItemAnterior { get; set; }
+        public bool ExibirVideo { get; set; }
+        public bool ExibirAudio { get; set; }
     }
 }
