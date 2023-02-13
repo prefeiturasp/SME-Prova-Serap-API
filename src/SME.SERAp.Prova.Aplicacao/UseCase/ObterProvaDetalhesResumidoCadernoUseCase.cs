@@ -27,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 throw new NegocioException($"A prova infomada {provaId} não foi encontrada");
 
             var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId));
-            if(questoesResumo == null || !questoesResumo.Any())
+            if (questoesResumo == null || !questoesResumo.Any())
                 throw new NegocioException($"Nenhuma questão foi encontrada para a prova {provaId}");
 
             if (prova.PossuiBIB)
@@ -35,11 +35,16 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesResumo = questoesResumo.Where(t => t.Caderno == caderno);
             }
 
-            var questoesIds = questoesResumo.Select(t => new QuestaoOrdemDto(t.QuestaoId, t.QuestaoLegadoId, t.Ordem)).OrderBy(t => t.Ordem).ToArray();
+            var questoesIds = questoesResumo.Select(t => new QuestaoOrdemDto(
+                t.QuestaoId,
+                t.QuestaoLegadoId,
+                t.Alternativas.Select(x => new AlternativaOrdemDto(x.AlternativaId, x.AlternativaLegadoId, x.Ordem)).OrderBy(t => t.Ordem).ToArray(),
+                t.Ordem)
+            ).OrderBy(t => t.Ordem).ToArray();
 
             long[] contextosIds = Array.Empty<long>();
             var contextosResumo = await mediator.Send(new ObterContextoResumoPorProvaIdQuery(provaId));
-            if(contextosResumo != null && contextosResumo.Any())
+            if (contextosResumo != null && contextosResumo.Any())
                 contextosIds = contextosResumo.Select(t => t.ContextoProvaId).ToArray();
 
             return new ProvaDetalheResumidoCadernoRetornoDto(provaId, questoesIds, contextosIds);
