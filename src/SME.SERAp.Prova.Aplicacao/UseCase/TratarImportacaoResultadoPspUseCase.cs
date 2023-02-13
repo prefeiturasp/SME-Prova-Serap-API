@@ -42,6 +42,8 @@ namespace SME.SERAp.Prova.Aplicacao
                     return RotasRabbit.ImportarResultadoSmePsp;
                 case TipoResultadoPsp.ResultadoDre:
                     return RotasRabbit.ImportarResultadoDrePsp;
+                case TipoResultadoPsp.ResultadoEscola:
+                    return RotasRabbit.ImportarResultadoEscolaPsp;
                 default:
                     return string.Empty;
             }
