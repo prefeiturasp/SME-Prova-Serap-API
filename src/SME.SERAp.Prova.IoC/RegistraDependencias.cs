@@ -53,7 +53,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioPropagacaoCache, RepositorioPropagacaoCache>();
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
             services.TryAddScoped<IRepositorioAlunoProvaProficiencia, RepositorioAlunoProvaProficiencia>();
-
+            services.TryAddScoped<IRepositorioArquivoResultadoPsp, RepositorioArquivoResultadoPsp>();
 
             services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
             services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
@@ -122,6 +122,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IVerificaConexaoComServicoRUseCase,VerificaConexaoComServicoRUseCase>();
             services.TryAddScoped<IImportarArquivoResultadoPspUseCase, ImportarArquivoResultadoPspUseCase>();
             services.TryAddScoped<ITratarImportacaoResultadoPspUseCase, TratarImportacaoResultadoPspUseCase>();
+            services.TryAddScoped<IBaixarArquivoResultadoPspUseCase, BaixarArquivoResultadoPspUseCase>();
         }
     }
 }
