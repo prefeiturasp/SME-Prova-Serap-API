@@ -36,5 +36,13 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await tratarImportacaoResultadoPspUseCase.Executar(processoId, tipoResultado));
         }
+
+        [HttpGet("processo/{processoId}/baixar-arquivo")]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        public async Task<IActionResult> BaixarArquivoResultadoPsp(long processoId, [FromServices] IBaixarArquivoResultadoPspUseCase baixarArquivoResultadoPspUseCase)
+        {
+            var (arquivo, nomeArquivo) = await baixarArquivoResultadoPspUseCase.Executar(processoId);
+            return File(arquivo, "application/csv", nomeArquivo);
+        }
     }
 }
