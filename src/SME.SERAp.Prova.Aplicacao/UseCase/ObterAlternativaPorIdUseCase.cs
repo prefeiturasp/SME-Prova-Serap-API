@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(id));
 
             return new AlternativaDetalheRetornoDto(alternativa.Id, alternativa.Descricao,
-                alternativa.Ordem, alternativa.Numeracao, alternativa.QuestaoId);
+                alternativa.Ordem, alternativa.Numeracao, alternativa.QuestaoId, alternativa.AlternativaLegadoId);
         }
     }
 }
