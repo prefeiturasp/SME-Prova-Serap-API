@@ -32,5 +32,6 @@
         public const string ImportarParticipacaoTurmaAreaConhecimento = "serap.resultados.psp.participacao.turma.area.conhecimento";
         public const string ImportarResultadoParticipacaoUe = "serap.resultados.psp.participacao.ue";
         public const string ImportarParticipacaoUeAreaConhecimento = "serap.resultados.psp.participacao.ue.area.conhecimento";
+        public const string ImportarResultadoParticipacaoDre = "serap.resultados.psp.participacao.dre";
     }
 }
