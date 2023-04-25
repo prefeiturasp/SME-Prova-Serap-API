@@ -34,7 +34,10 @@ namespace SME.SERAp.Prova.Dominio
         [Description("ParticipacaoDre")]
         ParticipacaoDre = 17,
 
+        [Description("ParticipacaoDreAreaConhecimento")]
+        ParticipacaoDreAreaConhecimento = 18,
+
         [Description("ParticipacaoSme")]
-        ParticipacaoSme = 18,
+        ParticipacaoSme = 19,
     }
 }
