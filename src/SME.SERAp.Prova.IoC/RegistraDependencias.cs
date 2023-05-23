@@ -54,13 +54,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
             services.TryAddScoped<IRepositorioAlunoProvaProficiencia, RepositorioAlunoProvaProficiencia>();
             services.TryAddScoped<IRepositorioArquivoResultadoPsp, RepositorioArquivoResultadoPsp>();
-
-            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
-            services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
-            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
-            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
-            services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
-            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
+            services.TryAddScoped<IRepositorioExecucaoControle, RepositorioExecucaoControle>();            
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -123,6 +117,13 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IImportarArquivoResultadoPspUseCase, ImportarArquivoResultadoPspUseCase>();
             services.TryAddScoped<ITratarImportacaoResultadoPspUseCase, TratarImportacaoResultadoPspUseCase>();
             services.TryAddScoped<IBaixarArquivoResultadoPspUseCase, BaixarArquivoResultadoPspUseCase>();
+            services.TryAddScoped<IObterAlternativaPorIdUseCase, ObterAlternativaPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoAudioPorIdUseCase, ObterArquivoAudioPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdLegadoUseCase, ObterArquivoPorIdLegadoUseCase>();
+            services.TryAddScoped<IObterArquivoPorIdUseCase, ObterArquivoPorIdUseCase>();
+            services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
+            services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
+            services.TryAddScoped<IObterDataUltimaSincronizacaoProvasUseCase, ObterDataUltimaSincronizacaoProvasUseCase>();
         }
     }
 }
