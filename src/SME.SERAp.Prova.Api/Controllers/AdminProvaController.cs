@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -54,6 +56,15 @@ namespace SME.SERAp.Prova.Api.Controllers
         public async Task<IActionResult> ObterQuestaoDetalhe(long provaId, long questaoId, [FromServices] IObterQuestaoDetalhesResumidoAreaAdministrativoUseCase obterQuestaoDetalhesResumidoAreaAdministrativoUseCase)
         {
             return Ok(await obterQuestaoDetalhesResumidoAreaAdministrativoUseCase.Executar(provaId, questaoId));
+        }
+
+        [HttpGet("data-ticks-ultima-sincronizacao")]
+        [ProducesResponseType(typeof(DateTime), 200)]
+        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
+        [ChaveAutenticacaoApi]
+        public async Task<IActionResult> ObterDataUltimaSincronizacaoProvas([FromServices] IObterDataUltimaSincronizacaoProvasUseCase obterDataUltimaSincronizacaoProvasUseCase)
+        {
+            return Ok(await obterDataUltimaSincronizacaoProvasUseCase.Executar());
         }
     }
 }
