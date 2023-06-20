@@ -27,5 +27,14 @@
         public const string ImportarResultadoDrePsp = "serap.resultados.psp.resultado.dre";
         public const string ImportarResultadoEscolaPsp = "serap.resultados.psp.resultado.escola";
         public const string ImportarResultadoTurmaPsp = "serap.resultados.psp.resultado.turma";
+
+        public const string ImportarResultadoParticipacaoTurma = "serap.resultados.psp.participacao.turma";
+        public const string ImportarParticipacaoTurmaAreaConhecimento = "serap.resultados.psp.participacao.turma.area.conhecimento";
+        public const string ImportarResultadoParticipacaoUe = "serap.resultados.psp.participacao.ue";
+        public const string ImportarParticipacaoUeAreaConhecimento = "serap.resultados.psp.participacao.ue.area.conhecimento";
+        public const string ImportarResultadoParticipacaoDre = "serap.resultados.psp.participacao.dre";
+        public const string ImportarResultadoParticipacaoDreAreaConhecimento = "serap.resultados.psp.participacao.dre.area.conhecimento";
+        public const string ImportarResultadoParticipacaoSme = "serap.resultados.psp.participacao.sme";
+        public const string ImportarResultadoParticipacaoSmeAreaConhecimento = "serap.resultados.psp.participacao.sme.area.conhecimento";
     }
 }

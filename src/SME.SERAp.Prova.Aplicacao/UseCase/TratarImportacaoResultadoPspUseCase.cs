@@ -46,6 +46,22 @@ namespace SME.SERAp.Prova.Aplicacao
                     return RotasRabbit.ImportarResultadoEscolaPsp;
                 case TipoResultadoPsp.ResultadoTurma:
                     return RotasRabbit.ImportarResultadoTurmaPsp;
+                case TipoResultadoPsp.ResultadoParticipacaoTurma:
+                    return RotasRabbit.ImportarResultadoParticipacaoTurma;
+                case TipoResultadoPsp.ParticipacaoTurmaAreaConhecimento:
+                    return RotasRabbit.ImportarParticipacaoTurmaAreaConhecimento;
+                case TipoResultadoPsp.ResultadoParticipacaoUe:
+                    return RotasRabbit.ImportarResultadoParticipacaoUe;
+                case TipoResultadoPsp.ParticipacaoUeAreaConhecimento:
+                    return RotasRabbit.ImportarParticipacaoUeAreaConhecimento;
+                case TipoResultadoPsp.ParticipacaoDre:
+                    return RotasRabbit.ImportarResultadoParticipacaoDre;
+                case TipoResultadoPsp.ParticipacaoDreAreaConhecimento:
+                    return RotasRabbit.ImportarResultadoParticipacaoDreAreaConhecimento;
+                case TipoResultadoPsp.ParticipacaoSme:
+                    return RotasRabbit.ImportarResultadoParticipacaoSme;
+                case TipoResultadoPsp.ParticipacaoSmeAreaConhecimento:
+                    return RotasRabbit.ImportarResultadoParticipacaoSmeAreaConhecimento;
                 default:
                     return string.Empty;
             }
