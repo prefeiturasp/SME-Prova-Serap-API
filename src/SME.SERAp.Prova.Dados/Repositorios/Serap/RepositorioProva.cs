@@ -154,7 +154,9 @@ namespace SME.SERAp.Prova.Dados
                                 p.formato_tai FormatoTai,
                                 p.formato_tai_item FormatoTaiItem,
                                 p.formato_tai_avancar_sem_responder FormatoTaiAvancarSemResponder,
-                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior
+                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior,
+                                p.exibir_video as ExibirVideo,
+                                p.exibir_audio as ExibirAudio
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
                             inner join tipo_prova tp on tp.id = p.tipo_prova_id 
@@ -194,7 +196,9 @@ namespace SME.SERAp.Prova.Dados
                                 p.formato_tai FormatoTai,
                                 p.formato_tai_item FormatoTaiItem,
                                 p.formato_tai_avancar_sem_responder FormatoTaiAvancarSemResponder,
-                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior
+                                p.formato_tai_voltar_item_anterior FormatoTaiVoltarItemAnterior,
+                                p.exibir_video as ExibirVideo,
+                                p.exibir_audio as ExibirAudio
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id 
                             inner join prova_adesao pd on p.id = pd.prova_id                            
