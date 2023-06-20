@@ -11,7 +11,7 @@ namespace SME.SERAp.Prova.Api.Controllers
     public class AlternativaController : ControllerBase
     {
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(QuestaoDetalheRetornoDto), 200)]
+        [ProducesResponseType(typeof(AlternativaDetalheRetornoDto), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> ObterPorId(long id, [FromServices] IObterAlternativaPorIdUseCase obterAlternativaPorIdUseCase)
