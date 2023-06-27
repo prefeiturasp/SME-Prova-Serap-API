@@ -19,5 +19,6 @@ namespace SME.SERAp.Prova.Dados
         Task<PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>> ObterProvasPaginada(ProvaAdmFiltroDto provaAdmFiltroDto, bool inicioFuturo, Guid? perfil, string login);
         Task<IEnumerable<ProvaResultadoResumoDto>> ObterResultadoResumoProvaAsync(long provaId, long alunoRa);
         Task<IEnumerable<ProvaTaiResultadoDto>> ObterResultadoResumoProvaTaiAsync(long provaId, long alunoRa);
+        Task<ProvaExtracaoDto> ObterProvaExtracaoPorLegadoId(long provaLegadoId);
     }
 }

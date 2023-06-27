@@ -451,5 +451,31 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<ProvaExtracaoDto> ObterProvaExtracaoPorLegadoId(long provaLegadoId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = @"select
+                                p.prova_legado_id ProvaSerapId,
+                                0 ExtracaoResultadoId,
+                                2 Status,
+                                p.aderir_todos AderirTodos, 
+                                tp.para_estudante_com_deficiencia ParaEstudanteComDeficiencia
+                               from public.prova p
+                                inner join public.tipo_prova tp on p.tipo_prova_id = tp.id
+                                where p.prova_legado_id = @provaLegadoId
+                            ";
+
+                return await conn.QueryFirstOrDefaultAsync<ProvaExtracaoDto>(query, new { provaLegadoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
     }
 }

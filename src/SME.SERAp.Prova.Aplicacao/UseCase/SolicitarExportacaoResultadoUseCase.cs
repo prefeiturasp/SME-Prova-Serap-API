@@ -10,35 +10,37 @@ namespace SME.SERAp.Prova.Aplicacao
     public class SolicitarExportacaoResultadoUseCase : ISolicitarExportacaoResultadoUseCase
     {
         private readonly IMediator mediator;
+        private ExportacaoResultado exportacaoResultado;
+
         public SolicitarExportacaoResultadoUseCase(IMediator mediator)
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
         public async Task<bool> Executar(long provaSerapId)
-        {
-            ExportacaoResultado exportacaoResultado = await GerarObjExportacao(provaSerapId);
+        {            
             try
             {
-                var checarProvaExiste = await mediator.Send(new VerificaProvaExistePorSerapIdQuery(provaSerapId));
 
-                if (!checarProvaExiste)
+                exportacaoResultado = await GerarObjExportacao(provaSerapId);
+
+                var provaExtracao = await mediator.Send(new ObterProvaExtracaoPorLegadoIdQuery(provaSerapId));
+                if (provaExtracao == null || provaExtracao?.ProvaSerapId == 0)
                     throw new NegocioException($"A prova informada não foi encontrada no serap estudantes, prova: {provaSerapId}.");
                 
-                exportacaoResultado.AtualizarStatus(ExportacaoResultadoStatus.Iniciado);
-                await mediator.Send(new ExportacaoResultadoAtualizarCommand(exportacaoResultado));
+                await AtualizarStatusExportacao(ExportacaoResultadoStatus.Iniciado);
 
-                var msgExtracao = new ProvaExtracaoDto() { ExtracaoResultadoId = exportacaoResultado.Id, ProvaSerapId = provaSerapId };
-                return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.ConsolidarProvaResultado, msgExtracao));
-
+                provaExtracao.ExtracaoResultadoId = exportacaoResultado.Id;
+                provaExtracao.Status = exportacaoResultado.Status;
+                return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.ConsolidarProvaResultado, provaExtracao));
             }
             catch(Exception)
-            {
-                exportacaoResultado.AtualizarStatus(ExportacaoResultadoStatus.Erro);
-                await mediator.Send(new ExportacaoResultadoAtualizarCommand(exportacaoResultado));
+            {                
+                await AtualizarStatusExportacao(ExportacaoResultadoStatus.Erro);
                 throw;
             }
         }
+
         public async Task<ExportacaoResultado> GerarObjExportacao(long provaSerapId)
         {
             try
@@ -51,6 +53,12 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 throw new NegocioException($"Erro ao gerar a exportação da prova: {provaSerapId}. Erro:{ex.Message}");
             }
+        }
+
+        private async Task AtualizarStatusExportacao(ExportacaoResultadoStatus status)
+        {
+            exportacaoResultado.AtualizarStatus(status);
+            await mediator.Send(new ExportacaoResultadoAtualizarCommand(exportacaoResultado));
         }
     }
 }
