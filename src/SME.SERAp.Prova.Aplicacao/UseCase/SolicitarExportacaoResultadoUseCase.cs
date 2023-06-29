@@ -32,7 +32,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 provaExtracao.ExtracaoResultadoId = exportacaoResultado.Id;
                 provaExtracao.Status = exportacaoResultado.Status;
-                return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.ConsolidarProvaResultado, provaExtracao));
+                return await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.ExcluirDadosConsolidado, provaExtracao));
             }
             catch(Exception)
             {                
