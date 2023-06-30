@@ -62,7 +62,8 @@ namespace SME.SERAp.Prova.Aplicacao
             );
 
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
-            var continuarProva = !alunoRespostas.Any(t => t.AlternativaResposta != null && t.QuestaoId == retorno.ProximaQuestao);
+            //var continuarProva = !alunoRespostas.Any(t => t.AlternativaResposta != null && t.QuestaoId == retorno.ProximaQuestao);
+            var continuarProva = retorno.ProximaQuestao != -1;
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
 
