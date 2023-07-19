@@ -18,14 +18,16 @@ namespace SME.SERAp.Prova.Aplicacao
                 return false;
 
             var fila = ObterFilaPorTipoResultadoPsp((TipoResultadoPsp)tipoResultado);
-            if (string.IsNullOrEmpty(fila)) return false;
+            
+            if (string.IsNullOrEmpty(fila)) 
+                return false;
 
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(fila, processoId));
 
             return true;
         }
 
-        private string ObterFilaPorTipoResultadoPsp(TipoResultadoPsp tipoResultado)
+        private static string ObterFilaPorTipoResultadoPsp(TipoResultadoPsp tipoResultado)
         {
             return tipoResultado switch
             {
