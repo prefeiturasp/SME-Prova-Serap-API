@@ -20,7 +20,7 @@ pipeline {
         }
         stage('Build') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } }
-                    steps { 
+          steps { 
                     script {
                       imagename1 = "registry.sme.prefeitura.sp.gov.br/${env.branchname}/sme-prova-serap-api"
                       dockerImage1 = docker.build(imagename1, "-f src/SME.Prova.Serap.Api/Dockerfile .")
