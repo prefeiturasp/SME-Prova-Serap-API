@@ -18,7 +18,7 @@ pipeline {
         stage('CheckOut') {            
             steps { checkout scm }            
         }
-     stage('Build') {
+        stage('Build') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } }
                     steps { 
                     script {
