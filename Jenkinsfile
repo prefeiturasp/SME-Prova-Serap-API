@@ -22,7 +22,7 @@ pipeline {
           steps { 
                     script {
                       imagename1 = "registry.sme.prefeitura.sp.gov.br/${env.branchname}/sme-prova-serap-api"
-                      dockerImage1 = docker.build(imagename1, "-f src/SME.Prova.Serap.Api/Dockerfile .")
+                      dockerImage1 = docker.build(imagename1, "-f src/sme-prova-serap-api/Dockerfile .")
                       docker.withRegistry( 'https://registry.sme.prefeitura.sp.gov.br', registryCredential ) {
               dockerImage1.push()
                 }
