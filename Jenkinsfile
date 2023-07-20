@@ -5,7 +5,7 @@ pipeline {
         registryCredential = 'jenkins_registry'
     }
     agent {
-      node { label 'AGENT-NODES' }
+      node { label 'agent-nodes' }
     }
     options {
       buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
@@ -61,4 +61,12 @@ pipeline {
             }
         }
     }
+}
+def getKubeconf(branchName) {
+    if("main".equals(branchName)) { return "config_prd"; }
+    else if ("master".equals(branchName)) { return "config_prd"; }
+    else if ("homolog".equals(branchName)) { return "config_hom"; }
+    else if ("release".equals(branchName)) { return "config_hom"; }
+    else if ("develop".equals(branchName)) { return "config_dev"; }
+    else if ("development".equals(branchName)) { return "config_dev"; }
 }
