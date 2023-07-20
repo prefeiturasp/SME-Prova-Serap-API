@@ -1,5 +1,4 @@
 pipeline {
-    
     environment {
         branchname =  env.BRANCH_NAME.toLowerCase()
         kubeconfig = getKubeconf(env.branchname)
@@ -28,6 +27,7 @@ pipeline {
               dockerImage1.push()
                 }
             }
+          }
         }
 
         stage('Flyway') {
@@ -57,9 +57,8 @@ pipeline {
                                 sh "kubectl rollout restart deployment/sme-prova-serap-api -n sme-serap-estudante"
                                 sh('rm -f '+"$home"+'/.kube/config')
                         }   
+                }
             }
         }
     }
-}
-}
 }
