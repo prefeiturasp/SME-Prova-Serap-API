@@ -5,7 +5,7 @@ pipeline {
         registryCredential = 'jenkins_registry'
     }
     agent {
-      node { label 'agent-nodes' }
+      node { label 'AGENT-NODES' }
     }
     options {
       buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
