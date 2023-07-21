@@ -19,8 +19,8 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<DadosAlunoLogadoDto> Handle(ObterDadosAlunoLogadoQuery request, CancellationToken cancellationToken)
         {
-            var ra = httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "RA").Value ?? string.Empty;
-            var dispositivoId = httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == "DISPOSITIVO_ID")?.Value ?? string.Empty;
+            var ra = httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(a => a.Type == "RA")?.Value ?? string.Empty;
+            var dispositivoId = httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(a => a.Type == "DISPOSITIVO_ID")?.Value ?? string.Empty;
             var dadosAluno = new DadosAlunoLogadoDto(string.IsNullOrEmpty(ra) ? 0 : long.Parse(ra), dispositivoId);
             return await Task.FromResult(dadosAluno);
         }

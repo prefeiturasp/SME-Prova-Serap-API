@@ -23,28 +23,42 @@ namespace SME.SERAp.Prova.Aplicacao
 
             //-> dados do aluno 
             var aluno = await mediator.Send(new ObterDadosAlunoLogadoQuery());
-            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(aluno.Ra));
+            var alunoRa = aluno.Ra;
 
-            var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, aluno.Ra));
-            if (provaStatus == null || provaStatus.Status != ProvaStatus.Iniciado)
+            if (alunoRa <= 0)
+                alunoRa = questaoAlunoRespostaSincronizarDto.AlunoRa;
+            
+            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
+
+            var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
+            
+            if (provaStatus is not { Status: ProvaStatus.Iniciado })
                 throw new NegocioException($"Esta prova precisa ser iniciada.", 411);
 
             //-> obter ultima proficiencia do aluno
-            var proficiencia = await mediator.Send(new ObterUltimaProficienciaPorProvaQuery(provaId, questaoAlunoRespostaSincronizarDto.AlunoRa));
+            var proficiencia = await mediator.Send(new ObterUltimaProficienciaPorProvaQuery(provaId, alunoRa));
 
             //-> obter itens da amostra do aluno
-            var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, questaoAlunoRespostaSincronizarDto.AlunoRa));
+            var questoesAluno = (await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, alunoRa)))
+                .OrderBy(t => t.Id)
+                .ToList();
 
             //-> obter itens respondidos do aluno
-            var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, questaoAlunoRespostaSincronizarDto.AlunoRa));
+            var alunoRespostas = (await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa))).ToList();
 
             //-> atualiza a resposta do aluno no cache.
-            var alunoRespostasAtualizado = alunoRespostas.ToList();
-            alunoRespostasAtualizado.Where(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId).FirstOrDefault().AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId.GetValueOrDefault();
+            var alunoRespostasAtualizado = alunoRespostas
+                .Where(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId)
+                .ToList();
 
-            questoesAluno = questoesAluno.OrderBy(t => t.Id);
+            var primeiraRespostaAluno = alunoRespostasAtualizado.FirstOrDefault();
+
+            if (primeiraRespostaAluno != null)
+                primeiraRespostaAluno.AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId;
+            
             alunoRespostasAtualizado = alunoRespostasAtualizado.OrderBy(t => t.QuestaoId).ToList();
 
+            //-> Obter proximo item
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
                 dados.Ano,
@@ -53,8 +67,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesAluno.Select(t => t.Discriminacao).ToArray(),
                 questoesAluno.Select(t => t.ProporcaoAcertos).ToArray(),
                 questoesAluno.Select(t => t.AcertoCasual).ToArray(),
-                "", "", "", "",
-                (int)prova.ProvaFormatoTaiItem,
+                (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray()
@@ -68,14 +81,13 @@ namespace SME.SERAp.Prova.Aplicacao
 
             await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
-            if (!continuarProva)
-            {
-                provaStatus.Status = ProvaStatus.Finalizado;
-                provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
-                await FinalizarProvaAluno(aluno.Ra, provaStatus);
-            }
-
-            return continuarProva;
+            if (continuarProva) 
+                return true;
+            
+            provaStatus.Status = ProvaStatus.Finalizado;
+            provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
+            await FinalizarProvaAluno(aluno.Ra, provaStatus);
+            return false;
         }
 
         private async Task FinalizarProvaAluno(long ra, ProvaAluno provaAluno)
