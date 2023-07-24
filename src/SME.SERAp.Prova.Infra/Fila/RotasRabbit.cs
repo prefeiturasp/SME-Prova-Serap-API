@@ -37,5 +37,6 @@
         public const string ImportarResultadoParticipacaoSme = "serap.resultados.psp.participacao.sme";
         public const string ImportarResultadoParticipacaoSmeAreaConhecimento = "serap.resultados.psp.participacao.sme.area.conhecimento";
         public const string ImportarResultadoCicloSme = "serap.resultados.psp.resultado.ciclo.sme";
+        public const string ImportarResultadoCicloEscola = "serap.resultados.psp.resultado.ciclo.escola";
     }
 }
