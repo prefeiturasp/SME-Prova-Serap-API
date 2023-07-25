@@ -44,6 +44,9 @@ namespace SME.SERAp.Prova.Dominio
         ParticipacaoSmeAreaConhecimento = 20,
         
         [Description("ResultadoCicloSme")]
-        ResultadoCicloSme = 11
+        ResultadoCicloSme = 11,
+        
+        [Description("ResultadoCicloEscola")]
+        ResultadoCicloEscola = 10        
     }
 }
