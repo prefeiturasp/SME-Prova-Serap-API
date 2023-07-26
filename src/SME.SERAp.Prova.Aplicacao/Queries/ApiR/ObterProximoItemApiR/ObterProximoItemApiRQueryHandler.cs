@@ -43,7 +43,8 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 ErroPadrao = "0.35",
 
-                NIj = request.NIj
+                NIj = request.NIj,
+                Componente = request.Componente
             };
 
             var json = JsonSerializer.Serialize(obterItensProvaTaiDto);
@@ -62,12 +63,14 @@ namespace SME.SERAp.Prova.Aplicacao
 
             return new ObterProximoItemApiRRespostaDto
             {
-                ProximaQuestao = long.Parse(resposta[0]),
-                Ordem = int.Parse(resposta[1]),
+                ProximaQuestao = long.Parse(resposta[0], CultureInfo.InvariantCulture),
+                NumeroRespostas = int.Parse(resposta[1], CultureInfo.InvariantCulture),
+                Ordem = int.Parse(resposta[2], CultureInfo.InvariantCulture),
                 ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
                 ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
                 ParC = Convert.ToDecimal(resposta[5], CultureInfo.InvariantCulture),
-                Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture)
+                Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture),
+                ErroMedida = Convert.ToDecimal(resposta[7], CultureInfo.InvariantCulture)
             };
         }
     }

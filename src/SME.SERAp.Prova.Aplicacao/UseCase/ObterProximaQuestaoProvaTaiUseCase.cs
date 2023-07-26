@@ -5,6 +5,7 @@ using SME.SERAp.Prova.Infra.Dtos.Questao;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
             
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
-                throw new NegocioException($"Esta prova precisa ser iniciada.", 411);
+                throw new NegocioException("Esta prova precisa ser iniciada.", 411);
 
             //-> obter ultima proficiencia do aluno
             var proficiencia = await mediator.Send(new ObterUltimaProficienciaPorProvaQuery(provaId, alunoRa));
@@ -58,6 +59,8 @@ namespace SME.SERAp.Prova.Aplicacao
             
             alunoRespostasAtualizado = alunoRespostasAtualizado.OrderBy(t => t.QuestaoId).ToList();
 
+            var textInfo = new CultureInfo("pt-BR", false).TextInfo;
+
             //-> Obter proximo item
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
@@ -70,7 +73,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
-                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray()
+                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray(),
+                textInfo.ToTitleCase(prova.Disciplina.ToLower())
                 )
             );
 
@@ -86,7 +90,9 @@ namespace SME.SERAp.Prova.Aplicacao
             
             provaStatus.Status = ProvaStatus.Finalizado;
             provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
+
             await FinalizarProvaAluno(aluno.Ra, provaStatus);
+
             return false;
         }
 
@@ -96,9 +102,9 @@ namespace SME.SERAp.Prova.Aplicacao
             await PublicarAcompProvaAlunoInicioFimTratar(provaAluno.ProvaId, ra, (int)provaAluno.Status, provaAluno.CriadoEm, provaAluno.FinalizadoEm);
         }
 
-        private static DateTime ObterDatafim(long? DataFim)
+        private static DateTime ObterDatafim(long? dataFim)
         {
-            return (DataFim != null && DataFim > 0) ? new DateTime(DataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
+            return dataFim is > 0 ? new DateTime(dataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
         }
 
         private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status, DateTime? criadoEm, DateTime? finalizadoEm)
@@ -110,12 +116,11 @@ namespace SME.SERAp.Prova.Aplicacao
         private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
             IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
         {
-
             if (continuarProva)
             {
                 //-> atualiza a lista de itens do aluno
                 var questoesAlunoAtualizado = questoesAluno.ToList();
-                questoesAluno.Where(t => t.Id == retorno.ProximaQuestao).FirstOrDefault().Ordem = retorno.Ordem;
+                questoesAluno.FirstOrDefault(t => t.Id == retorno.ProximaQuestao).Ordem = retorno.Ordem;
 
                 //-> atualiza a ordem de das questoes no cache.
                 var nomeChaveQuestaoAlunoTai = CacheChave.ObterChave(CacheChave.QuestaoAmostraTaiAluno, aluno.Ra, provaId);
@@ -138,7 +143,10 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));
 
             //-> Serap acompanhamento
-            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa, questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId, questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
+            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa,
+                questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId,
+                questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
+            
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
 
             if (continuarProva)
@@ -147,7 +155,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarOrdemQuestaoAlunoProvaTai, new
                 {
                     QuestaoId = retorno.ProximaQuestao,
-                    Ordem = retorno.Ordem
+                    retorno.Ordem
                 }));
             }
 
@@ -155,12 +163,12 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarProficienciaAlunoProvaTai, new
             {
                 ProvaId = provaId,
-                AlunoId = dados.AlunoId,
+                dados.AlunoId,
                 AlunoRa = aluno.Ra,
-                Proficiencia = retorno.Proficiencia,
+                retorno.Proficiencia,
                 Origem = 0,
                 Tipo = continuarProva ? 1 : 2,
-                DisciplinaId = prova.DisciplinaId
+                prova.DisciplinaId
             }));
         }
     }

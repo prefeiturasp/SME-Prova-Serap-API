@@ -17,9 +17,10 @@ namespace SME.SERAp.Prova.Aplicacao
             this.repositorioProvaAluno = repositorioProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioProvaAluno));
              this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
         }
+        
         public async Task<ProvaAluno> Handle(ObterProvaAlunoPorProvaIdRaQuery request, CancellationToken cancellationToken)
         {
-            string chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaId, request.AlunoRa);
+            var chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaId, request.AlunoRa);
             return await repositorioCache.ObterRedisAsync(chaveProvaAluno, async () => await repositorioProvaAluno.ObterPorProvaIdRaAsync(request.ProvaId, request.AlunoRa));
         }
     }

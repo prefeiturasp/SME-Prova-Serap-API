@@ -42,5 +42,8 @@ namespace SME.SERAp.Prova.Infra.Dtos.ApiR
         
         [JsonPropertyName("n.Ij")]
         public int NIj { get; set; }
+        
+        [JsonPropertyName("componente")]
+        public string Componente { get; set; }
     }
 }
