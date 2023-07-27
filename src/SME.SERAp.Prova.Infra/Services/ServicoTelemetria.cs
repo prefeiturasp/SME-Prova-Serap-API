@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Infra
             DateTime inicioOperacao = default;
             Stopwatch temporizador = default;
 
-            dynamic result = default;
+            dynamic result;
 
             if (telemetriaOptions.ApplicationInsights)
             {
@@ -33,26 +33,28 @@ namespace SME.SERAp.Prova.Infra
 
             if (telemetriaOptions.Apm)
             {
-                Stopwatch temporizadorApm = Stopwatch.StartNew();
-                result = await acao() as dynamic;
+                var temporizadorApm = Stopwatch.StartNew();
+                result = await acao();
                 temporizadorApm.Stop();
-
-                    Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
-                    {
-                        span.SetLabel(telemetriaNome, telemetriaValor);
-                        span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                    });
-                }
-                else
+                
+                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, span =>
                 {
-                    result = await acao() as dynamic;
-                }
-
-            if (telemetriaOptions.ApplicationInsights)
-            {
-                temporizador.Stop();
-                insightsClient?.TrackDependency(acaoNome, telemetriaNome, telemetriaValor, inicioOperacao, temporizador.Elapsed, true);
+                    span.SetLabel(telemetriaNome, telemetriaValor);
+                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                });
             }
+            else
+                result = await acao();
+
+            if (!telemetriaOptions.ApplicationInsights) 
+                return result;
+            
+            if (temporizador == null) 
+                return result;
+                
+            temporizador.Stop();
+            insightsClient?.TrackDependency(acaoNome, telemetriaNome, telemetriaValor, inicioOperacao,
+                temporizador.Elapsed, true);
 
             return result;
         }
@@ -109,7 +111,7 @@ namespace SME.SERAp.Prova.Infra
 
             if (telemetriaOptions.Apm)
             {
-                Stopwatch temporizadorApm = Stopwatch.StartNew();
+                var temporizadorApm = Stopwatch.StartNew();
                 acao();
                 temporizadorApm.Stop();
 
@@ -127,7 +129,9 @@ namespace SME.SERAp.Prova.Infra
             if (telemetriaOptions.ApplicationInsights)
             {
                 temporizador.Stop();
-                insightsClient?.TrackDependency(acaoNome, telemetriaNome, telemetriaValor, inicioOperacao, temporizador.Elapsed, true);
+                
+                insightsClient?.TrackDependency(acaoNome, telemetriaNome, telemetriaValor, inicioOperacao,
+                    temporizador.Elapsed, true);
             }
         }
 

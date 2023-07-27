@@ -23,13 +23,15 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
         public async Task Propagar()
         {
-            bool progagandoCache = false;
+            var progagandoCache = false;
+            
             try
             {
                 var dataHoraAtual = DateTime.Now;
                 Console.WriteLine($"~~> Inicializando WarmUp do cache as {dataHoraAtual}");
 
                 var minutosParaUmDia = (int)TimeSpan.FromDays(1).TotalMinutes;
+                
                 if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
                 {
                     progagandoCache = true;

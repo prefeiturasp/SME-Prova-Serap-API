@@ -8,19 +8,18 @@ namespace SME.SERAp.Prova.Api
 {
     public class WarmUpCacheTask : IStartupTask
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
+        
         public WarmUpCacheTask(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var propagacaoCacheUseCase = scope.ServiceProvider.GetRequiredService<IPropagacaoCacheUseCase>();
-                await propagacaoCacheUseCase.Propagar();
-            }
+            using var scope = serviceProvider.CreateScope();
+            var propagacaoCacheUseCase = scope.ServiceProvider.GetRequiredService<IPropagacaoCacheUseCase>();
+            await propagacaoCacheUseCase.Propagar();
         }
     }
 }
