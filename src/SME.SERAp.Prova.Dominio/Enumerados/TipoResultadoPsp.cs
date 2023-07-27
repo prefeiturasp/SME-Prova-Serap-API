@@ -47,12 +47,12 @@ namespace SME.SERAp.Prova.Dominio
         ResultadoCicloSme = 11,
 
         [Description("ResultadoCicloEscola")]
-        ResultadoCicloEscola = 10,
+        ResultadoCicloEscola = 9,
 
         [Description("ResultadoCicloTurma")]
-        ResultadoCicloTurma = 12,
+        ResultadoCicloTurma = 8,
 
         [Description("ResultadoCicloDre")]
-        ResultadoCicloDre = 8
+        ResultadoCicloDre = 10
     }
 }
