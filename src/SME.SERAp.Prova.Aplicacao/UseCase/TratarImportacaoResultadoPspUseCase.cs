@@ -47,7 +47,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 TipoResultadoPsp.ResultadoCicloSme => RotasRabbit.ImportarResultadoCicloSme,
                 TipoResultadoPsp.ResultadoCicloEscola => RotasRabbit.ImportarResultadoCicloEscola,
                 TipoResultadoPsp.ResultadoCicloTurma => RotasRabbit.ImportarResultadoCicloTurma,
-                TipoResultadoPsp.ResultadoCicloDre => RotasRabbit.ImportarResultadoCicloDrePsp,
+                TipoResultadoPsp.ResultadoCicloDre => RotasRabbit.ImportarResultadoCicloDrePsp  ,
                 _ => string.Empty
             };
         }
