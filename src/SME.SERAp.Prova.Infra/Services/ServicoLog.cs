@@ -2,9 +2,7 @@
 using SME.SERAp.Prova.Dominio.Entidades;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SME.SERAp.Prova.Dominio;
 using Microsoft.Extensions.Logging;
