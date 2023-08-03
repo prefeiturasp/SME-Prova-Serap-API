@@ -61,16 +61,30 @@ namespace SME.SERAp.Prova.Aplicacao
                 .Replace("]", "")
                 .Split(",");
 
+            var proximaQuestao = long.Parse(resposta[0].Replace("NA", "-1"), CultureInfo.InvariantCulture);
+            var numeroRespostas = int.Parse(resposta[1].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var ordem = int.Parse(resposta[2].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var parA = decimal.Parse(resposta[3].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parB = decimal.Parse(resposta[4].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parC = decimal.Parse(resposta[5].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
+            var proficiencia = decimal.Parse(resposta[6]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture))
+                .Replace("e-", "00"), CultureInfo.InvariantCulture);
+
+            var erroMedida = decimal.Parse(resposta[7]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
             return new ObterProximoItemApiRRespostaDto
             {
-                ProximaQuestao = long.Parse(resposta[0], CultureInfo.InvariantCulture),
-                NumeroRespostas = int.Parse(resposta[1], CultureInfo.InvariantCulture),
-                Ordem = int.Parse(resposta[2], CultureInfo.InvariantCulture),
-                ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
-                ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
-                ParC = Convert.ToDecimal(resposta[5], CultureInfo.InvariantCulture),
-                Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture),
-                ErroMedida = Convert.ToDecimal(resposta[7], CultureInfo.InvariantCulture)
+                ProximaQuestao = proximaQuestao,
+                NumeroRespostas = numeroRespostas,
+                Ordem = ordem,
+                ParA = parA,
+                ParB = parB,
+                ParC = parC,
+                Proficiencia = proficiencia,
+                ErroMedida = erroMedida
             };
         }
     }

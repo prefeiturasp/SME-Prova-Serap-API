@@ -5,7 +5,6 @@ using SME.SERAp.Prova.Infra.Dtos.Questao;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,8 +58,6 @@ namespace SME.SERAp.Prova.Aplicacao
             
             alunoRespostasAtualizado = alunoRespostasAtualizado.OrderBy(t => t.QuestaoId).ToList();
 
-            var textInfo = new CultureInfo("pt-BR", false).TextInfo;
-
             //-> Obter proximo item
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
@@ -74,15 +71,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray(),
-                textInfo.ToTitleCase(prova.Disciplina.ToLower())
+                prova.Disciplina
                 )
             );
 
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
-            var continuarProva = !alunoRespostas.Any(t => t.AlternativaResposta != null && t.QuestaoId == retorno.ProximaQuestao);
+            var continuarProva = retorno.ProximaQuestao != -1;
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
-
             await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
             if (continuarProva) 
@@ -113,18 +109,20 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
 
-        private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
+        private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IList<QuestaoTaiDto> questoesAluno,
             IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
         {
             if (continuarProva)
             {
                 //-> atualiza a lista de itens do aluno
-                var questoesAlunoAtualizado = questoesAluno.ToList();
-                questoesAluno.FirstOrDefault(t => t.Id == retorno.ProximaQuestao).Ordem = retorno.Ordem;
+                var questaoTai = questoesAluno.FirstOrDefault(t => t.Id == retorno.ProximaQuestao);
+
+                if (questaoTai != null)
+                    questaoTai.Ordem = retorno.Ordem;
 
                 //-> atualiza a ordem de das questoes no cache.
                 var nomeChaveQuestaoAlunoTai = CacheChave.ObterChave(CacheChave.QuestaoAmostraTaiAluno, aluno.Ra, provaId);
-                await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAlunoTai, questoesAlunoAtualizado));
+                await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAlunoTai, questoesAluno));
             }
 
             //-> atualiza a ultima proficiencia no cache.
