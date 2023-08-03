@@ -46,7 +46,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 .OrderBy(t => t.Id)
                 .ToList();
 
-            //-> obter itens respondidos do aluno
+            //-> obter alternativas e respostas
             var alunoRespostas = (await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa))).ToList();
 
             //-> atualiza a resposta do aluno no cache.
@@ -59,9 +59,14 @@ namespace SME.SERAp.Prova.Aplicacao
             if (primeiraRespostaAluno != null)
                 primeiraRespostaAluno.AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId;
             
-            alunoRespostasAtualizado = alunoRespostasAtualizado.OrderBy(t => t.QuestaoId).ToList();
-
+            //-> Obter alternativas com respotas
+            var alternativasComRespostas = alunoRespostas.Where(c => c.AlternativaResposta.HasValue).ToList();
+            
             //-> Obter proximo item
+            var respotas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
+            var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
+            var administrado = questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToArray();
+
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
                 dados.Ano,
@@ -71,9 +76,9 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesAluno.Select(t => t.ProporcaoAcertos).ToArray(),
                 questoesAluno.Select(t => t.AcertoCasual).ToArray(),
                 (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
-                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
-                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
-                questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToArray(),
+                respotas,
+                gabarito,
+                administrado,
                 prova.Disciplina
                 )
             );
@@ -82,7 +87,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var continuarProva = retorno.ProximaQuestao != -1;
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
-            await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
+            await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostas, retorno);
 
             if (continuarProva) 
                 return true;

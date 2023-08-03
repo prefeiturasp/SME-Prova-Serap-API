@@ -63,8 +63,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 .Split(",");
 
             var proximaQuestao = long.Parse(resposta[0].Replace("NA", "-1"), CultureInfo.InvariantCulture);
-            var numeroRespostas = int.Parse(resposta[1].Replace("NA", "0"), CultureInfo.InvariantCulture);
-            var ordem = int.Parse(resposta[2].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var ordem = int.Parse(resposta[1].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var posicaoProximoItem = int.Parse(resposta[2].Replace("NA", "0"), CultureInfo.InvariantCulture);
             var parA = decimal.Parse(resposta[3].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
             var parB = decimal.Parse(resposta[4].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
             var parC = decimal.Parse(resposta[5].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
@@ -79,8 +79,8 @@ namespace SME.SERAp.Prova.Aplicacao
             return new ObterProximoItemApiRRespostaDto
             {
                 ProximaQuestao = proximaQuestao,
-                NumeroRespostas = numeroRespostas,
-                Ordem = ordem,
+                Ordem = ordem == 0 ? ordem : ordem - 1,
+                PosicaoProximoItem = posicaoProximoItem,
                 ParA = parA,
                 ParB = parB,
                 ParC = parC,

@@ -84,7 +84,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = @"select q.id as questaoId, 
                                      al.id as alternativaCorreta, 
-                                     qar.alternativa_id as alternativaRespondida
+                                     qar.alternativa_id as alternativaResposta
                               from aluno a
                               left join caderno_aluno ca on ca.aluno_id = a.id 
                               left join questao q on q.caderno = ca.caderno 
