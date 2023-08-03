@@ -57,8 +57,9 @@ namespace SME.SERAp.Prova.Aplicacao
             var result = await response.Content.ReadAsStringAsync(cancellationToken);
 
             var resposta = result
-                .Replace("[", "")
-                .Replace("]", "")
+                .Replace("[", string.Empty)
+                .Replace("]", string.Empty)
+                .Replace("\"", string.Empty)
                 .Split(",");
 
             var proximaQuestao = long.Parse(resposta[0].Replace("NA", "-1"), CultureInfo.InvariantCulture);
