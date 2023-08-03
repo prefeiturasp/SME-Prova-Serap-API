@@ -2,7 +2,6 @@
 using SME.SERAp.Prova.Infra.Interfaces;
 using StackExchange.Redis;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Dados.Cache
@@ -16,7 +15,8 @@ namespace SME.SERAp.Prova.Dados.Cache
         {
             this.servicoLog = servicoLog ?? throw new ArgumentNullException(nameof(servicoLog));
             if (connectionMultiplexer == null) throw new ArgumentNullException(nameof(connectionMultiplexer));
-            this.database = connectionMultiplexer.GetDatabase();
+
+            database = connectionMultiplexer.GetDatabase();
         }
 
         public async Task SalvarRedisAsync(string nomeChave, object valor, int minutosParaExpirar = 720)
@@ -103,10 +103,11 @@ namespace SME.SERAp.Prova.Dados.Cache
         {
             try
             {
-                var bytes = MessagePackSerializer.ConvertFromJson(json);
-
                 if (!string.IsNullOrEmpty(json))
+                {
+                    var bytes = MessagePackSerializer.ConvertFromJson(json);                    
                     await database.StringSetAsync(nomeChave, bytes, TimeSpan.FromMinutes(minutosParaExpirar));
+                }
             }
             catch (Exception ex)
             {
