@@ -37,13 +37,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 ParB = string.Join(",", request.ParB.Select(t => t.ToString(CultureInfo.InvariantCulture))),
                 ParC = string.Join(",", request.ParC.Select(t => t.ToString(CultureInfo.InvariantCulture))),
 
-                Administrado = string.Join(",", request.Administrado),
-                Respostas = string.Join(",", request.Respostas),
-                Gabarito = string.Join(",", request.Gabarito),
+                Administrado = request.Administrado.Length == 0 ? "NA" : string.Join(",", request.Administrado),
+                Respostas = request.Respostas.Length == 0 ? "NA" : string.Join(",", request.Respostas),
+                Gabarito = request.Gabarito.Length == 0 ? "NA" : string.Join(",", request.Gabarito),
 
                 ErroPadrao = "0.35",
 
-                NIj = request.NIj
+                NIj = request.NIj,
+                Componente = request.Componente
             };
 
             var json = JsonSerializer.Serialize(obterItensProvaTaiDto);
@@ -60,14 +61,30 @@ namespace SME.SERAp.Prova.Aplicacao
                 .Replace("]", "")
                 .Split(",");
 
+            var proximaQuestao = long.Parse(resposta[0].Replace("NA", "-1"), CultureInfo.InvariantCulture);
+            var numeroRespostas = int.Parse(resposta[1].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var ordem = int.Parse(resposta[2].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var parA = decimal.Parse(resposta[3].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parB = decimal.Parse(resposta[4].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parC = decimal.Parse(resposta[5].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
+            var proficiencia = decimal.Parse(resposta[6]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture))
+                .Replace("e-", "00"), CultureInfo.InvariantCulture);
+
+            var erroMedida = decimal.Parse(resposta[7]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
             return new ObterProximoItemApiRRespostaDto
             {
-                ProximaQuestao = long.Parse(resposta[0]),
-                Ordem = int.Parse(resposta[1]),
-                ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
-                ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
-                ParC = Convert.ToDecimal(resposta[5], CultureInfo.InvariantCulture),
-                Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture)
+                ProximaQuestao = proximaQuestao,
+                NumeroRespostas = numeroRespostas,
+                Ordem = ordem,
+                ParA = parA,
+                ParB = parB,
+                ParC = parC,
+                Proficiencia = proficiencia,
+                ErroMedida = erroMedida
             };
         }
     }

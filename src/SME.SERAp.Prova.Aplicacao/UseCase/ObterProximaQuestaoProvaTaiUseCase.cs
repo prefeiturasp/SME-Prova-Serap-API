@@ -21,6 +21,9 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> dados da prova
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
 
+            if (prova == null)
+                throw new NegocioException($"Prova {provaId} não localizada.");
+
             //-> dados do aluno 
             var aluno = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var alunoRa = aluno.Ra;
@@ -33,7 +36,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
             
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
-                throw new NegocioException($"Esta prova precisa ser iniciada.", 411);
+                throw new NegocioException("Esta prova precisa ser iniciada.", 411);
 
             //-> obter ultima proficiencia do aluno
             var proficiencia = await mediator.Send(new ObterUltimaProficienciaPorProvaQuery(provaId, alunoRa));
@@ -70,15 +73,15 @@ namespace SME.SERAp.Prova.Aplicacao
                 (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
-                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray()
+                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray(),
+                prova.Disciplina
                 )
             );
 
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
-            var continuarProva = !alunoRespostas.Any(t => t.AlternativaResposta != null && t.QuestaoId == retorno.ProximaQuestao);
+            var continuarProva = retorno.ProximaQuestao != -1;
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
-
             await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostasAtualizado, retorno);
 
             if (continuarProva) 
@@ -86,7 +89,9 @@ namespace SME.SERAp.Prova.Aplicacao
             
             provaStatus.Status = ProvaStatus.Finalizado;
             provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
+
             await FinalizarProvaAluno(aluno.Ra, provaStatus);
+
             return false;
         }
 
@@ -96,9 +101,9 @@ namespace SME.SERAp.Prova.Aplicacao
             await PublicarAcompProvaAlunoInicioFimTratar(provaAluno.ProvaId, ra, (int)provaAluno.Status, provaAluno.CriadoEm, provaAluno.FinalizadoEm);
         }
 
-        private static DateTime ObterDatafim(long? DataFim)
+        private static DateTime ObterDatafim(long? dataFim)
         {
-            return (DataFim != null && DataFim > 0) ? new DateTime(DataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
+            return dataFim is > 0 ? new DateTime(dataFim.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
         }
 
         private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status, DateTime? criadoEm, DateTime? finalizadoEm)
@@ -107,19 +112,20 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
 
-        private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
+        private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IList<QuestaoTaiDto> questoesAluno,
             IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
         {
-
             if (continuarProva)
             {
                 //-> atualiza a lista de itens do aluno
-                var questoesAlunoAtualizado = questoesAluno.ToList();
-                questoesAluno.Where(t => t.Id == retorno.ProximaQuestao).FirstOrDefault().Ordem = retorno.Ordem;
+                var questaoTai = questoesAluno.FirstOrDefault(t => t.Id == retorno.ProximaQuestao);
+
+                if (questaoTai != null)
+                    questaoTai.Ordem = retorno.Ordem;
 
                 //-> atualiza a ordem de das questoes no cache.
                 var nomeChaveQuestaoAlunoTai = CacheChave.ObterChave(CacheChave.QuestaoAmostraTaiAluno, aluno.Ra, provaId);
-                await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAlunoTai, questoesAlunoAtualizado));
+                await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAlunoTai, questoesAluno));
             }
 
             //-> atualiza a ultima proficiencia no cache.
@@ -138,7 +144,10 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));
 
             //-> Serap acompanhamento
-            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa, questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId, questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
+            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa,
+                questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId,
+                questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
+            
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
 
             if (continuarProva)
@@ -147,7 +156,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarOrdemQuestaoAlunoProvaTai, new
                 {
                     QuestaoId = retorno.ProximaQuestao,
-                    Ordem = retorno.Ordem
+                    retorno.Ordem
                 }));
             }
 
@@ -155,12 +164,12 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarProficienciaAlunoProvaTai, new
             {
                 ProvaId = provaId,
-                AlunoId = dados.AlunoId,
+                dados.AlunoId,
                 AlunoRa = aluno.Ra,
-                Proficiencia = retorno.Proficiencia,
+                retorno.Proficiencia,
                 Origem = 0,
                 Tipo = continuarProva ? 1 : 2,
-                DisciplinaId = prova.DisciplinaId
+                prova.DisciplinaId
             }));
         }
     }
