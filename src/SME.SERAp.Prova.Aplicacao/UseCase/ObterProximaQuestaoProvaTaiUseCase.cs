@@ -21,6 +21,9 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> dados da prova
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
 
+            if (prova == null)
+                throw new NegocioException($"Prova {provaId} não localizada.");
+
             //-> dados do aluno 
             var aluno = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var alunoRa = aluno.Ra;

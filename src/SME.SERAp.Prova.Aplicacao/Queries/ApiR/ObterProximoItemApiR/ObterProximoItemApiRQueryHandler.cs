@@ -37,9 +37,9 @@ namespace SME.SERAp.Prova.Aplicacao
                 ParB = string.Join(",", request.ParB.Select(t => t.ToString(CultureInfo.InvariantCulture))),
                 ParC = string.Join(",", request.ParC.Select(t => t.ToString(CultureInfo.InvariantCulture))),
 
-                Administrado = string.Join(",", request.Administrado),
-                Respostas = string.Join(",", request.Respostas),
-                Gabarito = string.Join(",", request.Gabarito),
+                Administrado = request.Administrado.Length == 0 ? "NA" : string.Join(",", request.Administrado),
+                Respostas = request.Respostas.Length == 0 ? "NA" : string.Join(",", request.Respostas),
+                Gabarito = request.Gabarito.Length == 0 ? "NA" : string.Join(",", request.Gabarito),
 
                 ErroPadrao = "0.35",
 
