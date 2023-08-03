@@ -73,7 +73,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaResposta.GetValueOrDefault()).ToArray(),
                 alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.AlternativaCorreta).ToArray(),
-                alunoRespostasAtualizado.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray(),
+                questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToArray(),
                 prova.Disciplina
                 )
             );
