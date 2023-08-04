@@ -18,7 +18,7 @@ pipeline {
             steps { checkout scm }            
         }
         stage('Build') {
-          when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } }
+          when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2'; branch 'release-r2';  } }
           steps { 
                     script {
                       imagename1 = "registry.sme.prefeitura.sp.gov.br/${env.branchname}/sme-prova-serap-api"
@@ -31,7 +31,7 @@ pipeline {
         }
 
         stage('Flyway') {
-          when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } }
+          when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2'; branch 'release-r2';  } }
           agent { label 'master' }
           steps{
             withCredentials([string(credentialsId: "flyway_serapestudantes_${branchname}", variable: 'url')]) {
@@ -42,7 +42,7 @@ pipeline {
         }
 
         stage('Deploy') {
-            when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } }
+            when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2'; branch 'release-r2';  } }
             steps {
                 script {
                   if ( env.branchname == 'main' ||  env.branchname == 'master' ) {
@@ -69,4 +69,5 @@ def getKubeconf(branchName) {
     else if ("release".equals(branchName)) { return "config_hom"; }
     else if ("develop".equals(branchName)) { return "config_dev"; }
     else if ("development".equals(branchName)) { return "config_dev"; }
+    else if ("release-r2".equals(branchName)) { return "config_dev"; }
 }

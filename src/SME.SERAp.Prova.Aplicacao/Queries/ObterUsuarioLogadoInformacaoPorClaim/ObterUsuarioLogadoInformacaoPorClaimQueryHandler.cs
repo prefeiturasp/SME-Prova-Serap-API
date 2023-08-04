@@ -15,9 +15,11 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
+
         public async Task<string> Handle(ObterUsuarioLogadoInformacaoPorClaimQuery request, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(httpContextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(a => a.Type == request.Claim)?.Value ?? string.Empty);
+            return await Task.FromResult(httpContextAccessor.HttpContext?.User.Claims
+                .FirstOrDefault(a => a.Type == request.Claim)?.Value ?? string.Empty);
         }
     }
 }

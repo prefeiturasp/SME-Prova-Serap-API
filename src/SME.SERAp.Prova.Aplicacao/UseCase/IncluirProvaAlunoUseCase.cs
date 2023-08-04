@@ -23,7 +23,6 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Executar(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto)
         {
-            long alunoRa = 0;
             try
             {
                 await ObterDadosAlunoLogado();
@@ -31,18 +30,20 @@ namespace SME.SERAp.Prova.Aplicacao
                 var dataInicio = DateTime.Now;
 
                 if (provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0)
-                    dataInicio = (DateTime)provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
+                {
+                    var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
+                    
+                    if (dataMenos3Horas != null)
+                        dataInicio = dataMenos3Horas.Value;
+                }
 
                 if (provaStatus == null)
-                {
                     return await IncluirProva(provaId, provaAlunoStatusDto, dataInicio);
-                }
-                else
-                {
-                    if (provaStatus.Status == ProvaStatus.Finalizado)
-                        throw new NegocioException("Esta prova já foi finalizada", 411);
-                    return await AtualizarProva(provaAlunoStatusDto, provaStatus);
-                }
+
+                if (provaStatus.Status == ProvaStatus.Finalizado)
+                    throw new NegocioException("Esta prova já foi finalizada", 411);
+                
+                return await AtualizarProva(provaAlunoStatusDto, provaStatus);
             }
             catch (Exception ex)
             {
@@ -59,31 +60,51 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private async Task<bool> AtualizarProva(ProvaAlunoStatusDto provaAlunoStatusDto, ProvaAluno provaStatus)
         {
-            provaStatus.TipoDispositivo = provaAlunoStatusDto.TipoDispositivo.HasValue ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado;
+            var tipoDispositivo = TipoDispositivo.NaoCadastrado;
+
+            if (provaAlunoStatusDto.TipoDispositivo is > 0)
+                tipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo.Value;
+            
+            provaStatus.TipoDispositivo = tipoDispositivo;
             provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
+
             if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
-                provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : DateTime.Now;
-            provaStatus.TipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo;
+            {
+                provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0
+                    ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim)
+                    : DateTime.Now;
+            }
 
             provaStatus.DispositivoId = dadosAlunoLogado.DispositivoId;
-            await PublicarAcompProvaAlunoInicioFimTratar(provaStatus.ProvaId, provaStatus.AlunoRA, (int)provaStatus.Status, provaStatus.CriadoEm, provaStatus.FinalizadoEm);
+
+            await PublicarAcompProvaAlunoInicioFimTratar(provaStatus.ProvaId, provaStatus.AlunoRA,
+                (int)provaStatus.Status, provaStatus.CriadoEm, provaStatus.FinalizadoEm);
+            
             return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
         }
 
         private async Task<bool> IncluirProva(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, DateTime dataInicio)
         {
-            var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null;
-            await PublicarAcompProvaAlunoInicioFimTratar(provaId, dadosAlunoLogado.Ra, provaAlunoStatusDto.Status, dataInicio, dataFim);
+            var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0
+                ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim)
+                : null;
+
+            await PublicarAcompProvaAlunoInicioFimTratar(provaId, dadosAlunoLogado.Ra, provaAlunoStatusDto.Status,
+                dataInicio, dataFim);
+
             return await mediator.Send(new IncluirProvaAlunoCommand(provaId,
-                                                                    dadosAlunoLogado.Ra,
-                                                                    (ProvaStatus)provaAlunoStatusDto.Status,
-                                                                    dataInicio,
-                                                                    dataFim,
-                                                                    provaAlunoStatusDto.TipoDispositivo != null ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo : TipoDispositivo.NaoCadastrado,
-                                                                    dadosAlunoLogado.DispositivoId));
+                dadosAlunoLogado.Ra,
+                (ProvaStatus)provaAlunoStatusDto.Status,
+                dataInicio,
+                dataFim,
+                provaAlunoStatusDto.TipoDispositivo != null
+                    ? (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo
+                    : TipoDispositivo.NaoCadastrado,
+                dadosAlunoLogado.DispositivoId));
         }
 
-        private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status, DateTime? criadoEm, DateTime? finalizadoEm)
+        private async Task PublicarAcompProvaAlunoInicioFimTratar(long provaId, long alunoRa, int status,
+            DateTime? criadoEm, DateTime? finalizadoEm)
         {
             var provaAlunoAcompDto = new ProvaAlunoAcompDto(provaId, alunoRa, status, criadoEm, finalizadoEm);
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));

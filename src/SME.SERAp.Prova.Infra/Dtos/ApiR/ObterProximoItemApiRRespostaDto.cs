@@ -4,9 +4,11 @@
     {
         public long ProximaQuestao { get; set; }
         public int Ordem { get; set; }
+        public int PosicaoProximoItem { get; set; }
         public decimal ParA { get; set; }
         public decimal ParB { get; set; }
         public decimal ParC { get; set; }
         public decimal Proficiencia { get; set; }
+        public decimal ErroMedida { get; set; }
     }
 }
