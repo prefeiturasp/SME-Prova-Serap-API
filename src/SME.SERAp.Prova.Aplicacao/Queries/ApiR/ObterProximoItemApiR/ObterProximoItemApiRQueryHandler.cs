@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra.Dtos.ApiR;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
-using SME.SERAp.Prova.Infra.Interfaces;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -27,9 +26,10 @@ namespace SME.SERAp.Prova.Aplicacao
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
 
-            var obterItensProvaTaiDto = new ObterProximaQuestaoTaiDto()
+            var obterItensProvaTaiDto = new ObterProximaQuestaoTaiDto
             {
                 Estudante = request.Estudante,
+                AnoEscolarEstudante = request.AnoEscolarEstudante,
                 Proficiencia = request.Proficiencia.ToString(CultureInfo.InvariantCulture),
                 ProficienciaInicial = request.Proficiencia.ToString(CultureInfo.InvariantCulture),
                 IdItem = string.Join(",", request.IdItem),
@@ -37,38 +37,56 @@ namespace SME.SERAp.Prova.Aplicacao
                 ParB = string.Join(",", request.ParB.Select(t => t.ToString(CultureInfo.InvariantCulture))),
                 ParC = string.Join(",", request.ParC.Select(t => t.ToString(CultureInfo.InvariantCulture))),
 
-                Administrado = string.Join(",", request.Administrado),
-                Respostas = string.Join(",", request.Respostas),
-                Gabarito = string.Join(",", request.Gabarito),
+                Administrado = request.Administrado.Length == 0 ? "NA" : string.Join(",", request.Administrado),
+                Respostas = request.Respostas.Length == 0 ? "NA" : string.Join(",", request.Respostas),
+                Gabarito = request.Gabarito.Length == 0 ? "NA" : string.Join(",", request.Gabarito),
 
-                Erropadrao = "0.35",
+                ErroPadrao = "0.35",
 
-                NIj = request.NIj
+                NIj = request.NIj,
+                Componente = request.Componente
             };
 
             var json = JsonSerializer.Serialize(obterItensProvaTaiDto);
             var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(apiROptions.UrlQuestao, stringContent);
+            var response = await client.PostAsync(apiROptions.UrlQuestao, stringContent, cancellationToken);
 
+            if (!response.IsSuccessStatusCode) 
+                throw new Exception("Não foi possível obter os dados");
+            
+            var result = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            if (response.IsSuccessStatusCode)
+            var resposta = result
+                .Replace("[", string.Empty)
+                .Replace("]", string.Empty)
+                .Replace("\"", string.Empty)
+                .Split(",");
+
+            var proximaQuestao = long.Parse(resposta[0].Replace("NA", "-1"), CultureInfo.InvariantCulture);
+            var ordem = int.Parse(resposta[1].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var posicaoProximoItem = int.Parse(resposta[2].Replace("NA", "0"), CultureInfo.InvariantCulture);
+            var parA = decimal.Parse(resposta[3].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parB = decimal.Parse(resposta[4].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+            var parC = decimal.Parse(resposta[5].Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
+            var proficiencia = decimal.Parse(resposta[6]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture))
+                .Replace("e-", "00"), CultureInfo.InvariantCulture);
+
+            var erroMedida = decimal.Parse(resposta[7]
+                .Replace("NA", decimal.Zero.ToString(CultureInfo.InvariantCulture)), CultureInfo.InvariantCulture);
+
+            return new ObterProximoItemApiRRespostaDto
             {
-                var result = await response.Content.ReadAsStringAsync();
-
-                var resposta = result.Replace("[", "").Replace("]", "").Split(",");
-
-                return new ObterProximoItemApiRRespostaDto()
-                {
-                    ProximaQuestao = long.Parse(resposta[0]),
-                    Ordem = int.Parse(resposta[1]),
-                    ParA = decimal.Parse(resposta[3], CultureInfo.InvariantCulture),
-                    ParB = decimal.Parse(resposta[4], CultureInfo.InvariantCulture),
-                    ParC = Convert.ToDecimal(resposta[5], CultureInfo.InvariantCulture),
-                    Proficiencia = Convert.ToDecimal(resposta[6].Replace("e-", "00"), CultureInfo.InvariantCulture)
-                };
-            }
-
-            throw new Exception("Não foi possível obter os dados");
+                ProximaQuestao = proximaQuestao,
+                Ordem = ordem == 0 ? ordem : ordem - 1,
+                PosicaoProximoItem = posicaoProximoItem,
+                ParA = parA,
+                ParB = parB,
+                ParC = parC,
+                Proficiencia = proficiencia,
+                ErroMedida = erroMedida
+            };
         }
     }
 }

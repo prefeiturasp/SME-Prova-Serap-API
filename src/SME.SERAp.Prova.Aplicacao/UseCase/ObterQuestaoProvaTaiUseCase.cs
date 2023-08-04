@@ -19,8 +19,8 @@ namespace SME.SERAp.Prova.Aplicacao
             var dadosAlunoLogado = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
 
-            if (provaStatus == null || provaStatus.Status != ProvaStatus.Iniciado)
-                throw new NegocioException($"Esta prova precisa ser iniciada.", 411);
+            if (provaStatus is not { Status: ProvaStatus.Iniciado })
+                throw new NegocioException("Esta prova precisa ser iniciada.", 411);
 
             var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, dadosAlunoLogado.Ra));
 
@@ -28,11 +28,20 @@ namespace SME.SERAp.Prova.Aplicacao
                 .Where(t => t.Ordem != 999)
                 .OrderBy(t => t.Ordem)
                 .LastOrDefault();
+            
+            if (ultimaQuestao == null)
+                throw new NegocioException("Última questão não localizada.");
 
-            var json = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(new long[] { ultimaQuestao.Id }));
+            var json = (await mediator.Send(new ObterQuestaoCompletaPorIdQuery(new[] { ultimaQuestao.Id }))).ToList();
+            var jsonUltimaQuestao = json.FirstOrDefault();
+            
+            if (jsonUltimaQuestao == null)
+                throw new NegocioException("Última questão não localizada (json).");
 
-            var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json.FirstOrDefault(), new JsonSerializerOptions() { PropertyNameCaseInsensitive = true});
-            questaoCompleta.Ordem = ultimaQuestao.Ordem == 0 ? 0 : ultimaQuestao.Ordem - 1;
+            var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(jsonUltimaQuestao,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            
+            questaoCompleta.Ordem = ultimaQuestao.Ordem;
 
             return questaoCompleta;
         }
