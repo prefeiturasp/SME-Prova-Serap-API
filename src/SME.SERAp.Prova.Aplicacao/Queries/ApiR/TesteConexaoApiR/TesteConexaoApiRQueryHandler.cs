@@ -10,7 +10,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class TesteConexaoApiRQueryHandler : IRequestHandler<TesteConexaoApiRQuery, bool>
     {
-
         private readonly ApiROptions apiROptions;
         private readonly IServicoLog servicoLog;
 
@@ -26,11 +25,11 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Clear();
-                HttpResponseMessage response = await client.PostAsync(apiROptions.UrlQuestao, new StringContent("teste"));
+                
+                var response = await client.PostAsync(apiROptions.UrlQuestao,
+                    new StringContent("teste"), cancellationToken);
 
-                if (response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    return true;
-                return false;
+                return response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.InternalServerError;
             }
             catch (Exception ex)
             {

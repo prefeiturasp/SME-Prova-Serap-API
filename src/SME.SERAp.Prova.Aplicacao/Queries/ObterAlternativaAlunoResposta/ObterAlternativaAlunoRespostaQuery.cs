@@ -12,7 +12,7 @@ namespace SME.SERAp.Prova.Aplicacao
             AlunoRa = alunoRa;
         }
 
-        public long ProvaId { get; set; }
-        public long AlunoRa { get; set; }
+        public long ProvaId { get; }
+        public long AlunoRa { get; }
     }
 }

@@ -29,14 +29,9 @@ namespace SME.SERAp.Prova.Aplicacao
             if (alunoDetalhes != null)
             {
                 var anoUsuarioLogado = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("ANO"));
-                var turnoUsuarioLogado =
-                    await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
-
-                var modalidadeUsuarioLogado =
-                    await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("MODALIDADE"));
-
-                var preferenciasUsuario =
-                    await mediator.Send(new ObterPreferenciasUsuarioPorLoginQuery(usuarioLogadoRa));
+                var turnoUsuarioLogado = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("TIPOTURNO"));
+                var modalidadeUsuarioLogado = await mediator.Send(new ObterUsuarioLogadoInformacaoPorClaimQuery("MODALIDADE"));
+                var preferenciasUsuario = await mediator.Send(new ObterPreferenciasUsuarioPorLoginQuery(usuarioLogadoRa));
 
                 var turnoInicio = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoInicio(turnoUsuarioLogado), DateTime.Now.Year));
                 var turnoFim = await mediator.Send(new ObterParametroSistemaPorTipoEAnoQuery(TipoParametroSistemaExtension.ObterParametroTurnoFim(turnoUsuarioLogado), DateTime.Now.Year));
