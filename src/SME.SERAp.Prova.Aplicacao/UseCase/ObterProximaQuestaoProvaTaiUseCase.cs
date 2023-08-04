@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Infra.Dtos.Aluno;
+using SME.SERAp.Prova.Infra.Dtos.ApiR;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -49,7 +51,7 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> obter alternativas e respostas
             var alunoRespostas = (await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa))).ToList();
 
-            //-> atualiza a resposta do aluno no cache.
+            //-> atualiza a resposta atual do aluno no cache.
             var alunoRespostasAtualizado = alunoRespostas
                 .Where(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId)
                 .ToList();
@@ -117,8 +119,8 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
 
-        private async Task AtualizarDadosCache(bool continuarProva, long provaId, Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, IList<QuestaoTaiDto> questoesAluno,
-            IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
+        private async Task AtualizarDadosCache(bool continuarProva, long provaId, DadosAlunoLogadoDto aluno, IList<QuestaoTaiDto> questoesAluno,
+            IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, ObterProximoItemApiRRespostaDto retorno)
         {
             if (continuarProva)
             {
@@ -143,7 +145,7 @@ namespace SME.SERAp.Prova.Aplicacao
         }
 
         private async Task AtualizarDadosBanco(bool continuarProva, long provaId, QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Dominio.Prova prova,
-            Infra.Dtos.Aluno.DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, Infra.Dtos.ApiR.ObterProximoItemApiRRespostaDto retorno)
+            DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, ObterProximoItemApiRRespostaDto retorno)
         {
             //-> Serap estudantes
             await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));
