@@ -41,7 +41,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(jsonUltimaQuestao,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             
-            questaoCompleta.Ordem = ultimaQuestao.Ordem == 0 ? 0 : ultimaQuestao.Ordem - 1;
+            questaoCompleta.Ordem = ultimaQuestao.Ordem;
 
             return questaoCompleta;
         }
