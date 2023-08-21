@@ -176,7 +176,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 retorno.Proficiencia,
                 Origem = 0,
                 Tipo = continuarProva ? 1 : 2,
-                prova.DisciplinaId
+                prova.DisciplinaId,
+                retorno.ErroMedida
             }));
         }
     }
