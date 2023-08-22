@@ -50,13 +50,13 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var parametroTempoExtra = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoExtraProva);
 
-            int tempoExtra = 600;
+            var tempoExtra = 600;
             if (parametroTempoExtra != null)
                 tempoExtra = int.Parse(parametroTempoExtra.Valor);
 
             var parametroTempoAlerta = parametrosParaUtilizar.FirstOrDefault(a => a.Tipo == TipoParametroSistema.TempoAlertaProva);
 
-            int tempoAlerta = 300;
+            var tempoAlerta = 300;
             if (parametroTempoAlerta != null)
                 tempoAlerta = int.Parse(parametroTempoAlerta.Valor);
 
@@ -64,9 +64,9 @@ namespace SME.SERAp.Prova.Aplicacao
             if (turmasAluno == null || !turmasAluno.Any())
                 throw new NegocioException("Turma do aluno não localizado");
 
-            var turmaAtual = turmasAluno.Where(t => t.Ano == alunoLogadoAno
-                                                    && t.Modalidade == int.Parse(alunoLogadoModalidade)
-                                                    && t.TipoTurno == int.Parse(alunoLogadoTurno)).FirstOrDefault();
+            var turmaAtual = turmasAluno.FirstOrDefault(t => t.Ano == alunoLogadoAno
+                                                             && t.Modalidade == int.Parse(alunoLogadoModalidade)
+                                                             && t.TipoTurno == int.Parse(alunoLogadoTurno));
 
             if (turmaAtual == null) return default;
 
@@ -98,16 +98,22 @@ namespace SME.SERAp.Prova.Aplicacao
                 var exibirVideo = prova.ExibirVideo && prova.Deficiente;
                 var exibirAudio = prova.ExibirAudio && prova.Deficiente;
 
-                string caderno = "A";
+                var caderno = "A";
+                
                 if (prova.PossuiBIB && DateTime.Now.Date <= prova.Fim.Date)
                 {
                     caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(prova.Id, long.Parse(alunoRa)));
+
                     if (string.IsNullOrEmpty(caderno))
-                        throw new NegocioException($"Usuário informado {alunoRa} não possui caderno para a prova {prova.Id}");
-                }
+                        continue;
+
+                    // TODO: removida mensagem, pois, se houver outras provas, não carrega nenhuma.
+                    // throw new NegocioException($"Usuário informado {alunoRa} não possui caderno para a prova {prova.Id}");
+                }                
 
                 var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
-                if (provaAluno != null && (provaAluno.Status == ProvaStatus.Finalizado || provaAluno.Status == ProvaStatus.FinalizadoAutomaticamente))
+                
+                if (provaAluno is { Status: ProvaStatus.Finalizado or ProvaStatus.FinalizadoAutomaticamente })
                 {
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
                         prova.TotalItens,
@@ -123,25 +129,25 @@ namespace SME.SERAp.Prova.Aplicacao
                     continue;
                 }
 
-                if (DateTime.Now.Date >= prova.InicioDownload.GetValueOrDefault().Date && DateTime.Now.Date <= prova.Fim.Date)
-                {
-                    ProvaStatus status = ProvaStatus.NaoIniciado;
-                    if (provaAluno != null)
-                        status = provaAluno.Status;
+                if (DateTime.Now.Date < prova.InicioDownload.GetValueOrDefault().Date ||
+                    DateTime.Now.Date > prova.Fim.Date) continue;
+                
+                var status = ProvaStatus.NaoIniciado;
+                if (provaAluno != null)
+                    status = provaAluno.Status;
 
-                    provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                        prova.TotalItens,
-                        (int)status,
-                        prova.ObterDataInicioDownloadMais3Horas(),
-                        prova.ObterDataInicioMais3Horas(),
-                        prova.ObterDataFimMais3Horas(),
-                        prova.Id, prova.TempoExecucao,
-                        tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno),
-                        provaAluno?.CriadoEm, prova.Senha,
-                        prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
-                        prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
-                        prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirAudio));
-                }
+                provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
+                    prova.TotalItens,
+                    (int)status,
+                    prova.ObterDataInicioDownloadMais3Horas(),
+                    prova.ObterDataInicioMais3Horas(),
+                    prova.ObterDataFimMais3Horas(),
+                    prova.Id, prova.TempoExecucao,
+                    tempoExtra, tempoAlerta, ObterTempoTotal(provaAluno),
+                    provaAluno?.CriadoEm, prova.Senha,
+                    prova.Modalidade, null, prova.QuantidadeRespostaSincronizacao, prova.UltimaAtualizacao, caderno,
+                    prova.ProvaComProficiencia, prova.ApresentarResultados, prova.ApresentarResultadosPorItem,
+                    prova.FormatoTai, prova.FormatoTaiItem, prova.FormatoTaiAvancarSemResponder, prova.FormatoTaiVoltarItemAnterior, exibirVideo, exibirAudio));
             }
 
             return provasParaRetornar;
