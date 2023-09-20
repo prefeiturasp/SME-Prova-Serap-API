@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
-using System;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -15,56 +14,42 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Executar(long processoId, int tipoResultado)
         {
-            try
-            {
-                if (processoId == 0 || tipoResultado == 0) return false;
+            if (processoId == 0 || tipoResultado == 0) 
+                return false;
 
-                string fila = ObterFilaPorTipoResultadoPsp((TipoResultadoPsp)tipoResultado);
-                if (string.IsNullOrEmpty(fila)) return false;
+            var fila = ObterFilaPorTipoResultadoPsp((TipoResultadoPsp)tipoResultado);
+            
+            if (string.IsNullOrEmpty(fila)) 
+                return false;
 
-                await mediator.Send(new PublicarFilaSerapEstudantesCommand(fila, processoId));
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(fila, processoId));
 
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return true;
         }
 
-        private string ObterFilaPorTipoResultadoPsp(TipoResultadoPsp tipoResultado)
+        private static string ObterFilaPorTipoResultadoPsp(TipoResultadoPsp tipoResultado)
         {
-            switch (tipoResultado)
+            return tipoResultado switch
             {
-                case TipoResultadoPsp.ResultadoAluno:
-                    return RotasRabbit.ImportarResultadoAlunoPsp;
-                case TipoResultadoPsp.ResultadoSme:
-                    return RotasRabbit.ImportarResultadoSmePsp;
-                case TipoResultadoPsp.ResultadoDre:
-                    return RotasRabbit.ImportarResultadoDrePsp;
-                case TipoResultadoPsp.ResultadoEscola:
-                    return RotasRabbit.ImportarResultadoEscolaPsp;
-                case TipoResultadoPsp.ResultadoTurma:
-                    return RotasRabbit.ImportarResultadoTurmaPsp;
-                case TipoResultadoPsp.ResultadoParticipacaoTurma:
-                    return RotasRabbit.ImportarResultadoParticipacaoTurma;
-                case TipoResultadoPsp.ParticipacaoTurmaAreaConhecimento:
-                    return RotasRabbit.ImportarParticipacaoTurmaAreaConhecimento;
-                case TipoResultadoPsp.ResultadoParticipacaoUe:
-                    return RotasRabbit.ImportarResultadoParticipacaoUe;
-                case TipoResultadoPsp.ParticipacaoUeAreaConhecimento:
-                    return RotasRabbit.ImportarParticipacaoUeAreaConhecimento;
-                case TipoResultadoPsp.ParticipacaoDre:
-                    return RotasRabbit.ImportarResultadoParticipacaoDre;
-                case TipoResultadoPsp.ParticipacaoDreAreaConhecimento:
-                    return RotasRabbit.ImportarResultadoParticipacaoDreAreaConhecimento;
-                case TipoResultadoPsp.ParticipacaoSme:
-                    return RotasRabbit.ImportarResultadoParticipacaoSme;
-                case TipoResultadoPsp.ParticipacaoSmeAreaConhecimento:
-                    return RotasRabbit.ImportarResultadoParticipacaoSmeAreaConhecimento;
-                default:
-                    return string.Empty;
-            }
+                TipoResultadoPsp.ResultadoAluno => RotasRabbit.ImportarResultadoAlunoPsp,
+                TipoResultadoPsp.ResultadoSme => RotasRabbit.ImportarResultadoSmePsp,
+                TipoResultadoPsp.ResultadoDre => RotasRabbit.ImportarResultadoDrePsp,
+                TipoResultadoPsp.ResultadoEscola => RotasRabbit.ImportarResultadoEscolaPsp,
+                TipoResultadoPsp.ResultadoTurma => RotasRabbit.ImportarResultadoTurmaPsp,
+                TipoResultadoPsp.ResultadoParticipacaoTurma => RotasRabbit.ImportarResultadoParticipacaoTurma,
+                TipoResultadoPsp.ParticipacaoTurmaAreaConhecimento => RotasRabbit.ImportarParticipacaoTurmaAreaConhecimento,
+                TipoResultadoPsp.ResultadoParticipacaoUe => RotasRabbit.ImportarResultadoParticipacaoUe,
+                TipoResultadoPsp.ParticipacaoUeAreaConhecimento => RotasRabbit.ImportarParticipacaoUeAreaConhecimento,
+                TipoResultadoPsp.ParticipacaoDre => RotasRabbit.ImportarResultadoParticipacaoDre,
+                TipoResultadoPsp.ParticipacaoDreAreaConhecimento => RotasRabbit.ImportarResultadoParticipacaoDreAreaConhecimento,
+                TipoResultadoPsp.ParticipacaoSme => RotasRabbit.ImportarResultadoParticipacaoSme,
+                TipoResultadoPsp.ParticipacaoSmeAreaConhecimento => RotasRabbit.ImportarResultadoParticipacaoSmeAreaConhecimento,
+                TipoResultadoPsp.ResultadoCicloSme => RotasRabbit.ImportarResultadoCicloSme,
+                TipoResultadoPsp.ResultadoCicloEscola => RotasRabbit.ImportarResultadoCicloEscola,
+                TipoResultadoPsp.ResultadoCicloTurma => RotasRabbit.ImportarResultadoCicloTurma,
+                TipoResultadoPsp.ResultadoCicloDre => RotasRabbit.ImportarResultadoCicloDrePsp,
+                _ => string.Empty
+            };
         }
     }
 }
