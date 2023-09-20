@@ -69,6 +69,11 @@ namespace SME.SERAp.Prova.Aplicacao
             var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
             var administrado = questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToArray();
 
+            var componente = string.Empty;
+
+            if (prova.Disciplina != null)
+                componente = prova.Disciplina;
+
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
                 dados.Ano,
@@ -81,7 +86,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 respotas,
                 gabarito,
                 administrado,
-                prova.Disciplina
+                componente
                 )
             );
 
