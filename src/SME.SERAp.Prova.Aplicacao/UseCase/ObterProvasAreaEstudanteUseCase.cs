@@ -71,7 +71,9 @@ namespace SME.SERAp.Prova.Aplicacao
             if (turmaAtual == null) return default;
 
             var provas = await mediator.Send(new ObterProvasPorAnoEModalidadeQuery(alunoLogadoAno, int.Parse(alunoLogadoModalidade), turmaAtual.EtapaEja, turmaAtual.AnoLetivo));
-            var provasAdesao = await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id));
+            
+            var provasAdesao = (await mediator.Send(new ObterProvasAdesaoPorAlunoRaETurmaQuery(long.Parse(alunoRa), turmaAtual.Id)))
+                .Where(c => !provas.Select(x => x.Id).Contains(c.Id));
 
             provas = JuntarListasProvas(provas, provasAdesao);
 
@@ -166,8 +168,10 @@ namespace SME.SERAp.Prova.Aplicacao
         private static IEnumerable<ProvaAnoDto> JuntarListasProvas(IEnumerable<ProvaAnoDto> provas, IEnumerable<ProvaAnoDto> provasAdesao)
         {
             var retorno = new List<ProvaAnoDto>();
+            
             if (provas != null && provas.Any())
                 retorno.AddRange(provas);
+            
             if (provasAdesao != null && provasAdesao.Any())
                 retorno.AddRange(provasAdesao);
 
