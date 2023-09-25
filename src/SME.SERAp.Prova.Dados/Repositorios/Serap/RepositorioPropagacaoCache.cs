@@ -102,7 +102,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 var query = new StringBuilder();
                 query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
-                query.Append(" select q.id as QuestaoId, a.id, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
+                query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
 
                 using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
                 {
