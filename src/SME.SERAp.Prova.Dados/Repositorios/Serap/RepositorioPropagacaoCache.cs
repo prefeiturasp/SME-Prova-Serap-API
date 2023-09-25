@@ -96,23 +96,41 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
-
+            const int numeroItensPagina = 100000;
+            var pagina = 1;
+            
             using var conn = ObterConexaoLeitura();
             try
             {
                 var query = new StringBuilder();
                 query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
-                query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
+
+                query.Append(@"select count(a.AlternativaId) 
+                                 from vw_questao_alternativa a 
+                                 where a.prova_id = ANY(@provaIds)");
 
                 using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
                 {
                     var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
-                    var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
+                    var contador = await sqlMapper.ReadSingleAsync<long>();
+                    var listaAlternativas = new List<AlternativaResumoProvaDto>();
 
-                    foreach (var questao in questoes)
+                    while (listaAlternativas.Count < contador)
                     {
-                        questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+                        var queryAlternativas = @$"select a.QuestaoId, a.AlternativaId, a.AlternativaLegadoId, a.ordem 
+                                                     from vw_questao_alternativa a 
+                                                     where a.prova_id = ANY(@provaIds)
+                                                     LIMIT {numeroItensPagina}
+                                                     OFFSET({pagina} - 1) * {numeroItensPagina}";
+
+                        var alternativas = await SqlMapper.QueryAsync<AlternativaResumoProvaDto>(conn, queryAlternativas, new { provaIds });
+                        listaAlternativas.AddRange(alternativas);
+
+                        pagina++;
                     }
+                    
+                    foreach (var questao in questoes)
+                        questao.Alternativas = listaAlternativas.Where(t => t.QuestaoId == questao.QuestaoId);
 
                     return questoes;
                 }
@@ -121,7 +139,7 @@ namespace SME.SERAp.Prova.Dados
             {
                 conn.Close();
                 conn.Dispose();
-            }
+            }  
         }
 
         public async Task<IEnumerable<ParametroSistema>> ObterParametrosParaCacheAsync()
