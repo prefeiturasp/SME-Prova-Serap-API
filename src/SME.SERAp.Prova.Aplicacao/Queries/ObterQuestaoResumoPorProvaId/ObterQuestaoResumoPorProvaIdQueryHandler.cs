@@ -21,7 +21,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<IEnumerable<QuestaoResumoProvaDto>> Handle(ObterQuestaoResumoPorProvaIdQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, request.ProvaId), () => repositorioQuestao.ObterQuestaoResumoPorProvaIdAsync(request.ProvaId, request.AlunoId));
+            return await repositorioCache.ObterRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, request.ProvaId, request.AlunoId), () => repositorioQuestao.ObterQuestaoResumoPorProvaIdAsync(request.ProvaId, request.AlunoId));
         }
     }
 }
