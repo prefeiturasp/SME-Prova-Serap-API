@@ -138,7 +138,7 @@ namespace SME.SERAp.Prova.Dados
                 //                 WHERE
                 //                     prova_id = @provaId ;");
 
-                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaId, caderno}))
+                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaId, caderno = caderno.ToString()}))
                 {
                     var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
                     var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
