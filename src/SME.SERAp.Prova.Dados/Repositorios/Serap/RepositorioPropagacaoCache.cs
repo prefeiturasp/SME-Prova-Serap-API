@@ -94,28 +94,67 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
+        // public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
+        // {
+        //
+        //     using var conn = ObterConexaoLeitura();
+        //     try
+        //     {
+        //         var query = new StringBuilder();
+        //         query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
+        //         query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
+        //
+        //         using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
+        //         {
+        //             var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
+        //             var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
+        //
+        //             foreach (var questao in questoes)
+        //             {
+        //                 questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+        //             }
+        //
+        //             return questoes;
+        //         }
+        //     }
+        //     finally
+        //     {
+        //         conn.Close();
+        //         conn.Dispose();
+        //     }
+        // }
+        
+        public async IAsyncEnumerable<List<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
-
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = new StringBuilder();
-                query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
-                query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = ANY(@provaIds);");
+                var questaoQuery = "SELECT q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem FROM questao q WHERE q.prova_id = ANY(@provaIds);";
+                var questoes = (await conn.QueryAsync<QuestaoResumoProvaDto>(questaoQuery, new { provaIds })).ToList();
 
-                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
+                int offset = 0;
+                const int limit = 100000;
+        
+                while (true)
                 {
-                    var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
-                    var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
-
+                    var alternativaQuery = $@"SELECT q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem 
+                                      FROM questao q 
+                                      LEFT JOIN alternativa a ON a.questao_id = q.id 
+                                      WHERE q.prova_id = ANY(@provaIds) 
+                                      LIMIT {limit} OFFSET {offset};";
+                                      
+                    var paginatedAlternativas = (await conn.QueryAsync<AlternativaResumoProvaDto>(alternativaQuery, new { provaIds })).ToList();
+                    if (!paginatedAlternativas.Any()) break;
+            
                     foreach (var questao in questoes)
                     {
-                        questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+                        questao.Alternativas = paginatedAlternativas.Where(t => t.QuestaoId == questao.QuestaoId);
                     }
-
-                    return questoes;
-                }
+            
+                    offset += limit;
+            
+                    yield return questoes;
+                } 
             }
             finally
             {

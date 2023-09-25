@@ -9,10 +9,11 @@ namespace SME.SERAp.Prova.Dados
     {
         Task<IEnumerable<Dominio.Prova>> ObterProvasLiberadasNoPeriodoParaCacheAsync();
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaParaCacheAsync(long[] provaIds);
-        Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds);
+        //Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds);
         Task<IEnumerable<Dominio.ParametroSistema>> ObterParametrosParaCacheAsync();
         Task<IEnumerable<ProvaAnoDto>> ObterProvasAnosDatasEModalidadesParaCacheAsync();
         Task InserirTabelaJson(long questaoId, string json);
         Task<IEnumerable<QuestaoCompleta>> ObterQuestaoCompletaLegadoParaCacheAsync(long[] provaIds);
+        IAsyncEnumerable<List<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds);
     }
 }

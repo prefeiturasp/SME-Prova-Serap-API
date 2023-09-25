@@ -51,12 +51,21 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                     if (provasIds.Any())
                     {
-                        var questoesResumo = await repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds);
-                        foreach (var provaId in provasIds)
+                        // var questoesResumo = await repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds);
+                        // foreach (var provaId in provasIds)
+                        // {
+                        //     var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
+                        //     await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questapResumoProva, minutosParaUmDia);
+                        // }
+                        
+                        await foreach (var questoesResumo in repositorioPropagacaoCache.ObterQuestaoResumoParaCacheAsync(provasIds))
                         {
-                            var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
-                            await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questapResumoProva, minutosParaUmDia);
+                            foreach (var questaoResumo in questoesResumo)
+                            {
+                                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, questaoResumo.ProvaId), questaoResumo, minutosParaUmDia);
+                            }
                         }
+
 
                         var questoesCompletas = await repositorioPropagacaoCache.ObterQuestaoCompletaParaCacheAsync(provasIds);
                         foreach (var questao in questoesCompletas)
