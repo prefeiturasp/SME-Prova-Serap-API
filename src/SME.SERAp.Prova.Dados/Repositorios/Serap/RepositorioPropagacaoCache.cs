@@ -96,7 +96,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
-            const int numeroItensPagina = 100000;
+            const int numeroItensPagina = 50000;
             var pagina = 1;
             
             using var conn = ObterConexaoLeitura();
