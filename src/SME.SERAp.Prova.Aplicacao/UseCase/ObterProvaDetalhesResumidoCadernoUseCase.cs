@@ -22,11 +22,13 @@ namespace SME.SERAp.Prova.Aplicacao
             if (usuarioLogadoRa == 0)
                 throw new NegocioException($"Usuário infomado {usuarioLogadoRa} não foi encontrado");
 
+            var aluno = await mediator.Send(new ObterAlunoDadosPorRaQuery(usuarioLogadoRa));
+            
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
             if (prova == null)
                 throw new NegocioException($"A prova infomada {provaId} não foi encontrada");
 
-            var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId, usuarioLogadoRa));
+            var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId, aluno.AlunoId));
             if (questoesResumo == null || !questoesResumo.Any())
                 throw new NegocioException($"Nenhuma questão foi encontrada para a prova {provaId}");
 
@@ -46,7 +48,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var contextosResumo = await mediator.Send(new ObterContextoResumoPorProvaIdQuery(provaId));
             if (contextosResumo != null && contextosResumo.Any())
                 contextosIds = contextosResumo.Select(t => t.ContextoProvaId).ToArray();
-
+;
             return new ProvaDetalheResumidoCadernoRetornoDto(provaId, questoesIds, contextosIds);
         }
     }
