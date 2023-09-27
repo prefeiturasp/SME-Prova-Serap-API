@@ -61,7 +61,9 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" select qc.id, qc.json ");
                 query.AppendLine(" from questao q ");
                 query.AppendLine(" join questao_completa qc on qc.id = q.id ");
-                query.AppendLine(" where q.prova_id = ANY(@provaIds); ");
+                query.AppendLine(" join prova p on p.id = q.prova_id ");
+                query.AppendLine(" where q.prova_id = ANY(@provaIds) ");
+                query.AppendLine(" and not p.formato_tai;");
 
                 return await SqlMapper.QueryAsync<QuestaoCompleta>(conn, query.ToString(), new { provaIds });
             }
@@ -82,7 +84,9 @@ namespace SME.SERAp.Prova.Dados
                 query.AppendLine(" select qc.questao_legado_id as id, max(qc.json) as json ");
                 query.AppendLine(" from questao q ");
                 query.AppendLine(" join questao_completa qc on qc.id = q.id ");
+                query.AppendLine(" join prova p on p.id = q.prova_id ");
                 query.AppendLine(" where q.prova_id = ANY(@provaIds) ");
+                query.AppendLine(" and not p.formato_tai ");
                 query.AppendLine(" group by qc.questao_legado_id; ");
 
                 return await SqlMapper.QueryAsync<QuestaoCompleta>(conn, query.ToString(), new { provaIds });
@@ -96,44 +100,39 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoParaCacheAsync(long[] provaIds)
         {
-            const int numeroItensPagina = 50000;
-            var pagina = 1;
-            
             using var conn = ObterConexaoLeitura();
             try
             {
                 var query = new StringBuilder();
-                query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = ANY(@provaIds);");
+                
+                query.Append(@" select q.prova_id as ProvaId, 
+                                    q.id as QuestaoId, 
+                                    q.questao_legado_id as QuestaoLegadoId, 
+                                    q.caderno, q.ordem 
+                                from questao q
+                                join prova p on (p.id = q.prova_id)
+                                where q.prova_id = ANY(@provaIds)
+                                and not p.formato_tai;");
 
-                query.Append(@"select count(a.AlternativaId) 
-                                 from vw_questao_alternativa a 
-                                 where a.prova_id = ANY(@provaIds)");
+                query.Append(@" select q.id as QuestaoId, 
+                                    a.id as AlternativaId,
+                                    a.alternativa_legado_id as AlternativaLegadoId,
+                                    a.ordem 
+                                from questao q 
+                                    left join alternativa a on a.questao_id = q.id 
+                                    inner join prova p on p.id = q.prova_id
+                                where q.prova_id = ANY(@provaIds)
+                                and not p.formato_tai");
 
-                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds }))
-                {
-                    var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
-                    var contador = await sqlMapper.ReadSingleAsync<long>();
-                    var listaAlternativas = new List<AlternativaResumoProvaDto>();
-
-                    while (listaAlternativas.Count < contador)
-                    {
-                        var queryAlternativas = @$"select a.QuestaoId, a.AlternativaId, a.AlternativaLegadoId, a.ordem 
-                                                     from vw_questao_alternativa a 
-                                                     where a.prova_id = ANY(@provaIds)
-                                                     LIMIT {numeroItensPagina}
-                                                     OFFSET({pagina} - 1) * {numeroItensPagina}";
-
-                        var alternativas = await SqlMapper.QueryAsync<AlternativaResumoProvaDto>(conn, queryAlternativas, new { provaIds });
-                        listaAlternativas.AddRange(alternativas);
-
-                        pagina++;
-                    }
+                using var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaIds });
+                
+                var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
+                var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
                     
-                    foreach (var questao in questoes)
-                        questao.Alternativas = listaAlternativas.Where(t => t.QuestaoId == questao.QuestaoId);
+                foreach (var questao in questoes)
+                    questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
 
-                    return questoes;
-                }
+                return questoes;
             }
             finally
             {

@@ -1,5 +1,4 @@
 ﻿using SME.SERAp.Prova.Dados;
-using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
@@ -23,13 +22,15 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
         public async Task Propagar()
         {
-            bool progagandoCache = false;
+            var progagandoCache = false;
+
             try
             {
                 var dataHoraAtual = DateTime.Now;
                 Console.WriteLine($"~~> Inicializando WarmUp do cache as {dataHoraAtual}");
 
                 var minutosParaUmDia = (int)TimeSpan.FromDays(1).TotalMinutes;
+                
                 if (!await repositorioCache.ExisteChaveAsync(CacheChave.CachePropagado))
                 {
                     progagandoCache = true;
@@ -43,9 +44,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                     var provas = await repositorioPropagacaoCache.ObterProvasLiberadasNoPeriodoParaCacheAsync();
                     foreach (var prova in provas)
-                    {
                         await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.Prova, prova.Id), prova, minutosParaUmDia);
-                    }
 
                     var provasIds = provas.Select(p => p.Id).ToArray();
 
@@ -55,10 +54,10 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                         foreach (var provaId in provasIds)
                         {
-                            var questapResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
-
-                            foreach (var questaoResumo in questoesResumo)
-                                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId, questaoResumo.Caderno), questapResumoProva, minutosParaUmDia);    
+                            var questaoResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
+                            
+                            if (questaoResumoProva.Any())
+                                await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questaoResumoProva, minutosParaUmDia);
                         }
 
                         var questoesCompletas = await repositorioPropagacaoCache.ObterQuestaoCompletaParaCacheAsync(provasIds);
@@ -75,7 +74,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     }
                 }
 
-                Console.WriteLine($"~~> WarmUp do cache Finalizado as {DateTime.Now}");
+                Console.WriteLine($"~~> WarmUp do cache Finalizado as {DateTime.Now}");                
             }
             catch (Exception ex)
             {
