@@ -12,7 +12,7 @@ namespace SME.SERAp.Prova.Infra
         public int Ordem { get; set; }
     }
 
-    public class AlternativaResumoProvaDto
+    public class AlternativaResumoProvaDto : DtoBase
     {
         public long QuestaoId { get; set; }
         public long AlternativaId { get; set; }

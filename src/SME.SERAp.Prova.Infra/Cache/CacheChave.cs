@@ -1,6 +1,5 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-
     public static class CacheChave
     {
         public static string ObterChave(string chave, params object[] parametros)
@@ -8,13 +7,12 @@
             return string.Format(chave, parametros);
         }
 
-
         public const string CachePropagado = "cache-propagado";
         /// <summary>
         /// Questões resumidas da prova
         /// 0 - Prova Id
         /// </summary>
-        public const string QuestaoProvaResumo = "pqr-{0}-{1}";
+        public const string QuestaoProvaResumo = "pqr-{0}";
         /// <summary>
         /// Contextos resumidos da prova
         /// 0 - Prova Id
