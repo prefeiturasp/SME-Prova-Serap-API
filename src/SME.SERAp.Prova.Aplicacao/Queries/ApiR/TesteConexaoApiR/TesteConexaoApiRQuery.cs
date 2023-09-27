@@ -6,7 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
     {
         public TesteConexaoApiRQuery()
         {
-
         }
     }
 }
