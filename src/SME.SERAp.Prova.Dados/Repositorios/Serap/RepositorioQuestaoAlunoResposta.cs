@@ -90,7 +90,7 @@ namespace SME.SERAp.Prova.Dados
                               left join questao q on q.caderno = ca.caderno and q.prova_id = ca.prova_id
                               left join alternativa al on al.questao_id = q.id and al.correta 
                               left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = a.ra
-                              where a.ra = @alunoRa and q.prova_id = @provaId";
+                              where a.ra = @alunoRa and q.prova_id = @provaId and a.situacao = 1";
 
                 return await conn.QueryAsync<QuestaoAlternativaAlunoRespostaDto>(query, new { alunoRa, provaId });
             }
