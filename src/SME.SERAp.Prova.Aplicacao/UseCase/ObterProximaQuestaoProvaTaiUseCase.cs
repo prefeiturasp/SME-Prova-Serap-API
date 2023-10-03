@@ -30,13 +30,13 @@ namespace SME.SERAp.Prova.Aplicacao
             var aluno = await mediator.Send(new ObterDadosAlunoLogadoQuery());
             var alunoRa = aluno.Ra;
 
-            if (alunoRa <= 0)
-                alunoRa = questaoAlunoRespostaSincronizarDto.AlunoRa;
-            
+            if (questaoAlunoRespostaSincronizarDto.AlunoRa != alunoRa)
+                throw new NegocioException("Resposta enviada não pertence ao aluno logado");
+
             var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
 
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
-            
+
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
                 throw new NegocioException("Esta prova precisa ser iniciada.", 411);
 
@@ -51,19 +51,19 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> obter alternativas e respostas
             var alunoRespostas = (await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa))).ToList();
 
+            if(!questoesAluno.Any(t => t.Id == questaoAlunoRespostaSincronizarDto.QuestaoId))
+                throw new NegocioException($"Questão respondida não pertence ao aluno logado. Questão: {questaoAlunoRespostaSincronizarDto.QuestaoId}");
+
             //-> atualiza a resposta atual do aluno no cache.
-            var alunoRespostasAtualizado = alunoRespostas
-                .Where(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId)
-                .ToList();
+            var primeiraRespostaAluno = alunoRespostas
+                .FirstOrDefault(t => t.QuestaoId == questaoAlunoRespostaSincronizarDto.QuestaoId) ?? 
+                throw new NegocioException($"Questão respondida não encontrada na lista de respostas do aluno. Questão: {questaoAlunoRespostaSincronizarDto.QuestaoId}");
 
-            var primeiraRespostaAluno = alunoRespostasAtualizado.FirstOrDefault();
+            primeiraRespostaAluno.AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId;
 
-            if (primeiraRespostaAluno != null)
-                primeiraRespostaAluno.AlternativaResposta = questaoAlunoRespostaSincronizarDto.AlternativaId;
-            
             //-> Obter alternativas com respotas
             var alternativasComRespostas = alunoRespostas.Where(c => c.AlternativaResposta.HasValue).ToList();
-            
+
             //-> Obter proximo item
             var respotas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
             var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
@@ -93,18 +93,32 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
             var continuarProva = retorno.ProximaQuestao != -1;
 
+            ValidarRetornoApiTAI(questoesAluno, retorno, continuarProva);
+
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
             await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostas, retorno);
 
-            if (continuarProva) 
+            if (continuarProva)
                 return true;
-            
+
             provaStatus.Status = ProvaStatus.Finalizado;
             provaStatus.FinalizadoEm = ObterDatafim(questaoAlunoRespostaSincronizarDto.DataHoraRespostaTicks);
 
             await FinalizarProvaAluno(aluno.Ra, provaStatus);
 
             return false;
+        }
+
+        private static void ValidarRetornoApiTAI(List<QuestaoTaiDto> questoesAluno, ObterProximoItemApiRRespostaDto retorno, bool continuarProva)
+        {
+            if (continuarProva)
+            {
+                if (!questoesAluno.Any(t => t.Id == retorno.ProximaQuestao))
+                    throw new NegocioException($"Próxima questão retornada pelo TAI não existe para o aluno. Questão: {retorno.ProximaQuestao}");
+
+                if (questoesAluno.Any(t => t.Ordem == retorno.Ordem))
+                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.Ordem}");
+            }
         }
 
         private async Task FinalizarProvaAluno(long ra, ProvaAluno provaAluno)
