@@ -117,7 +117,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     throw new NegocioException($"Próxima questão retornada pelo TAI não existe para o aluno. Questão: {retorno.ProximaQuestao}");
 
                 if (questoesAluno.Any(t => t.Ordem == retorno.Ordem))
-                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.Ordem}");
+                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.ProximaQuestao}, Ordem: {retorno.Ordem}");
             }
         }
 
