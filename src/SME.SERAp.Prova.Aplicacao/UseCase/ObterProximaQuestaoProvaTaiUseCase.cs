@@ -63,14 +63,19 @@ namespace SME.SERAp.Prova.Aplicacao
 
             //-> Obter alternativas com respotas
             var alternativasComRespostas = alunoRespostas.Where(c => c.AlternativaResposta.HasValue).ToList();
+            
+            //-> Obter questões com respostas
+            var questoesComResposta = questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToList();
+            
+            if (questoesComResposta.All(c => c != primeiraRespostaAluno.QuestaoId))
+                questoesComResposta.Add(primeiraRespostaAluno.QuestaoId);            
 
             //-> Obter proximo item
             var respotas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
             var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
-            var administrado = questoesAluno.Where(t => t.Ordem != 999).Select(t => t.Id).ToArray();
-
+            var administrado = questoesComResposta.ToArray();
+            
             var componente = string.Empty;
-
             if (prova.Disciplina != null)
                 componente = prova.Disciplina;
 
