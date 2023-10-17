@@ -1,13 +1,11 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-
     public static class CacheChave
     {
         public static string ObterChave(string chave, params object[] parametros)
         {
             return string.Format(chave, parametros);
         }
-
 
         public const string CachePropagado = "cache-propagado";
         /// <summary>

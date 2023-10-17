@@ -119,28 +119,27 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
-
+        
         public async Task<IEnumerable<QuestaoResumoProvaDto>> ObterQuestaoResumoPorProvaIdAsync(long provaId)
         {
             using var conn = ObterConexaoLeitura();
             try
             {
                 var query = new StringBuilder();
+
+                query.Append(" /* ObterQuestaoResumoPorProvaIdAsync */ ");
                 query.Append(" select q.prova_id as ProvaId, q.id as QuestaoId, q.questao_legado_id as QuestaoLegadoId, q.caderno, q.ordem from questao q where q.prova_id = @provaId;");
                 query.Append(" select q.id as QuestaoId, a.id as AlternativaId, a.alternativa_legado_id as AlternativaLegadoId, a.ordem from questao q left join alternativa a on a.questao_id = q.id where q.prova_id = @provaId;");
 
-                using (var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaId }))
-                {
-                    var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
-                    var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
+                using var sqlMapper = await SqlMapper.QueryMultipleAsync(conn, query.ToString(), new { provaId });
+                
+                var questoes = await sqlMapper.ReadAsync<QuestaoResumoProvaDto>();
+                var alternativas = await sqlMapper.ReadAsync<AlternativaResumoProvaDto>();
 
-                    foreach(var questao in questoes)
-                    {
-                        questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
-                    }
+                foreach(var questao in questoes)
+                    questao.Alternativas = alternativas.Where(t => t.QuestaoId == questao.QuestaoId);
 
-                    return questoes;   
-                }
+                return questoes;
             }
             finally
             {

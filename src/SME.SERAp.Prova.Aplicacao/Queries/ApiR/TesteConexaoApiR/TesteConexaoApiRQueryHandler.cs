@@ -25,11 +25,10 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Clear();
-                
-                var response = await client.PostAsync(apiROptions.UrlQuestao,
-                    new StringContent("teste"), cancellationToken);
 
-                return response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.InternalServerError;
+                var response = await client.PostAsync(apiROptions.UrlPing, new StringContent("teste"), cancellationToken);
+
+                return response.IsSuccessStatusCode;
             }
             catch (Exception ex)
             {

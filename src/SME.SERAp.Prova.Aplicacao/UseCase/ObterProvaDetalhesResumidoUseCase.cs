@@ -25,8 +25,11 @@ namespace SME.SERAp.Prova.Aplicacao
             var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
             if (prova == null)
                 throw new NegocioException($"A prova infomada {provaId} não foi encontrada");
+            
+            if (prova.FormatoTai)
+                throw new NegocioException($"Prova TAI {provaId} não possui resumo detalhado. Usuário: {usuarioLogadoRa}.");
 
-            var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId));
+            var questoesResumo = await mediator.Send(new ObterQuestaoResumoPorProvaIdQuery(provaId));            
             if(questoesResumo == null || !questoesResumo.Any())
                 throw new NegocioException($"Nenhuma questão foi encontrada para a prova {provaId}");
 

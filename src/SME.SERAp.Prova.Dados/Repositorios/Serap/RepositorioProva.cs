@@ -160,7 +160,8 @@ namespace SME.SERAp.Prova.Dados
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
                             inner join tipo_prova tp on tp.id = p.tipo_prova_id
-                            where (p.ocultar_prova = false or p.ocultar_prova is null)";
+                            where (p.ocultar_prova = false or p.ocultar_prova is null)
+                            and p.aderir_todos";
 
                 return await conn.QueryAsync<ProvaAnoDto>(query);
             }
@@ -262,7 +263,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false) and not p.formato_tai ");
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");

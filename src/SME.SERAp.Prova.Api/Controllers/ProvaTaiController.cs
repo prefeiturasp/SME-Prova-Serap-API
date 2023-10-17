@@ -15,7 +15,6 @@ namespace SME.SERAp.Prova.Api.Controllers
 
         [HttpGet("existe-conexao-r")]
         [ProducesResponseType(typeof(bool), 200)]
-        [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [Authorize("Bearer")]
         public async Task<IActionResult> VerificaConexaoR([FromServices] IVerificaConexaoComServicoRUseCase verificaConexaoComServicoRUseCase)
         {
