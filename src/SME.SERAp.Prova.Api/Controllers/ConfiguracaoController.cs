@@ -31,9 +31,9 @@ namespace SME.SERAp.Prova.Api.Controllers
         
         [HttpGet("existe-conexao")]
         [ProducesResponseType(typeof(bool), 200)]
-        public async Task<IActionResult> VerificaConexao()
+        public IActionResult VerificaConexao()
         {
-            return Ok(await Task.FromResult(true));
+            return Ok(true);
         }
     }
 }
