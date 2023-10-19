@@ -28,6 +28,12 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterDataHoraServidorUseCase.Executar());
         }
-
+        
+        [HttpGet("existe-conexao")]
+        [ProducesResponseType(typeof(bool), 200)]
+        public async Task<IActionResult> VerificaConexao()
+        {
+            return Ok(await Task.FromResult(true));
+        }
     }
 }
