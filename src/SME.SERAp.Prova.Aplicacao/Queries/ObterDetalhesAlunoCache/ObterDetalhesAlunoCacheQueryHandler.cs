@@ -15,9 +15,10 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public ObterDetalhesAlunoCacheQueryHandler(IRepositorioCache repositorioCache, IMediator mediator)
         {
-            this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
-            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
+            this.repositorioCache = repositorioCache ?? throw new ArgumentNullException(nameof(repositorioCache));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+        
         public async Task<MeusDadosRetornoDto> Handle(ObterDetalhesAlunoCacheQuery request, CancellationToken cancellationToken)
         {
             return await repositorioCache.ObterRedisAsync(string.Format(CacheChave.MeusDados, request.AlunoRA), async () => await ObterDetalhesAsync(request.AlunoRA));
@@ -55,7 +56,8 @@ namespace SME.SERAp.Prova.Aplicacao
                     deficienciasAluno != null ? deficienciasAluno.ToArray() : Array.Empty<int>()
                     );
             }
-            else return null;
+
+            return null;
         }
     }
 }

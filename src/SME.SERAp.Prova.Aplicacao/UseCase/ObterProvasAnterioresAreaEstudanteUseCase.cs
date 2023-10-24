@@ -29,7 +29,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 return MapearParaDto(provas.ToList());
             }
-            else return default;
+
+            return default;
         }
 
         private List<ObterProvasAnterioresRetornoDto> MapearParaDto(List<ProvaAlunoAnoDto> provasAluno)
