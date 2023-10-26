@@ -14,5 +14,6 @@ namespace SME.SERAp.Prova.Dominio
         public string Nome { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime AtualizadoEm { get; set; }
+        public bool ProvaNormal { get; set; }
     }
 }
