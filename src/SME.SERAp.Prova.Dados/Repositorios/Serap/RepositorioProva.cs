@@ -172,7 +172,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
+        public async Task<IEnumerable<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
         {
             using var conn = ObterConexaoLeitura();
             try
@@ -207,8 +207,7 @@ namespace SME.SERAp.Prova.Dados
                               and not aderir_todos
                               and pd.aluno_ra = @alunoRa;";
 
-                var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
-                return retorno.ToList();
+                return await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
             }
             finally
             {
@@ -377,7 +376,7 @@ namespace SME.SERAp.Prova.Dados
 
                 using (var multi = await conn.QueryMultipleAsync(query.ToString(), parametros))
                 {
-                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>().ToList();
+                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>();
                     retorno.TotalRegistros = multi.ReadFirst<int>();
                 }
 

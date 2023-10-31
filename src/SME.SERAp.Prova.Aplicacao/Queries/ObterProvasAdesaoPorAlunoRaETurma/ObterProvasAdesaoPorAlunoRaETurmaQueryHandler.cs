@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvasAdesaoPorAlunoRaETurmaQueryHandler : IRequestHandler<ObterProvasAdesaoPorAlunoRaETurmaQuery, List<ProvaAnoDto>>
+    public class ObterProvasAdesaoPorAlunoRaETurmaQueryHandler : IRequestHandler<ObterProvasAdesaoPorAlunoRaETurmaQuery, IEnumerable<ProvaAnoDto>>
     {
 
         private readonly IRepositorioProva repositorioProva;
@@ -17,7 +17,7 @@ namespace SME.SERAp.Prova.Aplicacao
             this.repositorioProva = repositorioProva ?? throw new System.ArgumentNullException(nameof(repositorioProva));
         }
 
-        public async Task<List<ProvaAnoDto>> Handle(ObterProvasAdesaoPorAlunoRaETurmaQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProvaAnoDto>> Handle(ObterProvasAdesaoPorAlunoRaETurmaQuery request, CancellationToken cancellationToken)
         {
             return await repositorioProva.ObterProvasAdesaoAlunoAsync(request.AlunoRa, request.TurmaId);
         }

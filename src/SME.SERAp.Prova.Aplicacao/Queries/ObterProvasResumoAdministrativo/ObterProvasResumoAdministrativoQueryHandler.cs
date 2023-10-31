@@ -34,14 +34,14 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private static IEnumerable<ProvaResumoAdministrativoRetornoDto> PrepararRetorno(IEnumerable<Questao> questoes)
         {
+            if (!questoes.Any()) 
+                return Enumerable.Empty<ProvaResumoAdministrativoRetornoDto>();
+            
             var retorno = new List<ProvaResumoAdministrativoRetornoDto>();
-            if (questoes.Any())
-            {
-                foreach (var questao in questoes)
-                    retorno.Add(new ProvaResumoAdministrativoRetornoDto(questao.Id, questao.TextoBase, questao.Enunciado, questao.Caderno, questao.Ordem));
+            foreach (var questao in questoes)
+                retorno.Add(new ProvaResumoAdministrativoRetornoDto(questao.Id, questao.TextoBase, questao.Enunciado, questao.Caderno, questao.Ordem));
 
-                retorno = retorno.OrderBy(t => t.Ordem).ToList();
-            }
+            retorno = retorno.OrderBy(t => t.Ordem).ToList();
 
             return retorno;
         }
