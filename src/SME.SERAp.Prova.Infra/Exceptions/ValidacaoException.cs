@@ -14,7 +14,10 @@ namespace SME.SERAp.Prova.Infra.Exceptions
             Erros = erros;
 
             foreach (var erro in erros)
-                Data.Add(erro.PropertyName, erro.ErrorMessage);
+            {
+                if (!Data.Contains(erro.PropertyName))
+                    Data.Add(erro.PropertyName, erro.ErrorMessage);
+            }
         }
 
         public IEnumerable<string> Mensagens() => Erros?.Select(c => c.ErrorMessage);
