@@ -4,7 +4,6 @@ pipeline {
         kubeconfig = getKubeconf(env.branchname)
         registryCredential = 'jenkins_registry'
         namespace = "${env.branchname == 'release-r2' ? 'serap-estud-hom2' : env.branchname == 'release' ? 'serap-estud-hom' : env.branchname == 'development' ? 'serap-estud-dev' : 'sme-serap-estudante'}"
-        deployment1 = "${env.branchname == 'master' ? 'sme-prova-serap-api' : 'prova-serap-api' }"
         
     }
     agent { kubernetes { 
@@ -63,7 +62,7 @@ pipeline {
                         }
                         withCredentials([file(credentialsId: "${kubeconfig}", variable: 'config')]){
                                 sh('cp $config '+"$home"+'/.kube/config')
-                                sh "kubectl rollout restart deployment/${deployment1} -n ${namespace}"
+                                sh "kubectl rollout restart deployment/prova-serap-api -n ${namespace}"
                                 sh('rm -f '+"$home"+'/.kube/config')
                         }   
                 }
