@@ -49,7 +49,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var contextosResumo = await mediator.Send(new ObterContextoResumoPorProvaIdQuery(provaId));
             if (contextosResumo != null && contextosResumo.Any())
                 contextosIds = contextosResumo.Select(t => t.ContextoProvaId).ToArray();
-;
+
             return new ProvaDetalheResumidoCadernoRetornoDto(provaId, questoesIds, contextosIds);
         }
     }

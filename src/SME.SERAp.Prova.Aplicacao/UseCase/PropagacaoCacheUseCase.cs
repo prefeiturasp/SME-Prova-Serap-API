@@ -54,7 +54,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                         foreach (var provaId in provasIds)
                         {
-                            var questaoResumoProva = questoesResumo.Where(t => t.ProvaId == provaId).ToList();
+                            var questaoResumoProva = questoesResumo.Where(t => t.ProvaId == provaId);
                             
                             if (questaoResumoProva.Any())
                                 await repositorioCache.SalvarRedisAsync(string.Format(CacheChave.QuestaoProvaResumo, provaId), questaoResumoProva, minutosParaUmDia);

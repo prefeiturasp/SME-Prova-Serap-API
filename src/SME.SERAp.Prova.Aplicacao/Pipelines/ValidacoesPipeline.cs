@@ -26,8 +26,7 @@ namespace SME.SGP.Aplicacao.Pipelines
                 var erros = validadores
                     .Select(v => v.Validate(context))
                     .SelectMany(result => result.Errors)
-                    .Where(f => f != null)
-                    .ToList();
+                    .Where(f => f != null);
 
                 if (erros != null && erros.Any())
                 {

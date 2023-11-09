@@ -31,7 +31,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     telaBoasVindas.Ordem));
             }
 
-            return telasBoasVindasRetornar.OrderBy(a => a.Ordem).ToList();
+            return telasBoasVindasRetornar.OrderBy(a => a.Ordem);
         }
     }
 }

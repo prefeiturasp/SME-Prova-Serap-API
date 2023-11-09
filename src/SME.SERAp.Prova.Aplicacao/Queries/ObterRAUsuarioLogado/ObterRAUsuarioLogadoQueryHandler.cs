@@ -14,6 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new System.ArgumentNullException(nameof(httpContextAccessor));
         }
+        
         public async Task<long> Handle(ObterRAUsuarioLogadoQuery request, CancellationToken cancellationToken)
         {
             var ra = httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(a => a.Type == "RA")?.Value ?? string.Empty;

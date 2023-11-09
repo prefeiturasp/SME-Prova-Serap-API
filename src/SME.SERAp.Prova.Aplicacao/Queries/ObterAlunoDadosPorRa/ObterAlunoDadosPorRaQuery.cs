@@ -13,12 +13,13 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public long AlunoRa { get; set; }
     }
+    
     public class ObterAlunoDadosPorRaValidator : AbstractValidator<ObterAlunoDadosPorRaQuery>
     {
         public ObterAlunoDadosPorRaValidator()
         {
             RuleFor(a => a.AlunoRa)
-                .NotEmpty()
+                .GreaterThan(0)
                 .WithMessage("O RA do aluno é obrigatório.");
         }
     }
