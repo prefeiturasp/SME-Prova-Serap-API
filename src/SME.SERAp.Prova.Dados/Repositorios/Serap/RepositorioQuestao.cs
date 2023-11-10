@@ -189,6 +189,29 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
+        public async Task<QuestaoCompleta> ObterQuestaoCompletaPorLegadoIdAsync(long legadoId)
+        {
+            using var conn = ObterConexaoLeitura();
+            try
+            {
+                var query = new StringBuilder();
+
+                // obtem sempre a ultima questão importada.
+                query.AppendLine(" select qc.questao_legado_id as id, json ");
+                query.AppendLine(" from questao_completa qc ");
+                query.AppendLine(" where qc.questao_legado_id = @legadoId ");
+                query.AppendLine(" order by qc.id desc ");
+                query.AppendLine(" limit 1 ");
+
+                return await conn.QueryFirstOrDefaultAsync<QuestaoCompleta>(query.ToString(), new { legadoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
         public async Task<long> ObterUltimaQuestaoTaiPorProvaAlunoRa(long provaId, long alunoRa)
         {
             using var conn = ObterConexaoLeitura();

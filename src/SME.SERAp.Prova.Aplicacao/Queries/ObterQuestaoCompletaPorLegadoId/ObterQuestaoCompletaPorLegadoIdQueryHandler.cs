@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Infra.Exceptions;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -24,13 +25,13 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var retorno = new List<string>();
 
-            string nomeChave, json;
+            string nomeChave;
             var buscarNoBanco = new List<long>();
 
             foreach(var questaoId in request.LegadoIds)
             {
                 nomeChave = string.Format(CacheChave.QuestaoCompletaLegado, questaoId);
-                json = await repositorioCache.ObterRedisToJsonAsync(nomeChave);
+                var json = await repositorioCache.ObterRedisToJsonAsync(nomeChave);
 
                 if(string.IsNullOrEmpty(json))
                     buscarNoBanco.Add(questaoId);
@@ -38,15 +39,20 @@ namespace SME.SERAp.Prova.Aplicacao
                     retorno.Add(json);
             }
 
-            if(buscarNoBanco.Any())
+            if (!buscarNoBanco.Any()) 
+                return retorno;
+
+            foreach (var legadoId in buscarNoBanco)
             {
-                var questoes = await repositorioQuestao.ObterQuestaoCompletaPorLegadoIdsAsync(buscarNoBanco.ToArray());
-                foreach(var questao in questoes)
-                {
-                    nomeChave = string.Format(CacheChave.QuestaoCompletaLegado, questao.Id);
-                    retorno.Add(questao.Json);
-                    await repositorioCache.SalvarRedisToJsonAsync(nomeChave, questao.Json);
-                }
+                var questao = await repositorioQuestao.ObterQuestaoCompletaPorLegadoIdAsync(legadoId);
+
+                if (questao == null)
+                    throw new NegocioException($"Questao completa legado Id {legadoId} não localizada.");
+
+                nomeChave = string.Format(CacheChave.QuestaoCompletaLegado, questao.Id);
+                retorno.Add(questao.Json);
+
+                await repositorioCache.SalvarRedisToJsonAsync(nomeChave, questao.Json);                
             }
 
             return retorno;
