@@ -133,13 +133,6 @@ namespace SME.SERAp.Prova.Api
             services.AddSingleton(servicoTelemetria);
             RegistraMvc.Registrar(services, serviceProvider);
             DapperExtensionMethods.Init(servicoTelemetria);
-
-            IniciarPropagacaoCache(services);
-        }
-
-        private static void IniciarPropagacaoCache(IServiceCollection services)
-        {
-            services.AddStartupTask<WarmUpCacheTask>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
