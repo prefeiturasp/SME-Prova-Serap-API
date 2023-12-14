@@ -7,7 +7,6 @@
             return string.Format(chave, parametros);
         }
 
-        public const string CachePropagado = "cache-propagado";
         /// <summary>
         /// Questões resumidas da prova
         /// 0 - Prova Id
