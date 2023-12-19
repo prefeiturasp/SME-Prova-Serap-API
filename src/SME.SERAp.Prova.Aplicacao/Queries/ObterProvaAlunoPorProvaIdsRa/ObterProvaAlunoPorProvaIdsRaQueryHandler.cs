@@ -21,12 +21,13 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<IEnumerable<ProvaAluno>> Handle(ObterProvaAlunoPorProvaIdsRaQuery request, CancellationToken cancellationToken)
         {
             var lista = new List<ProvaAluno>();
+
             foreach (var provaId in request.ProvaIds)
             {
-                string chaveProvaAluno = string.Format(CacheChave.AlunoProva, provaId, request.AlunoRa);
+                var chaveProvaAluno = string.Format(CacheChave.AlunoProva, provaId, request.AlunoRa);
                 var provaAluno = await repositorioCache.ObterRedisAsync(chaveProvaAluno, () => repositorioProvaAluno.ObterPorProvaIdRaAsync(provaId , request.AlunoRa));
 
-                if(provaAluno != null)
+                if (provaAluno != null)
                     lista.Add(provaAluno);
             }
 
