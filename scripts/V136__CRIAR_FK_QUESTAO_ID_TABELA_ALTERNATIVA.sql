@@ -1,0 +1,2 @@
+delete from alternativa where not exists (select id from questao where id = questao_id);
+ALTER TABLE public.alternativa ADD CONSTRAINT questao_id_fk FOREIGN KEY (questao_id) REFERENCES public.questao(id);
