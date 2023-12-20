@@ -49,7 +49,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 .ToList();
 
             //-> obter alternativas e respostas
-            var alunoRespostas = (await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa))).ToList();
+            var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, alunoRa));
 
             if(!questoesAluno.Any(t => t.Id == questaoAlunoRespostaSincronizarDto.QuestaoId))
                 throw new NegocioException($"Questão respondida não pertence ao aluno logado. Questão: {questaoAlunoRespostaSincronizarDto.QuestaoId}");
