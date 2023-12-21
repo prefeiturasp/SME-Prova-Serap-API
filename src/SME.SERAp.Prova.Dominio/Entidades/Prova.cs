@@ -38,6 +38,5 @@ namespace SME.SERAp.Prova.Dominio
         public long? DisciplinaId { get; set; }
         public bool FormatoTai { get; set; }
         public ProvaFormatoTaiItem? ProvaFormatoTaiItem { get; set; }
-
     }
 }
