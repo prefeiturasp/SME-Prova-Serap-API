@@ -122,7 +122,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     totalItens = alunoRespostas.Count();
                 }
                 
-                if (provaAluno is { Status: ProvaStatus.Finalizado or ProvaStatus.FinalizadoAutomaticamente })
+                if (provaAluno is { Status: ProvaStatus.Finalizado or ProvaStatus.FINALIZADA_AUTOMATICAMENTE_JOB or ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO or ProvaStatus.FINALIZADA_OFFLINE })
                 {
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
                         totalItens,

@@ -21,7 +21,10 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Handle(AtualizarProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            if (request.ProvaAluno.Status == ProvaStatus.Finalizado)
+            if (request.ProvaAluno.Status == ProvaStatus.Finalizado ||
+                request.ProvaAluno.Status == ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO ||
+                request.ProvaAluno.Status == ProvaStatus.FINALIZADA_OFFLINE)
+
                 request.ProvaAluno.FinalizadoEmServidor = DateTime.Now;
 
             var chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaAluno.ProvaId, request.ProvaAluno.AlunoRA);

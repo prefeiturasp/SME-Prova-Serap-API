@@ -38,7 +38,19 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
 
-                var status = provaStatus.Status == ProvaStatus.Finalizado ? "finalizada" : "iniciada";
+
+                var status = string.Empty;
+
+                if (provaStatus.Status == ProvaStatus.Finalizado ||
+                   provaStatus.Status == ProvaStatus.FINALIZADA_OFFLINE ||
+                   provaStatus.Status == ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO)
+                    status = "finalizada";
+
+                else
+                {
+                    status = "iniciada";
+                }
+
                 throw new NegocioException($"Esta prova já foi {status}", 411);
             }
             catch (Exception ex)
