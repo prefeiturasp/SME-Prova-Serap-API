@@ -27,7 +27,7 @@ namespace SME.SERAp.Prova.Aplicacao
             try
             {
                 await ObterDadosAlunoLogado();
-                var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, 5038706));
+                var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
                 var dataInicio = DateTime.Now;
 
                 if (provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0)
@@ -72,7 +72,6 @@ namespace SME.SERAp.Prova.Aplicacao
 
 
             if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery((ProvaStatus)provaAlunoStatusDto.Status)))
-
 
             {
                 provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0
