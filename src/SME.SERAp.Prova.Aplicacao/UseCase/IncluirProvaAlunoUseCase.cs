@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Aplicacao.Queries.VerificaStatusProvaFinalizada;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos.Aluno;
@@ -32,22 +33,23 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (provaAlunoStatusDto.DataInicio != null && provaAlunoStatusDto.DataInicio != 0)
                 {
                     var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
-                    
+
                     if (dataMenos3Horas != null)
                         dataInicio = dataMenos3Horas.Value;
                 }
 
                 if (provaStatus == null)
                     return await IncluirProva(provaId, provaAlunoStatusDto, dataInicio);
+              
 
-                if (provaStatus.Status == ProvaStatus.Finalizado)
+                if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status)))
                     throw new NegocioException("Esta prova já foi finalizada", 411);
-                
+
                 return await AtualizarProva(provaAlunoStatusDto, provaStatus);
             }
             catch (Exception ex)
             {
-                servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio { provaAlunoStatusDto.DataInicio} -- DataFim, { provaAlunoStatusDto.DataFim} " +
+                servicoLog.Registrar($"ProvaId = {provaId} -- Status {provaAlunoStatusDto.Status} -- DataInicio {provaAlunoStatusDto.DataInicio} -- DataFim, {provaAlunoStatusDto.DataFim} " +
                         $"Tipo Dispositivo = {provaAlunoStatusDto.TipoDispositivo} --  ", ex);
                 throw;
             }
@@ -64,11 +66,13 @@ namespace SME.SERAp.Prova.Aplicacao
 
             if (provaAlunoStatusDto.TipoDispositivo is > 0)
                 tipoDispositivo = (TipoDispositivo)provaAlunoStatusDto.TipoDispositivo.Value;
-            
+
             provaStatus.TipoDispositivo = tipoDispositivo;
             provaStatus.Status = (ProvaStatus)provaAlunoStatusDto.Status;
 
-            if ((ProvaStatus)provaAlunoStatusDto.Status == ProvaStatus.Finalizado)
+
+            if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery((ProvaStatus)provaAlunoStatusDto.Status)))
+
             {
                 provaStatus.FinalizadoEm = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0
                     ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim)
@@ -79,7 +83,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
             await PublicarAcompProvaAlunoInicioFimTratar(provaStatus.ProvaId, provaStatus.AlunoRA,
                 (int)provaStatus.Status, provaStatus.CriadoEm, provaStatus.FinalizadoEm);
-            
+
             return await mediator.Send(new AtualizarProvaAlunoCommand(provaStatus));
         }
 
