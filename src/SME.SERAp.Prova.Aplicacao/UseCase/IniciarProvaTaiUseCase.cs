@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Aplicacao.Queries.VerificaStatusProvaFinalizada;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos.Aluno;
@@ -41,9 +42,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 
                 var status = string.Empty;
 
-                if (provaStatus.Status == ProvaStatus.Finalizado ||
-                   provaStatus.Status == ProvaStatus.FINALIZADA_OFFLINE ||
-                   provaStatus.Status == ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO)
+                if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status)))
                     status = "finalizada";
 
                 else

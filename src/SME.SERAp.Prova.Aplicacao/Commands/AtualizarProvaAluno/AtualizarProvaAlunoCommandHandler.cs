@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Aplicacao.Queries.VerificaStatusProvaFinalizada;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
@@ -21,9 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Handle(AtualizarProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            if (request.ProvaAluno.Status == ProvaStatus.Finalizado ||
-                request.ProvaAluno.Status == ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO ||
-                request.ProvaAluno.Status == ProvaStatus.FINALIZADA_OFFLINE)
+            if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery(request.ProvaAluno.Status)))
 
                 request.ProvaAluno.FinalizadoEmServidor = DateTime.Now;
 
