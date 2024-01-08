@@ -426,21 +426,20 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select distinct
-									q.enunciado as DescricaoQuestao, 
-									q.ordem as OrdemQuestao,
-									a.numeracao as AlternativaAluno
-								from aluno alu 
-								inner join caderno_aluno ca on alu.id = ca.aluno_id 
-								inner join prova p on p.id = ca.prova_id
-								inner join questao q on q.caderno = ca.caderno
-								left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
-								left join alternativa a on a.id = qar.alternativa_id
-								where p.formato_tai = true
-									and alu.ra = @alunoRa
-									and p.id = @provaId
-                                    and q.ordem != 999
-                                order by q.ordem";
+                const string query = @"select distinct
+									        q.enunciado as DescricaoQuestao, 
+									        q.ordem as OrdemQuestao,
+									        a.numeracao as AlternativaAluno
+                                        from questao_aluno_administrado qaa
+								        inner join aluno alu on alu.id = qaa.aluno_id
+                                        inner join questao q on q.id = qaa.questao_id
+                                        inner join prova p on p.id = q.prova_id
+								        left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
+								        left join alternativa a on a.id = qar.alternativa_id
+								        where q.prova_id = @provaId
+								        and alu.ra = @alunoRa
+								        and p.formato_tai = true
+                                        order by qaa.ordem";
 
                 return await conn.QueryAsync<ProvaTaiResultadoDto>(query, new { provaId, alunoRa });
             }

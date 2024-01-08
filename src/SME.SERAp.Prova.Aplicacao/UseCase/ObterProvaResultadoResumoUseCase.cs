@@ -6,7 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
 {
     public class ObterProvaResultadoResumoUseCase : IObterProvaResultadoResumoUseCase
     {
-
         private readonly IMediator mediator;
 
         public ObterProvaResultadoResumoUseCase(IMediator mediator)

@@ -54,7 +54,8 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioVersaoAppDispositivo, RepositorioVersaoAppDispositivo>();
             services.TryAddScoped<IRepositorioAlunoProvaProficiencia, RepositorioAlunoProvaProficiencia>();
             services.TryAddScoped<IRepositorioArquivoResultadoPsp, RepositorioArquivoResultadoPsp>();
-            services.TryAddScoped<IRepositorioExecucaoControle, RepositorioExecucaoControle>();            
+            services.TryAddScoped<IRepositorioExecucaoControle, RepositorioExecucaoControle>();
+            services.TryAddScoped<IRepositorioQuestaoAlunoAdministrado, RepositorioQuestaoAlunoAdministrado>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)

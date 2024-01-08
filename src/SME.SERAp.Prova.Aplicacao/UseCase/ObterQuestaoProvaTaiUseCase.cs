@@ -21,11 +21,11 @@ namespace SME.SERAp.Prova.Aplicacao
 
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
                 throw new NegocioException("Esta prova precisa ser iniciada.", 411);
+            
+            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(dadosAlunoLogado.Ra));
 
-            var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, dadosAlunoLogado.Ra));
-
-            var ultimaQuestao = questoesAluno
-                .Where(t => t.Ordem != 999)
+            var questoesAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
+            var ultimaQuestao = questoesAdministrado
                 .OrderBy(t => t.Ordem)
                 .LastOrDefault();
             
