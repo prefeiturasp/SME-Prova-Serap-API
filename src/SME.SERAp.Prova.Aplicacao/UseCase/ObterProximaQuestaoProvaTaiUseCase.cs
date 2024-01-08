@@ -44,7 +44,10 @@ namespace SME.SERAp.Prova.Aplicacao
             var questoesAluno = (await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, alunoRa)))
                 .OrderBy(t => t.Id);
             
-            if(!questoesAluno.Any(t => t.Id == questaoAlunoRespostaSincronizarDto.QuestaoId))
+            if (questoesAluno == null)
+                throw new NegocioException($"Questões da prova {provaId} e aluno {alunoRa} não localizadas.");
+            
+            if (!questoesAluno.Any(t => t.Id == questaoAlunoRespostaSincronizarDto.QuestaoId))
                 throw new NegocioException($"Questão respondida não pertence ao aluno logado. Questão: {questaoAlunoRespostaSincronizarDto.QuestaoId}");            
 
             //-> obter alternativas e respostas

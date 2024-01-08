@@ -39,16 +39,9 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
 
-
-                var status = string.Empty;
-
-                if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status)))
-                    status = "finalizada";
-
-                else
-                {
-                    status = "iniciada";
-                }
+                var status = await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status))
+                    ? "finalizada"
+                    : "iniciada";
 
                 throw new NegocioException($"Esta prova já foi {status}", 411);
             }
