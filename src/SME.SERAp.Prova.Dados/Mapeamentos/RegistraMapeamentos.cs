@@ -33,7 +33,7 @@ namespace SME.SERAp.Prova.Dados
                 config.AddMap(new UsuarioSerapCoreSSOMap());
                 config.AddMap(new VersaoAppMap());
                 config.AddMap(new VersaoAppDispositivoMap());
-                config.AddMap(new QuestaoAlunoAdministradoMap());
+                config.AddMap(new QuestaoAlunoTaiMap());
                 config.ForDommel();
             });
         }

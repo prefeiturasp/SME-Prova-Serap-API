@@ -430,16 +430,16 @@ namespace SME.SERAp.Prova.Dados
 									        q.enunciado as DescricaoQuestao, 
 									        q.ordem as OrdemQuestao,
 									        a.numeracao as AlternativaAluno
-                                        from questao_aluno_administrado qaa
-								        inner join aluno alu on alu.id = qaa.aluno_id
-                                        inner join questao q on q.id = qaa.questao_id
+                                        from questao_aluno_tai qat
+								        inner join aluno alu on alu.id = qat.aluno_id
+                                        inner join questao q on q.id = qat.questao_id
                                         inner join prova p on p.id = q.prova_id
 								        left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
 								        left join alternativa a on a.id = qar.alternativa_id
 								        where q.prova_id = @provaId
 								        and alu.ra = @alunoRa
 								        and p.formato_tai = true
-                                        order by qaa.ordem";
+                                        order by qat.ordem";
 
                 return await conn.QueryAsync<ProvaTaiResultadoDto>(query, new { provaId, alunoRa });
             }

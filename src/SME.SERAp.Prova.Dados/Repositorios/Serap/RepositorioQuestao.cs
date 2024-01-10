@@ -217,13 +217,13 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                const string query = @"select qaa.questao_id as id
-                                        from questao_aluno_administrado qaa
-                                        join questao q on q.id = qaa.questao_id 
-                                        join aluno a on a.id = qaa.aluno_id 
+                const string query = @"select qat.questao_id as id
+                                        from questao_aluno_tai qat
+                                        join questao q on q.id = qat.questao_id 
+                                        join aluno a on a.id = qat.aluno_id 
                                         where q.prova_id = @provaId 
                                         and a.ra = @alunoRa 
-                                        order by qaa.ordem desc
+                                        order by qat.ordem desc
                                         limit 1";
 
                 return await conn.QueryFirstOrDefaultAsync<long>(query, new { provaId, alunoRa });

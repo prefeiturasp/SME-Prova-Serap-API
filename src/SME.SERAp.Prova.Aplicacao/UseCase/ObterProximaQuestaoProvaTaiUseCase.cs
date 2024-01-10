@@ -66,8 +66,8 @@ namespace SME.SERAp.Prova.Aplicacao
             var respotas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
             var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
 
-            var questoesAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
-            var administrado = questoesAdministrado.OrderBy(c => c.Ordem).Select(t => t.Id).ToArray();
+            var questoesTaiAluno = await mediator.Send(new ObterQuestoesTaiPorProvaAlunoQuery(provaId, dados.AlunoId));
+            var administrado = questoesTaiAluno.OrderBy(c => c.Ordem).Select(t => t.Id).ToArray();
             
             var componente = prova.Disciplina ?? string.Empty;
 

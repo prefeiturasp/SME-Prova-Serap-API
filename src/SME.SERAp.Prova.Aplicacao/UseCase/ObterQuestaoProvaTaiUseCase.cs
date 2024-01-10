@@ -24,8 +24,8 @@ namespace SME.SERAp.Prova.Aplicacao
             
             var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(dadosAlunoLogado.Ra));
 
-            var questoesAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
-            var ultimaQuestao = questoesAdministrado
+            var questoesAlunoTai = await mediator.Send(new ObterQuestoesTaiPorProvaAlunoQuery(provaId, dados.AlunoId));
+            var ultimaQuestao = questoesAlunoTai
                 .OrderBy(t => t.Ordem)
                 .LastOrDefault();
             
