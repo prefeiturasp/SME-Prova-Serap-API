@@ -28,8 +28,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
                 
                 var dataInicio = DateTime.Now;
+                
                 var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
-
                 if (dataMenos3Horas != null)
                     dataInicio = (DateTime)dataMenos3Horas;
 

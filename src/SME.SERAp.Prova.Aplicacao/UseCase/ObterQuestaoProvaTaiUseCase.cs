@@ -17,15 +17,15 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<QuestaoCompletaDto> Executar(long provaId)
         {
             var dadosAlunoLogado = await mediator.Send(new ObterDadosAlunoLogadoQuery());
+            
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
-
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
                 throw new NegocioException("Esta prova precisa ser iniciada.", 411);
             
             var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(dadosAlunoLogado.Ra));
 
-            var questoesAlunoTai = await mediator.Send(new ObterQuestoesTaiPorProvaAlunoQuery(provaId, dados.AlunoId));
-            var ultimaQuestao = questoesAlunoTai
+            var questoesTaiAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
+            var ultimaQuestao = questoesTaiAdministrado
                 .OrderBy(t => t.Ordem)
                 .LastOrDefault();
             
