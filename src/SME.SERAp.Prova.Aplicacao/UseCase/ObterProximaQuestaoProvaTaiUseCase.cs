@@ -63,13 +63,17 @@ namespace SME.SERAp.Prova.Aplicacao
             var alternativasComRespostas = alunoRespostas.Where(c => c.AlternativaResposta.HasValue);
 
             //-> Obter proximo item
-            var respotas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
+            var respostas = alternativasComRespostas.Select(c => c.AlternativaResposta.GetValueOrDefault()).ToArray();
             var gabarito = alternativasComRespostas.Select(c => c.AlternativaCorreta).ToArray();
 
             var questoesTaiAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
             var administrado = questoesTaiAdministrado.OrderBy(c => c.Ordem).Select(t => t.Id).ToArray();
             
             var componente = prova.Disciplina ?? string.Empty;
+            
+            var nIj = (int)prova.ProvaFormatoTaiItem.GetValueOrDefault() == 0
+                ? questoesAluno.Count()
+                : (int)prova.ProvaFormatoTaiItem.GetValueOrDefault();
 
             var retorno = await mediator.Send(new ObterProximoItemApiRQuery(
                 dados.AlunoId.ToString(),
@@ -79,8 +83,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 questoesAluno.Select(t => t.Discriminacao).ToArray(),
                 questoesAluno.Select(t => t.ProporcaoAcertos).ToArray(),
                 questoesAluno.Select(t => t.AcertoCasual).ToArray(),
-                (int)prova.ProvaFormatoTaiItem.GetValueOrDefault(),
-                respotas,
+                nIj,
+                respostas,
                 gabarito,
                 administrado,
                 componente
