@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using SME.SERAp.Prova.Infra;
 using System;
@@ -19,32 +18,30 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
             this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new System.ArgumentNullException(nameof(configuracaoRabbitOptions));
             this.servicoTelemetria = servicoTelemetria ?? throw new System.ArgumentNullException(nameof(servicoTelemetria));
         }
+
         public Task<bool> Handle(SalvarLogViaRabbitCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var mensagem = JsonConvert.SerializeObject(new LogMensagem(request.Mensagem,
-                                                                           request.Nivel.ToString(),
-                                                                           request.Observacao,
-                                                                           request.Projeto,
-                                                                           request.Rastreamento,
-                                                                           request.ExcecaoInterna), new JsonSerializerSettings
-                                                                           {
-                                                                               NullValueHandling = NullValueHandling.Ignore
+                var mensagem = new LogMensagem(request.Mensagem,
+                    request.Nivel.ToString(),
+                    request.Observacao,
+                    request.Projeto,
+                    request.Rastreamento,
+                    request.ExcecaoInterna);
 
-                                                                           });
-
-                var body = Encoding.UTF8.GetBytes(mensagem);
+                var body = Encoding.UTF8.GetBytes(mensagem.ConverterObjectParaJson());
 
                 servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
 
                 return Task.FromResult(true);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
                 return Task.FromResult(false);
             }
         }
+        
         private void PublicarMensagem(byte[] body)
         {
             var factory = new ConnectionFactory
@@ -55,15 +52,12 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
                 VirtualHost = configuracaoRabbitOptions.VirtualHost
             };
 
-            using (var conexaoRabbit = factory.CreateConnection())
-            {
-                using (IModel _channel = conexaoRabbit.CreateModel())
-                {
-                    var props = _channel.CreateBasicProperties();
+            using var conexaoRabbit = factory.CreateConnection();
+            using var channel = conexaoRabbit.CreateModel();
+            
+            var props = channel.CreateBasicProperties();
 
-                    _channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
-                }
-            }
+            channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
         }
     }
     public class LogMensagem
