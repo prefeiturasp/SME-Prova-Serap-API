@@ -67,7 +67,7 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("Rabbit").Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(rabbitOptions);
 
-            services.AddSingleton<IConnectionFactory>(_ =>
+            services.AddSingleton(_ =>
             {
                 var factory = new ConnectionFactory
                 {
@@ -77,7 +77,7 @@ namespace SME.SERAp.Prova.Api
                     VirtualHost = rabbitOptions.VirtualHost
                 };
 
-                return factory;
+                return factory.CreateConnection();
             });
 
             var configuracaoRabbitLogOptions = new RabbitLogOptions();

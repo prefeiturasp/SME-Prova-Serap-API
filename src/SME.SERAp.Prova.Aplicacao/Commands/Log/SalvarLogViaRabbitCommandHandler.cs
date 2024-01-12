@@ -15,8 +15,8 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
 
         public SalvarLogViaRabbitCommandHandler(RabbitLogOptions configuracaoRabbitOptions, IServicoTelemetria servicoTelemetria)
         {
-            this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new System.ArgumentNullException(nameof(configuracaoRabbitOptions));
-            this.servicoTelemetria = servicoTelemetria ?? throw new System.ArgumentNullException(nameof(servicoTelemetria));
+            this.configuracaoRabbitOptions = configuracaoRabbitOptions ?? throw new ArgumentNullException(nameof(configuracaoRabbitOptions));
+            this.servicoTelemetria = servicoTelemetria ?? throw new ArgumentNullException(nameof(servicoTelemetria));
         }
 
         public Task<bool> Handle(SalvarLogViaRabbitCommand request, CancellationToken cancellationToken)
@@ -56,7 +56,6 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
             using var channel = conexaoRabbit.CreateModel();
             
             var props = channel.CreateBasicProperties();
-
             channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
         }
     }
