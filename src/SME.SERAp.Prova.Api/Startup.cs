@@ -67,31 +67,22 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection("Rabbit").Bind(rabbitOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(rabbitOptions);
 
-            var factory = new ConnectionFactory
+            services.AddSingleton(_ =>
             {
-                HostName = rabbitOptions.HostName,
-                UserName = rabbitOptions.UserName,
-                Password = rabbitOptions.Password,
-                VirtualHost = rabbitOptions.VirtualHost
-            };
+                var factory = new ConnectionFactory
+                {
+                    HostName = rabbitOptions.HostName,
+                    UserName = rabbitOptions.UserName,
+                    Password = rabbitOptions.Password,
+                    VirtualHost = rabbitOptions.VirtualHost
+                };
 
-            var conexaoRabbit = factory.CreateConnection();
-            services.AddSingleton(conexaoRabbit);
+                return factory.CreateConnection();
+            });
 
             var configuracaoRabbitLogOptions = new RabbitLogOptions();
             Configuration.GetSection("RabbitLog").Bind(configuracaoRabbitLogOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(configuracaoRabbitLogOptions);
-
-            var factoryRabbitLog = new ConnectionFactory
-            {
-                HostName = rabbitOptions.HostName,
-                UserName = rabbitOptions.UserName,
-                Password = rabbitOptions.Password,
-                VirtualHost = rabbitOptions.VirtualHost
-            };
-
-            var conexaoRabbitLog = factory.CreateConnection();
-            services.AddSingleton(conexaoRabbitLog);
 
             services.Configure<CryptographyOptions>(Configuration.GetSection("Cryptography"));
 

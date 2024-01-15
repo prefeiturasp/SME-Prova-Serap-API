@@ -9,7 +9,6 @@
     <PackageReference Include="FluentValidation" Version="10.3.0" />
     <PackageReference Include="MessagePack.Annotations" Version="2.3.85" />
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
   </ItemGroup>

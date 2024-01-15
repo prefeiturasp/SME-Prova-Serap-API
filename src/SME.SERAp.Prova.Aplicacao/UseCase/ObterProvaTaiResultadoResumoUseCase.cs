@@ -32,13 +32,13 @@ namespace SME.SERAp.Prova.Aplicacao
             var retorno = new List<ProvaTaiResultadoDto>();
             foreach (var json in jsons)
             {
-                var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+                var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 var questao = questoesAluno.FirstOrDefault(t => t.Id == questaoCompleta.Id);
                 var resposta = alunoRespostas.FirstOrDefault(t => t.QuestaoId == questaoCompleta.Id);
                 var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaResposta.GetValueOrDefault()));
 
-                retorno.Add(new ProvaTaiResultadoDto()
+                retorno.Add(new ProvaTaiResultadoDto
                 {
                     DescricaoQuestao = questaoCompleta.Descricao,
                     OrdemQuestao = questao.Ordem,
@@ -46,7 +46,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 });
             }
 
-            int ordem = 0;
+            var ordem = 0;
             return retorno.OrderBy(t => t.OrdemQuestao).Select(t =>
             {
                 t.OrdemQuestao = ++ordem;

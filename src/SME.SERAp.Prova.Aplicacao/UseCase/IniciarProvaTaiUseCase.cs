@@ -28,8 +28,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
                 
                 var dataInicio = DateTime.Now;
+                
                 var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
-
                 if (dataMenos3Horas != null)
                     dataInicio = (DateTime)dataMenos3Horas;
 
@@ -39,16 +39,9 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
 
-
-                var status = string.Empty;
-
-                if (await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status)))
-                    status = "finalizada";
-
-                else
-                {
-                    status = "iniciada";
-                }
+                var status = await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status))
+                    ? "finalizada"
+                    : "iniciada";
 
                 throw new NegocioException($"Esta prova já foi {status}", 411);
             }
