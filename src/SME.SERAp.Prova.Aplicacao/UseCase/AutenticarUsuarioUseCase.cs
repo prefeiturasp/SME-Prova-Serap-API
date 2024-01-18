@@ -32,8 +32,11 @@ namespace SME.SERAp.Prova.Aplicacao
                     retornoDto.Token = tokenDtExpiracao.Item1;
                     retornoDto.DataHoraExpiracao = tokenDtExpiracao.Item2;
                 }
-                else throw new NaoAutorizadoException("Senha inválida", 412);
+                else 
+                    throw new NaoAutorizadoException("Senha inválida", 412);
+
                 await mediator.Send(new IncluirOuAtualizarUsuarioCommand(autenticacaoDto.Login, ""));
+                
                 retornoDto.UltimoLogin = DateTime.Now;
 
                 //-> força renovação dos cache.

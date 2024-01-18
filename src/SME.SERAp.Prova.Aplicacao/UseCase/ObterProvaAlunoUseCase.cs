@@ -18,12 +18,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
 
-            if (provaStatus != null)
-            {
-                return new ProvaAlunoDto(provaStatus.Id, (int)provaStatus.Status);
-            }
-
-            return null;
+            return provaStatus != null ? new ProvaAlunoDto(provaStatus.Id, (int)provaStatus.Status) : null;
         }
     }
 }
