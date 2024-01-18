@@ -15,7 +15,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public ObterProvaAlunoPorProvaIdRaQueryHandler(IRepositorioProvaAluno repositorioProvaAluno, IRepositorioCache repositorioCache)
         {
             this.repositorioProvaAluno = repositorioProvaAluno ?? throw new System.ArgumentNullException(nameof(repositorioProvaAluno));
-             this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
+            this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
         }
         
         public async Task<ProvaAluno> Handle(ObterProvaAlunoPorProvaIdRaQuery request, CancellationToken cancellationToken)
