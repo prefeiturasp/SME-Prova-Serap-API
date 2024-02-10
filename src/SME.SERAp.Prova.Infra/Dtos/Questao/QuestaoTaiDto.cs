@@ -7,5 +7,7 @@
         public decimal Discriminacao { get; set; }
         public decimal ProporcaoAcertos { get; set; }
         public decimal AcertoCasual { get; set; }
+        public long? EixoId { get; set; }
+        public long? HabilidadeId { get; set; }
     }
 }
