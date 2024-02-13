@@ -97,7 +97,7 @@ namespace SME.SERAp.Prova.Aplicacao
             ValidarRetornoApiTAI(questoesAluno, retorno, continuarProva);
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
-            await AtualizarDadosCache(continuarProva, provaId, aluno, questoesAluno, alunoRespostas, retorno);
+            await AtualizarDadosCache(continuarProva, dados.AlunoId, provaId, aluno, questoesAluno, questoesTaiAdministrado.ToList(), alunoRespostas, retorno);
 
             if (continuarProva)
                 return true;
@@ -139,8 +139,8 @@ namespace SME.SERAp.Prova.Aplicacao
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
 
-        private async Task AtualizarDadosCache(bool continuarProva, long provaId, DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
-            IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, ObterProximoItemApiRRespostaDto retorno)
+        private async Task AtualizarDadosCache(bool continuarProva, long alunoId, long provaId, DadosAlunoLogadoDto aluno, IEnumerable<QuestaoTaiDto> questoesAluno,
+            ICollection<QuestaoTaiDto> questoesTaiAdministrado, IEnumerable<QuestaoAlternativaAlunoRespostaDto> alunoRespostas, ObterProximoItemApiRRespostaDto retorno)
         {
             if (continuarProva)
             {
@@ -152,6 +152,13 @@ namespace SME.SERAp.Prova.Aplicacao
                 //-> atualiza a ordem de das questoes no cache.
                 var nomeChaveQuestaoAlunoTai = CacheChave.ObterChave(CacheChave.QuestaoAmostraTaiAluno, aluno.Ra, provaId);
                 await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAlunoTai, questoesAluno));
+                
+                //-> atualiza o administrado do aluno no cache
+                if (!questoesTaiAdministrado.Any(c => c.Id == questaoTai.Id))
+                    questoesTaiAdministrado.Add(questaoTai);
+
+                var nomeChaveQuestaoAdministradoTaiAluno = CacheChave.ObterChave(CacheChave.QuestaoAdministradoTaiAluno, alunoId, provaId);                
+                await mediator.Send(new SalvarCacheCommand(nomeChaveQuestaoAdministradoTaiAluno, questoesTaiAdministrado));
             }
 
             //-> atualiza a ultima proficiencia no cache.
@@ -166,15 +173,17 @@ namespace SME.SERAp.Prova.Aplicacao
         private async Task AtualizarDadosBanco(bool continuarProva, long provaId, QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Dominio.Prova prova,
             DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, ObterProximoItemApiRRespostaDto retorno)
         {
-            //-> Serap estudantes
-            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));
+            await AtualizarDadosBancoSerapEstudantes(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova,
+                aluno, dados, retorno);
 
-            //-> Serap acompanhamento
-            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa,
-                questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId,
-                questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
-            
-            await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
+            await AtualizarDadosBancoAcompanhamento(questaoAlunoRespostaSincronizarDto);
+        }
+        
+        private async Task AtualizarDadosBancoSerapEstudantes(bool continuarProva, long provaId,
+            QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto, Dominio.Prova prova,
+            DadosAlunoLogadoDto aluno, MeusDadosRetornoDto dados, ObterProximoItemApiRRespostaDto retorno)
+        {
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirRespostaAluno, questaoAlunoRespostaSincronizarDto));
 
             if (continuarProva)
             {
@@ -200,5 +209,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 retorno.ErroMedida
             }));
         }
+        
+        private async Task AtualizarDadosBancoAcompanhamento(QuestaoAlunoRespostaSincronizarDto questaoAlunoRespostaSincronizarDto)
+        {
+            var dtoAcompanhamento = new QuestaoAlunoRespostaAcompDto(0, questaoAlunoRespostaSincronizarDto.AlunoRa,
+                questaoAlunoRespostaSincronizarDto.QuestaoId, questaoAlunoRespostaSincronizarDto.AlternativaId,
+                questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
+            
+            await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
+        }        
     }
 }
