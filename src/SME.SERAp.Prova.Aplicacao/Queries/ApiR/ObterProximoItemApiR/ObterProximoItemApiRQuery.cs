@@ -7,7 +7,7 @@ namespace SME.SERAp.Prova.Aplicacao
     {
         public ObterProximoItemApiRQuery(string estudante, string anoEscolarEstudante, decimal proficiencia,
             long[] idItem, decimal[] parA, decimal[] parB, decimal[] parC, int nIj, long[] respostas, long[] gabarito, 
-            long[] administrado, string componente)
+            long[] administrado, string componente, long?[] idEixo, long?[] idHabilidade)
         {
             Estudante = estudante;
             AnoEscolarEstudante = anoEscolarEstudante;
@@ -21,6 +21,9 @@ namespace SME.SERAp.Prova.Aplicacao
             Gabarito = gabarito;
             Administrado = administrado;
             Componente = componente;
+            IdEixo = idEixo;
+            IdHabilidade = idHabilidade;
+
         }
 
         public string Estudante { get; set; }
@@ -35,5 +38,8 @@ namespace SME.SERAp.Prova.Aplicacao
         public long[] Gabarito { get; set; }
         public long[] Administrado { get; set; }
         public string Componente { get; set; }
+        public long?[] IdEixo { get; set; }
+        public long?[] IdHabilidade { get; set; }
+
     }
 }

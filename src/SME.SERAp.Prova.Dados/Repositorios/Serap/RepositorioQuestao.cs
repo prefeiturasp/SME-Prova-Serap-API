@@ -244,7 +244,9 @@ namespace SME.SERAp.Prova.Dados
 	                                 q.ordem,
                                      qt.discriminacao, 
                                      qt.dificuldade as ProporcaoAcertos, 
-                                     qt.acerto_casual as AcertoCasual
+                                     qt.acerto_casual as AcertoCasual,
+                                     q.eixo_legado_id as EixoId,
+                                     q.habilidade_legado_id  as HabilidadeId 
                               from questao q 
                               left join caderno_aluno ca on ca.prova_id = q.prova_id and ca.caderno = q.caderno 
                               left join aluno a on a.id = ca.aluno_id 
