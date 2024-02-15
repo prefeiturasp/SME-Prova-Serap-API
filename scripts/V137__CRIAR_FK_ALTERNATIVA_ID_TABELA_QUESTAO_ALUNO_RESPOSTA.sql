@@ -1,0 +1,2 @@
+delete from questao_aluno_resposta where not exists (select 1 from alternativa a where a.id = alternativa_id) and alternativa_id is not null;
+ALTER TABLE public.questao_aluno_resposta ADD CONSTRAINT alternativa_id_fk FOREIGN KEY (alternativa_id) REFERENCES public.alternativa(id);

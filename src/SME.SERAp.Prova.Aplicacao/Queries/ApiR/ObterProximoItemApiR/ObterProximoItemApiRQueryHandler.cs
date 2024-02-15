@@ -44,7 +44,10 @@ namespace SME.SERAp.Prova.Aplicacao
                 ErroPadrao = "0.35",
 
                 NIj = request.NIj,
-                Componente = request.Componente
+                Componente = request.Componente,
+
+                idEixo = string.Join(",", request.IdEixo),
+                idHabilidade = string.Join(",", request.IdHabilidade)
             };
 
             var json = JsonSerializer.Serialize(obterItensProvaTaiDto);

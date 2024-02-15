@@ -114,11 +114,18 @@ namespace SME.SERAp.Prova.Aplicacao
                 }                
 
                 var provaAluno = provasDoAluno.FirstOrDefault(a => a.ProvaId == prova.Id);
+                var totalItens = prova.TotalItens;
+
+                if (prova.FormatoTai)
+                {
+                    var alunoRespostas = await mediator.Send(new ObterAlunoRespostasPorProvaIdRaQuery(prova.Id, long.Parse(alunoRa)));
+                    totalItens = alunoRespostas.Count();
+                }
                 
-                if (provaAluno is { Status: ProvaStatus.Finalizado or ProvaStatus.FinalizadoAutomaticamente })
+                if (provaAluno is { Status: ProvaStatus.Finalizado or ProvaStatus.FINALIZADA_AUTOMATICAMENTE_JOB or ProvaStatus.FINALIZADA_AUTOMATICAMENTE_TEMPO or ProvaStatus.FINALIZADA_OFFLINE })
                 {
                     provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                        prova.TotalItens,
+                        totalItens,
                         (int)provaAluno.Status,
                         prova.ObterDataInicioDownloadMais3Horas(),
                         prova.ObterDataInicioMais3Horas(),
@@ -139,7 +146,7 @@ namespace SME.SERAp.Prova.Aplicacao
                     status = provaAluno.Status;
 
                 provasParaRetornar.Add(new ObterProvasRetornoDto(prova.Descricao,
-                    prova.TotalItens,
+                    totalItens,
                     (int)status,
                     prova.ObterDataInicioDownloadMais3Horas(),
                     prova.ObterDataInicioMais3Horas(),

@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvaTaiResultadoResumoQueryHandler : IRequestHandler<ObterProvaTaiResultadoResumoQuery, IEnumerable<ProvaTaiResultadoDto>>
+    public class ObterResultadoResumoProvaTaiQueryHandler : IRequestHandler<ObterResultadoResumoProvaTaiQuery, IEnumerable<ProvaTaiResultadoDto>>
     {
         private readonly IRepositorioProva repositorioProva;
 
-        public ObterProvaTaiResultadoResumoQueryHandler(IRepositorioProva repositorioProva)
+        public ObterResultadoResumoProvaTaiQueryHandler(IRepositorioProva repositorioProva)
         {
             this.repositorioProva = repositorioProva ?? throw new System.ArgumentNullException(nameof(repositorioProva));
         }
 
-        public async Task<IEnumerable<ProvaTaiResultadoDto>> Handle(ObterProvaTaiResultadoResumoQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ProvaTaiResultadoDto>> Handle(ObterResultadoResumoProvaTaiQuery request, CancellationToken cancellationToken)
         {
             return await repositorioProva.ObterResultadoResumoProvaTaiAsync(request.ProvaId, request.AlunoRa);
         }

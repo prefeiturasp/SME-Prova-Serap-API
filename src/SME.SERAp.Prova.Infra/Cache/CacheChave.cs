@@ -7,7 +7,6 @@
             return string.Format(chave, parametros);
         }
 
-        public const string CachePropagado = "cache-propagado";
         /// <summary>
         /// Questões resumidas da prova
         /// 0 - Prova Id
@@ -130,5 +129,12 @@
         /// 1 - Código da Prova
         /// </summary>
         public const string RespostaAmostraTaiAluno = "al-q-tai-prova-resposta-{0}-{1}";
+
+        /// <summary>
+        /// Questões administrado do aluno na prova
+        /// 0 - ID do aluno
+        /// 1 - ID da prova
+        /// </summary>
+        public const string QuestaoAdministradoTaiAluno = "al-q-administrado-tai-prova-{0}-{1}";
     }
 }

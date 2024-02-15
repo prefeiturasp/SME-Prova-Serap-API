@@ -2,8 +2,8 @@
 using SME.SERAp.Prova.Infra;
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -33,7 +33,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var questoes = await mediator.Send(new ObterQuestaoCompletaPorLegadoIdQuery(new long[] { questaoLegadoId }));
             if (questoes == null || !questoes.Any()) return null;
-            return JsonConvert.DeserializeObject<QuestaoCompletaDto>(questoes.FirstOrDefault());
+            return JsonSerializer.Deserialize<QuestaoCompletaDto>(questoes.FirstOrDefault());
         }
     }
 }

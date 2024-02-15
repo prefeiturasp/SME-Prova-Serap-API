@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System;
@@ -10,21 +9,21 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class IncluirProvaAlunoCommandHandler : IRequestHandler<IncluirProvaAlunoCommand, bool>
     {
-        private readonly IRepositorioCache repositorioCache;
         private readonly IMediator mediator;
 
-        public IncluirProvaAlunoCommandHandler(IRepositorioCache repositorioCache, IMediator mediator)
+        public IncluirProvaAlunoCommandHandler(IMediator mediator)
         {
-            this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));
-            this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
+            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<bool> Handle(IncluirProvaAlunoCommand request, CancellationToken cancellationToken)
         {
-            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, request.CriadoEm, request.FinalizadoEm, request.TipoDispositivo, request.DispositivoId, DateTime.Now);
+            var entidade = new ProvaAluno(request.ProvaId, request.Status, request.AlunoRa, request.CriadoEm,
+                request.FinalizadoEm, request.TipoDispositivo, request.DispositivoId, DateTime.Now);
 
-            string chaveProvaAluno = string.Format(CacheChave.AlunoProva, request.ProvaId, request.AlunoRa);
-            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, entidade));
-            await repositorioCache.SalvarRedisAsync(chaveProvaAluno, entidade);
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirProvaAluno, entidade), cancellationToken);
+            await mediator.Send(new SalvarCacheCommand(string.Format(CacheChave.AlunoProva, request.ProvaId, request.AlunoRa), entidade), cancellationToken);
+
             return true;
         }
     }
