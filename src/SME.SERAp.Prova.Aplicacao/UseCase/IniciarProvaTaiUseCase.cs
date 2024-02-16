@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Aplicacao.Queries.VerificaStatusProvaFinalizada;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos.Aluno;
@@ -27,8 +28,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
                 
                 var dataInicio = DateTime.Now;
+                
                 var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
-
                 if (dataMenos3Horas != null)
                     dataInicio = (DateTime)dataMenos3Horas;
 
@@ -38,7 +39,10 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
 
-                var status = provaStatus.Status == ProvaStatus.Finalizado ? "finalizada" : "iniciada";
+                var status = await mediator.Send(new VerificaStatusProvaFinalizadoQuery(provaStatus.Status))
+                    ? "finalizada"
+                    : "iniciada";
+
                 throw new NegocioException($"Esta prova já foi {status}", 411);
             }
             catch (Exception ex)

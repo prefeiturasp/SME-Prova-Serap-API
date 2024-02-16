@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
-using SME.SERAp.Prova.Infra.Exceptions;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -13,17 +12,13 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
+        
         public async Task<ProvaAlunoDto> Executar(long provaId)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
-
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
 
-            if (provaStatus != null)
-            {
-                return new ProvaAlunoDto(provaStatus.Id, (int)provaStatus.Status);
-            }
-            else return null;
+            return provaStatus != null ? new ProvaAlunoDto(provaStatus.Id, (int)provaStatus.Status) : null;
         }
     }
 }

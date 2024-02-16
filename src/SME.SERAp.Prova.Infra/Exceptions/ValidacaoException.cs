@@ -2,19 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
-    public class ValidacaoException : Exception, ISerializable
+    public class ValidacaoException : Exception
     {
         public readonly IEnumerable<ValidationFailure> Erros;
 
-        public ValidacaoException(IEnumerable<ValidationFailure> erros)
+        public ValidacaoException(IEnumerable<ValidationFailure> erros) : base(erros.FirstOrDefault().ErrorMessage)
         {
-            this.Erros = erros;
+            Erros = erros;
+
+            foreach (var erro in erros)
+            {
+                if (!Data.Contains(erro.PropertyName))
+                    Data.Add(erro.PropertyName, erro.ErrorMessage);
+            }
         }
 
-        public List<string> Mensagens() => Erros?.Select(c => c.ErrorMessage)?.ToList();
+        public IEnumerable<string> Mensagens() => Erros?.Select(c => c.ErrorMessage);
     }
 }

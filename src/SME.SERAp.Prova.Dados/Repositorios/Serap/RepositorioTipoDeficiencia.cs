@@ -68,14 +68,14 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexao();
             try
             {
-                var query = @"select 
-                                    td.id Id,
-                                    td.legado_id LegadoId,
-                                    td.codigo_eol CodigoEol,
-                                    td.nome Nome
+                var query = @"select td.id Id,
+                                    td.legado_id as LegadoId,
+                                    td.codigo_eol as CodigoEol,
+                                    td.nome as Nome 
                                 from aluno_deficiencia ad 
                                 inner join tipo_deficiencia td on td.id = ad.deficiencia_id
-                                where ad.aluno_ra = @alunoRa;";
+                                where ad.aluno_ra = @alunoRa
+                                and not td.prova_normal";
 
                 return await conn.QueryAsync<TipoDeficiencia>(query, new { alunoRa });
             }

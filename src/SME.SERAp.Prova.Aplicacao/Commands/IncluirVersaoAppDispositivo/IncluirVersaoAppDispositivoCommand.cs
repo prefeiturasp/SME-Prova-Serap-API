@@ -1,7 +1,6 @@
 using FluentValidation;
 using MediatR;
 using SME.SERAp.Prova.Infra;
-using System;
 
 public class IncluirVersaoAppDispositivoCommand : IRequest<bool>
 {
@@ -19,7 +18,7 @@ public class IncluirVersaoAppDispositivoCommandValidator : AbstractValidator<Inc
     {
         RuleFor(c => c.VersaoAppDispositivo.VersaoDescricao)
            .NotEmpty()
-           .WithMessage("A Descrição da versão deve ser informado.");        
+           .WithMessage("A DescriÃ§Ã£o da versÃ£o deve ser informado.");        
 
         RuleFor(c => c.VersaoAppDispositivo.AtualizadoEm)
             .NotEmpty()

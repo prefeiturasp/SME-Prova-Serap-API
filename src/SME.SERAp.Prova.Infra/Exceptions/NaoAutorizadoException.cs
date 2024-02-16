@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Net;
-using System.Runtime.Serialization;
 
 namespace SME.SERAp.Prova.Infra.Exceptions
 {
-    public class NaoAutorizadoException : Exception, ISerializable
+    public class NaoAutorizadoException : Exception
     {
         public NaoAutorizadoException(string mensagem, int statusCode = 401) : base(mensagem)
         {

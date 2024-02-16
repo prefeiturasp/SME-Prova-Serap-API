@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
-using System;
 using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvasAdesaoPorAlunoRaETurmaQuery : IRequest<List<ProvaAnoDto>>
+    public class ObterProvasAdesaoPorAlunoRaETurmaQuery : IRequest<IEnumerable<ProvaAnoDto>>
     {
         public ObterProvasAdesaoPorAlunoRaETurmaQuery(long alunoRa, long turmaId)
         {

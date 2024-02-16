@@ -45,5 +45,11 @@ namespace SME.SERAp.Prova.Infra.Dtos.ApiR
         
         [JsonPropertyName("componente")]
         public string Componente { get; set; }
+        [JsonPropertyName("idEixo")]
+        public string idEixo { get; set; }
+        [JsonPropertyName("idHabilidade")]
+        public string idHabilidade { get; set; }
+
+
     }
 }

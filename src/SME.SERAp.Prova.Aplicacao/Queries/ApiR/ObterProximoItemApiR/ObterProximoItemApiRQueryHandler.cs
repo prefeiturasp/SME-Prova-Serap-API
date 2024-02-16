@@ -37,14 +37,17 @@ namespace SME.SERAp.Prova.Aplicacao
                 ParB = string.Join(",", request.ParB.Select(t => t.ToString(CultureInfo.InvariantCulture))),
                 ParC = string.Join(",", request.ParC.Select(t => t.ToString(CultureInfo.InvariantCulture))),
 
-                Administrado = request.Administrado.Length == 0 ? "NA" : string.Join(",", request.Administrado),
-                Respostas = request.Respostas.Length == 0 ? "NA" : string.Join(",", request.Respostas),
-                Gabarito = request.Gabarito.Length == 0 ? "NA" : string.Join(",", request.Gabarito),
+                Administrado = request.Administrado.Length == 0 ? "NA" : string.Join(",", request.Administrado.Distinct()),
+                Respostas = request.Respostas.Length == 0 ? "NA" : string.Join(",", request.Respostas.Distinct()),
+                Gabarito = request.Gabarito.Length == 0 ? "NA" : string.Join(",", request.Gabarito.Distinct()),
 
                 ErroPadrao = "0.35",
 
                 NIj = request.NIj,
-                Componente = request.Componente
+                Componente = request.Componente,
+
+                idEixo = string.Join(",", request.IdEixo),
+                idHabilidade = string.Join(",", request.IdHabilidade)
             };
 
             var json = JsonSerializer.Serialize(obterItensProvaTaiDto);

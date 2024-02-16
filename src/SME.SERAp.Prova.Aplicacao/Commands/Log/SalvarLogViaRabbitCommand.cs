@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using Newtonsoft.Json.Converters;
 using SME.SERAp.Prova.Dominio;
-using System.Text.Json.Serialization;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -18,7 +16,6 @@ namespace SME.SERAp.Prova.Aplicacao
         }
 
         public string Mensagem { get; set; }
-        [JsonConverter(typeof(StringEnumConverter))]
         public LogNivel Nivel { get; set; }
         public string Observacao { get; set; }
         public string Projeto { get; set; }

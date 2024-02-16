@@ -14,6 +14,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
+
         public async Task<IEnumerable<QuestaoAlunoRespostaConsultarDto>> Executar(long provaId)
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
@@ -27,7 +28,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 );
                 return listaRetorno;
             }
-            else return null;
+
+            return null;
         }
     }
 }

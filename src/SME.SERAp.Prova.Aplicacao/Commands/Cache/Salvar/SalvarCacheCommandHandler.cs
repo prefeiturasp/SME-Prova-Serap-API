@@ -17,7 +17,15 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<bool> Handle(SalvarCacheCommand request, CancellationToken cancellationToken)
         {
-            await repositorioCache.SalvarRedisAsync(request.NomeChave, request.Valor);
+            var minutosParaExpirar = 0;
+            if (request.MinutosParaExpirar != null)
+                minutosParaExpirar = request.MinutosParaExpirar.GetValueOrDefault();
+            
+            if (minutosParaExpirar > 0)
+                await repositorioCache.SalvarRedisAsync(request.NomeChave, request.Valor, minutosParaExpirar);
+            else
+                await repositorioCache.SalvarRedisAsync(request.NomeChave, request.Valor);
+
             return true;
         }
     }
