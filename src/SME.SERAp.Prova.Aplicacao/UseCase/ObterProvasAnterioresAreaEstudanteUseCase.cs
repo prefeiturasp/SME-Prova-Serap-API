@@ -1,8 +1,6 @@
 ﻿using MediatR;
-using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Exceptions;
-using SME.SERAp.Prova.Infra.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,22 +15,24 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
+
         public async Task<IEnumerable<ObterProvasAnterioresRetornoDto>> Executar()
         {
             var alunoRa = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             if (alunoRa == 0)
                 throw new NegocioException("Não foi possível obter o RA do usuário logado.");
 
-            var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));            
+            var provas = await mediator.Send(new ObterProvasAnterioresAlunoPorRaQuery(alunoRa));
 
             if (provas != null)
             {
-                return MapearParaDto(provas.ToList());
+                return MapearParaDto(provas);
             }
-            else return default;
+
+            return default;
         }
 
-        private List<ObterProvasAnterioresRetornoDto> MapearParaDto(List<ProvaAlunoAnoDto> provasAluno)
+        private static IEnumerable<ObterProvasAnterioresRetornoDto> MapearParaDto(IEnumerable<ProvaAlunoAnoDto> provasAluno)
         {
             return provasAluno.Select(a => new ObterProvasAnterioresRetornoDto
             {
@@ -45,7 +45,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 DataFim = a.Fim,
                 DataInicioProvaAluno = a.DataInicioProvaAluno,
                 DataFimProvaAluno = a.DataFimProvaAluno,
-            }).ToList();
+            });
         }
     }
 }

@@ -33,7 +33,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 contextoProva.Posicionamento, contextoProva.Ordem));
             }
 
-            return contextosProvasDto.OrderBy(a => a.Ordem).ToList();
+            return contextosProvasDto.OrderBy(a => a.Ordem);
         }
     }
 }

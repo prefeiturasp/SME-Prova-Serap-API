@@ -5,7 +5,7 @@ namespace SME.SERAp.Prova.Dominio
 {
     public enum ProvaStatus
     {
-        [Display(Name = "Não Iniciado")]
+       [Display(Name = "Não Iniciado")]
         NaoIniciado = 0,
 
         [Display(Name = "Iniciado")]
@@ -21,6 +21,13 @@ namespace SME.SERAp.Prova.Dominio
         EmRevisao = 4,
 
         [Display(Name = "Finalizado Automaticamente")]
-        FinalizadoAutomaticamente = 5,
+        FINALIZADA_AUTOMATICAMENTE_JOB = 5,
+
+        [Display(Name = "Finalizado Automaticamente por Tempo")]
+        FINALIZADA_AUTOMATICAMENTE_TEMPO = 6,
+
+        [Display(Name = "Finalizado Offile")]
+        FINALIZADA_OFFLINE = 7
+
     }
 }

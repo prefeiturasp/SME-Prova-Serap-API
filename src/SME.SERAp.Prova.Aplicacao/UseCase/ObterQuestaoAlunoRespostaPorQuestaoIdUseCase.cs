@@ -22,7 +22,8 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 return new QuestaoAlunoRespostaConsultarDto(questaoAlunoResposta.AlternativaId, questaoAlunoResposta.Resposta, questaoAlunoResposta.CriadoEm) ;
             }
-            else return null;
+
+            return null;
         }
     }
 }

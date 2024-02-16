@@ -159,9 +159,9 @@ namespace SME.SERAp.Prova.Dados
                                 p.exibir_audio as ExibirAudio
                             from prova p
                             inner join prova_ano pa on pa.prova_id = p.id
-                            inner join tipo_prova tp on tp.id = p.tipo_prova_id 
-                            where (p.ocultar_prova = false or ocultar_prova is null)
-                               and (aderir_todos or aderir_todos is null)";
+                            inner join tipo_prova tp on tp.id = p.tipo_prova_id
+                            where (p.ocultar_prova = false or p.ocultar_prova is null)
+                            and p.aderir_todos";
 
                 return await conn.QueryAsync<ProvaAnoDto>(query);
             }
@@ -172,7 +172,7 @@ namespace SME.SERAp.Prova.Dados
             }
         }
 
-        public async Task<List<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
+        public async Task<IEnumerable<ProvaAnoDto>> ObterProvasAdesaoAlunoAsync(long alunoRa, long turmaId)
         {
             using var conn = ObterConexaoLeitura();
             try
@@ -207,8 +207,7 @@ namespace SME.SERAp.Prova.Dados
                               and not aderir_todos
                               and pd.aluno_ra = @alunoRa;";
 
-                var retorno = await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
-                return retorno.ToList();
+                return await conn.QueryAsync<ProvaAnoDto>(query, new { alunoRa, turmaId });
             }
             finally
             {
@@ -263,7 +262,7 @@ namespace SME.SERAp.Prova.Dados
             var retorno = new PaginacaoResultadoDto<ProvaAreaAdministrativoRetornoDto>();
             try
             {
-                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false)");
+                var where = new StringBuilder(" where (p.ocultar_prova is null or p.ocultar_prova = false) and not p.formato_tai ");
 
                 if (!inicioFuturo)
                     where.AppendLine(" and p.inicio <= now()");
@@ -377,7 +376,7 @@ namespace SME.SERAp.Prova.Dados
 
                 using (var multi = await conn.QueryMultipleAsync(query.ToString(), parametros))
                 {
-                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>().ToList();
+                    retorno.Items = multi.Read<ProvaAreaAdministrativoRetornoDto>();
                     retorno.TotalRegistros = multi.ReadFirst<int>();
                 }
 
@@ -427,21 +426,20 @@ namespace SME.SERAp.Prova.Dados
             using var conn = ObterConexaoLeitura();
             try
             {
-                var query = @"select distinct
-									q.enunciado as DescricaoQuestao, 
-									q.ordem as OrdemQuestao,
-									a.numeracao as AlternativaAluno
-								from aluno alu 
-								inner join caderno_aluno ca on alu.id = ca.aluno_id 
-								inner join prova p on p.id = ca.prova_id
-								inner join questao q on q.caderno = ca.caderno
-								left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
-								left join alternativa a on a.id = qar.alternativa_id
-								where p.formato_tai = true
-									and alu.ra = @alunoRa
-									and p.id = @provaId
-                                    and q.ordem != 999
-                                order by q.ordem";
+                const string query = @"select distinct
+									        q.enunciado as DescricaoQuestao, 
+									        q.ordem as OrdemQuestao,
+									        a.numeracao as AlternativaAluno
+                                        from questao_aluno_tai qat
+								        inner join aluno alu on alu.id = qat.aluno_id
+                                        inner join questao q on q.id = qat.questao_id
+                                        inner join prova p on p.id = q.prova_id
+								        left join questao_aluno_resposta qar on qar.questao_id = q.id and qar.aluno_ra = alu.ra
+								        left join alternativa a on a.id = qar.alternativa_id
+								        where q.prova_id = @provaId
+								        and alu.ra = @alunoRa
+								        and p.formato_tai = true
+                                        order by qat.ordem";
 
                 return await conn.QueryAsync<ProvaTaiResultadoDto>(query, new { provaId, alunoRa });
             }

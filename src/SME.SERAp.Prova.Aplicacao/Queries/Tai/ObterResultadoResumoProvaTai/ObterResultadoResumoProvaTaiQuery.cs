@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterProvaTaiResultadoResumoQuery : IRequest<IEnumerable<ProvaTaiResultadoDto>>
+    public class ObterResultadoResumoProvaTaiQuery : IRequest<IEnumerable<ProvaTaiResultadoDto>>
     {
-        public ObterProvaTaiResultadoResumoQuery(long provaId, long alunoRa)
+        public ObterResultadoResumoProvaTaiQuery(long provaId, long alunoRa)
         {
             ProvaId = provaId;
             AlunoRa = alunoRa;

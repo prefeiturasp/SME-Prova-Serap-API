@@ -34,7 +34,7 @@ pipeline {
 
         stage('Flyway') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2'; branch 'release-r2';  } }
-          agent { label 'master' }
+          agent { label 'sme' }
           steps{
             withCredentials([string(credentialsId: "flyway_serapestudantes_${branchname}", variable: 'url')]) {
             checkout scm

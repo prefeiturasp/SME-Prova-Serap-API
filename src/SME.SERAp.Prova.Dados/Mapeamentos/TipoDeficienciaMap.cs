@@ -16,6 +16,7 @@ namespace SME.SERAp.Prova.Dados
             Map(c => c.Nome).ToColumn("nome");
             Map(c => c.CriadoEm).ToColumn("criado_em");
             Map(c => c.AtualizadoEm).ToColumn("atualizado_em");
+            Map(c => c.ProvaNormal).ToColumn("prova_normal");
         }
     }
 }
