@@ -88,10 +88,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 gabarito,
                 administrado,
                 componente,
-                questoesAluno.Select(t => t.EixoId).ToArray(),
-                questoesAluno.Select(t => t.HabilidadeId).ToArray()
-
-                )
+                questoesAluno.Select(t => t.EixoId).Distinct().ToArray(),
+                questoesAluno.Select(t => t.HabilidadeId).Distinct().ToArray())
             ); 
 
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
