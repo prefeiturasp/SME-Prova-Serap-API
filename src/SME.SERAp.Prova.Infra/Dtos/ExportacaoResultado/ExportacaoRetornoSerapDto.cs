@@ -4,6 +4,8 @@
 	{
 		public long Test_Id { get; set; }
 		public string TestDescription { get; set; }
+		public string ApplicationStartDate { get; set; }
+		public string ApplicationEndDate { get; set; }        
 		public string TestTypeDescription { get; set; }
 		public int StateExecution { get; set; }
 

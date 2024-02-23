@@ -19,7 +19,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<IEnumerable<ExportacaoRetornoSerapDto>> Executar(FiltroExportacaoResultadoDto filtro)
         {
-            return  await mediator.Send(new ObterExportacaoResultadoProvasPorDataQuery(filtro));
+            return  await mediator.Send(new ObterExportacaoResultadoProvasPorDataPaginadaQuery(filtro));
         }
     }
 }
