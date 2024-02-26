@@ -94,7 +94,7 @@ namespace SME.SERAp.Prova.Dados
                 if (!string.IsNullOrEmpty(descricaoProva))
                     sql.AppendLine($" and lower(p.descricao) like '%{descricaoProva.ToLower()}%'");
 
-                sql.AppendLine(" order by p.inicio desc ");
+                sql.AppendLine(" order by p.inicio desc, p.id ");
                 sql.AppendLine(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
 
                 sql.AppendLine(queryCount);
