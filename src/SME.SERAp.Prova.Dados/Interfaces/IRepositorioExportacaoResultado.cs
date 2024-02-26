@@ -9,6 +9,6 @@ namespace SME.SERAp.Prova.Dados
     {
         Task<ExportacaoResultado> ObterPorProvaSerapIdAsync(long provaSerapId);
         Task<PaginacaoResultadoDto<ProvaExportacaoResultadoDto>> ObterPorFiltroDataPaginadaAsync(DateTime? dataInicio,
-            DateTime? dataFim, long provaSerapId, int quantidadeRegistros, int numeroPagina);
+            DateTime? dataFim, long provaSerapId, string descricaoProva, int quantidadeRegistros, int numeroPagina);
     }
 }

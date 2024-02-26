@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Aplicacao
             var numeroPagina = request.NumeroPagina <= 0 ? 1 : request.NumeroPagina;
 
             var result = await repositorioExportacaoResultado.ObterPorFiltroDataPaginadaAsync(request.DataInicio,
-                request.DataFim, request.ProvaSerapId, quantidadeRegistros, numeroPagina);
+                request.DataFim, request.ProvaSerapId, request.DescricaoProva, quantidadeRegistros, numeroPagina);
 
             var retorno = new PaginacaoResultadoDto<ExportacaoRetornoSerapDto>
             {

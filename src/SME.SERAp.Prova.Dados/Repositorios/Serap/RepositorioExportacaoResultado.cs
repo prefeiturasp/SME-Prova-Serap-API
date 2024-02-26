@@ -37,7 +37,7 @@ namespace SME.SERAp.Prova.Dados
         }
 
         public async Task<PaginacaoResultadoDto<ProvaExportacaoResultadoDto>> ObterPorFiltroDataPaginadaAsync(DateTime? dataInicio,
-            DateTime? dataFim, long provaSerapId, int quantidadeRegistros, int numeroPagina)
+            DateTime? dataFim, long provaSerapId, string descricaoProva, int quantidadeRegistros, int numeroPagina)
         {           
             const string query = @"select p.id as  ProvaId, 
                                         p.prova_legado_id as ProvaLegadoId,
@@ -91,6 +91,9 @@ namespace SME.SERAp.Prova.Dados
                 if (provaSerapId > 0)
                     sql.AppendLine(" and p.prova_legado_id = @ProvaSerapId");
 
+                if (!string.IsNullOrEmpty(descricaoProva))
+                    sql.AppendLine($" and lower(p.descricao) like '%{descricaoProva.ToLower()}%'");
+
                 sql.AppendLine(" order by p.inicio desc ");
                 sql.AppendLine(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
 
@@ -104,6 +107,9 @@ namespace SME.SERAp.Prova.Dados
 
                 if (provaSerapId > 0)
                     sql.AppendLine(" and p.prova_legado_id = @ProvaSerapId");
+                
+                if (!string.IsNullOrEmpty(descricaoProva))
+                    sql.AppendLine($" and lower(p.descricao) like '%{descricaoProva.ToLower()}%'");                
                 
                 using (var multi = await conn.QueryMultipleAsync(sql.ToString(), new { dataInicio, dataFim, provaSerapId, quantidadeRegistros, numeroPagina }))
                 {

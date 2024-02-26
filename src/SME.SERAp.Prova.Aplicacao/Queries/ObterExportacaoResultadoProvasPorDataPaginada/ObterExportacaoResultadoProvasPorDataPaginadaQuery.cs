@@ -11,6 +11,7 @@ namespace SME.SERAp.Prova.Aplicacao
             DataInicio = filtroExportacao.DataInicio;
             DataFim = filtroExportacao.DataFim;
             ProvaSerapId = filtroExportacao.ProvaSerapId;
+            DescricaoProva = filtroExportacao.DescricaoProva;
             QuantidadeRegistros = filtroExportacao.QuantidadeRegistros;
             NumeroPagina = filtroExportacao.NumeroPagina;
         }
@@ -18,6 +19,7 @@ namespace SME.SERAp.Prova.Aplicacao
         public DateTime? DataInicio { get; }
         public DateTime? DataFim { get; }
         public long ProvaSerapId { get; }
+        public string DescricaoProva { get; }
         public int QuantidadeRegistros { get; }
         public int NumeroPagina { get; }
     }
