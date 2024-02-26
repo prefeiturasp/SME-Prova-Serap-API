@@ -1,11 +1,10 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
 using System;
-using System.Collections.Generic;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
-    public class ObterExportacaoResultadoProvasPorDataPaginadaQuery : IRequest<IEnumerable<ExportacaoRetornoSerapDto>>
+    public class ObterExportacaoResultadoProvasPorDataPaginadaQuery : IRequest<PaginacaoResultadoDto<ExportacaoRetornoSerapDto>>
     {
         public ObterExportacaoResultadoProvasPorDataPaginadaQuery(FiltroExportacaoResultadoDto filtroExportacao)
         {

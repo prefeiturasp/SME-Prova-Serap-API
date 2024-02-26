@@ -1,9 +1,5 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao
@@ -17,7 +13,7 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new System.ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<IEnumerable<ExportacaoRetornoSerapDto>> Executar(FiltroExportacaoResultadoDto filtro)
+        public async Task<PaginacaoResultadoDto<ExportacaoRetornoSerapDto>> Executar(FiltroExportacaoResultadoDto filtro)
         {
             return  await mediator.Send(new ObterExportacaoResultadoProvasPorDataPaginadaQuery(filtro));
         }
