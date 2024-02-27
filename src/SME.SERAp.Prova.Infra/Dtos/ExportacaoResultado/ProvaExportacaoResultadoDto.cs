@@ -13,6 +13,7 @@ namespace SME.SERAp.Prova.Infra
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public ExportacaoResultadoStatus Status { get; set; }
-       
+        public DateTime CriadoEm { get; set; }
+        public DateTime? UltimaExportacao { get; set; }
     }
 }

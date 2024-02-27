@@ -45,16 +45,18 @@ namespace SME.SERAp.Prova.Dados
                                         p.descricao as NomeProva,
                                         P.inicio as DataInicio,
                                         p.fim as DataFim,
-                                        case  when  ex.id is null then 0 else ex.id end ProcessoId,
-                                        case  when  ex.status is null then 1 else ex.status end Status
+                                        case when ex.id is null then 0 else ex.id end ProcessoId,
+                                        case when ex.status is null then 1 else ex.status end Status,
+                                        ex.criado_em as CriadoEm,
+                                        coalesce(ex.atualizado_em, ex.criado_em) as UltimaExportacao
                                     from prova p
                                     inner join (select distinct prova_id 
                                                 from prova_aluno
                                                 where finalizado_em is not null
                                                   and status in (2,5,6,7)) pf on p.id = pf.prova_id
-                                    left join (select id, prova_serap_id, status
+                                    left join (select id, prova_serap_id, status, ex.criado_em, ex.atualizado_em
                                                 from exportacao_resultado ex
-                                                group by  id,  prova_serap_id, status
+                                                group by id, prova_serap_id, status
                                                 having id = (select max(id) 
                                                                 from exportacao_resultado
                                                                 where prova_serap_id = ex.prova_serap_id)) as ex on p.prova_legado_id = ex.prova_serap_id
@@ -68,7 +70,7 @@ namespace SME.SERAp.Prova.Dados
                                                       and status in(2,5,6,7)) pf on p.id = pf.prova_id
                                         left join (select id, prova_serap_id, status
                                                     from exportacao_resultado ex
-                                                    group by  id,  prova_serap_id, status
+                                                    group by id, prova_serap_id, status
                                                     having id = (select max(id) 
                                                                     from exportacao_resultado
                                                                     where prova_serap_id = ex.prova_serap_id)) as ex on p.prova_legado_id = ex.prova_serap_id
