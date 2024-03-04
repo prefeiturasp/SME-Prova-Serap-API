@@ -96,7 +96,7 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
      	 )
      and (case when t.modalidade_codigo::text in('3','4') then '3'::text else t.modalidade_codigo::text end) = p.modalidade::text
    
-     LEFT JOIN prova_aluno palu ON p.id = palu.prova_id AND a.ra = palu.aluno_ra AND (palu.status = ANY (ARRAY[2, 5])) AND palu.finalizado_em IS NOT NULL
+     LEFT JOIN prova_aluno palu ON p.id = palu.prova_id AND a.ra = palu.aluno_ra AND (palu.status = ANY (ARRAY[2, 5, 6, 7])) AND palu.finalizado_em IS NOT NULL
      LEFT JOIN  caderno_aluno as ca on   ca.prova_id = p_prova_serap_id  AND a.id = ca.aluno_id
      inner join questao  as q on  q.prova_id = p.id 
    left join questao_aluno_resposta qar on qar.questao_id  = q.id and  qar.aluno_ra  = pa.aluno_ra
