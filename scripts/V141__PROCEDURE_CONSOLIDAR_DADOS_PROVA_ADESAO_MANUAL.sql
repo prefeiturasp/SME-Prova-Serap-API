@@ -40,6 +40,9 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
             WHEN ue.tipo_escola = 28 THEN 'CEMEI'::text
             WHEN ue.tipo_escola = 30 THEN 'CECI'::text
             WHEN ue.tipo_escola = 31 THEN 'CEU CEMEI'::text
+            WHEN ue.tipo_escola = 32 THEN 'EMEF'::text
+            WHEN ue.tipo_escola = 33 THEN 'EMEI'::text
+            
             ELSE NULL::text
         END || ' '::text) || ue.nome::text AS ue_nome,
     t.ano AS turma_ano_escolar,
@@ -60,10 +63,6 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
             WHEN p.disciplina IS NULL OR p.multidisciplinar THEN 'Multidisciplinar'::character varying
             ELSE p.disciplina
         END AS prova_componente,
-       -- CASE
-         --   WHEN p.possui_bib THEN ca.caderno
-         --   ELSE ''::character varying
-     --  END
      ca.caderno  AS prova_caderno,
     p.total_itens AS prova_quantidade_questoes,
 
@@ -75,8 +74,6 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
             ELSE 'N'::text
         END AS aluno_frequencia,
         
-            
-        
        q.id as questao_id,
        q.ordem + 1 as questao_ordem,    
      CASE
@@ -86,7 +83,7 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
          palu.criado_em AS prova_data_inicio,
     palu.finalizado_em AS prova_data_entregue
   
-   	 from prova_adesao pa  --D --limit 1 
+   	 from prova_adesao pa
    	 inner join aluno a on pa.aluno_ra  = a.ra 
    	 JOIN turma t ON t.id = a.turma_id AND t.ue_id = pa.ue_id
      JOIN ue ON t.ue_id = ue.id
@@ -103,10 +100,11 @@ aluno_frequencia,questao_id,questao_ordem,resposta,prova_data_inicio,prova_data_
      LEFT JOIN  caderno_aluno as ca on   ca.prova_id = p_prova_serap_id  AND a.id = ca.aluno_id
      inner join questao  as q on  q.prova_id = p.id 
    left join questao_aluno_resposta qar on qar.questao_id  = q.id and  qar.aluno_ra  = pa.aluno_ra
-  left join alternativa alt on alt.id = qar.alternativa_id
-    left join alternativa alt2 on alt2.questao_id = q.id and alt2.correta 
+                        left join alternativa alt on alt.id = qar.alternativa_id
+                            left join alternativa alt2 on alt2.questao_id = q.id and alt2.correta 
    WHERE pa.prova_id = p_prova_serap_id 
    order by a.ra
    
    $procedure$
 ;
+
