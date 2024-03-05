@@ -12,7 +12,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<decimal> ObterProficienciaFinalAlunoPorProvaIdAsync(long provaId, long alunoId)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var tipo = (int)AlunoProvaProficienciaTipo.Final;
@@ -36,7 +36,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<decimal> ObterUltimaProficienciaAlunoPorProvaIdAsync(long provaId, long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select proficiencia  
