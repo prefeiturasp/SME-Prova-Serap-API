@@ -3,6 +3,7 @@ using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
 using System.Threading;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Infra;
 
 namespace SME.SERAp.Prova.Aplicacao
 {
@@ -16,9 +17,10 @@ namespace SME.SERAp.Prova.Aplicacao
             this.repositorioVersaoApp = repositorioVersaoApp ?? throw new System.ArgumentNullException(nameof(repositorioVersaoApp));
             this.repositorioCache = repositorioCache ?? throw new System.ArgumentNullException(nameof(repositorioCache));  
         }
+
         public async Task<VersaoApp> Handle(ObterUltimaVersaoAppQuery request, CancellationToken cancellationToken)
         {
-            return await repositorioCache.ObterRedisAsync("versaoApp", async () => await repositorioVersaoApp.ObterUltimaVersao());
+            return await repositorioCache.ObterRedisAsync(CacheChave.VersaoApp, async () => await repositorioVersaoApp.ObterUltimaVersao());
         }
     }
 }
