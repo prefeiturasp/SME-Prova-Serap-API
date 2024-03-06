@@ -26,7 +26,7 @@ namespace SME.SERAp.Prova.Aplicacao
             if (existeUsuarioCache)
                 await repositorioCache.RemoverRedisAsync(request.Usuario.Login.ToString());
             await repositorioCache.SalvarRedisAsync(request.Usuario.Login.ToString(), request.Usuario);
-            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.AlterarUsuario, request.Usuario));
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.AlterarUsuario, request.Usuario), cancellationToken);
             return true;
         }
 
