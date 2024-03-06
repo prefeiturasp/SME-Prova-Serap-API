@@ -22,15 +22,16 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<bool> Handle(IncluirVersaoAppDispositivoCommand request, CancellationToken cancellationToken)
         {
             var versaoAppDispositivo = new Dominio.VersaoAppDispositivo(
-            request.VersaoAppDispositivo.VersaoCodigo,
-            request.VersaoAppDispositivo.VersaoDescricao,
-            request.VersaoAppDispositivo.DispositivoImei,
-            request.VersaoAppDispositivo.AtualizadoEm,
-            request.VersaoAppDispositivo.DispositivoId);
+                request.VersaoAppDispositivo.VersaoCodigo,
+                request.VersaoAppDispositivo.VersaoDescricao,
+                request.VersaoAppDispositivo.DispositivoImei,
+                request.VersaoAppDispositivo.AtualizadoEm,
+                request.VersaoAppDispositivo.DispositivoId);
 
-            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirVersaoDispositivoApp, versaoAppDispositivo));
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.IncluirVersaoDispositivoApp, versaoAppDispositivo), cancellationToken);
+
             if (versaoAppDispositivo.DispositivoImei != null && !string.IsNullOrEmpty(versaoAppDispositivo.DispositivoImei))
-                await repositorioCache.SalvarRedisAsync(versaoAppDispositivo.DispositivoImei.ToString(), versaoAppDispositivo);
+                await repositorioCache.SalvarRedisAsync(versaoAppDispositivo.DispositivoImei, versaoAppDispositivo);
 
             return true;
         }
