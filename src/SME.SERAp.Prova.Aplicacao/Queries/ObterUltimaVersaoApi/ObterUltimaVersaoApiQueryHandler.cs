@@ -30,7 +30,7 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var versaoApiCache = await repositorioCache.ObterRedisAsync<VersaoRepositorioGitHubDto>(CacheChave.VersaoApi);
             if (versaoApiCache != null && !string.IsNullOrEmpty(versaoApiCache.Version))
-                return versaoApiCache.Version;
+                return $"Versão: {versaoApiCache.Version}";
             
             const string versao = "Versão: 0";
 
