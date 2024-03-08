@@ -43,7 +43,7 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                     ? "finalizada"
                     : "iniciada";
 
-                throw new NegocioException($"Esta prova já foi {status}");
+                throw new NegocioException($"Esta prova já foi {status}", 411);
             }
             catch (Exception ex)
             {
