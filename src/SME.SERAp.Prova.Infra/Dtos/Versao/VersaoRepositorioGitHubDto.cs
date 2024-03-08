@@ -1,6 +1,6 @@
 ﻿namespace SME.SERAp.Prova.Infra
 {
-    public class VersaoApiDto : DtoBase
+    public class VersaoRepositorioGitHubDto : DtoBase
     {
         public string Version { get; set; }
     }

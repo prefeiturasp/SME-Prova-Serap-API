@@ -28,36 +28,36 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<string> Handle(ObterUltimaVersaoApiQuery request, CancellationToken cancellationToken)
         {
-            var versaoApiCache = await repositorioCache.ObterRedisAsync<string>(CacheChave.VersaoApi);
-
-            if (!string.IsNullOrEmpty(versaoApiCache))
-                return versaoApiCache;
+            var versaoApiCache = await repositorioCache.ObterRedisAsync<VersaoRepositorioGitHubDto>(CacheChave.VersaoApi);
+            if (versaoApiCache != null && !string.IsNullOrEmpty(versaoApiCache.Version))
+                return versaoApiCache.Version;
             
+            const string versao = "Versão: 0";
+
             var httpClient = httpClientFactory.CreateClient("githubApi");
             var resposta = await httpClient.GetAsync($"repos/{githubOptions.RepositorioApi}/tags", cancellationToken);
-
             if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent) 
-                return string.Empty;
+                return versao;
             
             var json = await resposta.Content.ReadAsStringAsync(cancellationToken);
             var options = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            
             var versoes = JsonSerializer.Deserialize<IEnumerable<VersaoGitHubRetornoDto>>(json, options);
-            if (!versoes.Any()) 
-                return string.Empty;
+            if (versoes == null || !versoes.Any()) 
+                return versao;
             
-            var versao = versoes.FirstOrDefault().Name;
-                    
-            var versaoApi = new VersaoApiDto
+            var versaoGitHub = versoes.FirstOrDefault().Name;
+            if (string.IsNullOrEmpty(versaoGitHub))
+                return versao;
+
+            var versaoApi = new VersaoRepositorioGitHubDto
             {
-                Version = versao
+                Version = versaoGitHub
             };
-                    
             await repositorioCache.SalvarRedisAsync(CacheChave.VersaoApi, versaoApi, 10080);
-            return versao;
+            return $"Versão: {versaoGitHub}";
         }
     }
 }
