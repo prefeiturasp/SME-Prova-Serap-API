@@ -65,7 +65,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<IEnumerable<TipoDeficiencia>> ObterPorAlunoRa(long alunoRa)
         {
-            using var conn = ObterConexao();
+            using var conn = ObterConexaoLeitura();
             try
             {
                 var query = @"select td.id Id,
