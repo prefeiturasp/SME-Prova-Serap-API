@@ -47,7 +47,8 @@ namespace SME.SERAp.Prova.Aplicacao
                 guidPerfil != Perfis.PERFIL_COORDENADOR_PEDAGOGICO &&
                 guidPerfil != Perfis.PERFIL_DIRETOR_ESCOLAR &&
                 guidPerfil != Perfis.PERFIL_PROFESSOR &&
-                guidPerfil != Perfis.PERFIL_PROFESSOR_OLD)
+                guidPerfil != Perfis.PERFIL_PROFESSOR_OLD &&
+                guidPerfil != Perfis.PERFIL_ADM_COPED_LEITURA)
                 throw new NaoAutorizadoException("Perfil Inválido", 401);
         }
     }
