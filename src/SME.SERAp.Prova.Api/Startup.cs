@@ -122,6 +122,7 @@ namespace SME.SERAp.Prova.Api
             var clientTelemetry = serviceProvider.GetService<TelemetryClient>();
             var servicoTelemetria = new ServicoTelemetria(clientTelemetry, telemetriaOptions);
             services.AddSingleton(servicoTelemetria);
+
             RegistraMvc.Registrar(services, serviceProvider);
             DapperExtensionMethods.Init(servicoTelemetria);
         }

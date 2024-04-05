@@ -21,10 +21,5 @@ namespace SME.SERAp.Prova.Infra
         {
             return data.HasValue ? new DateTime(data.Value).AddHours(-3) : DateTime.Now.AddHours(-3);
         }
-
-
-
-
-
     }
 }

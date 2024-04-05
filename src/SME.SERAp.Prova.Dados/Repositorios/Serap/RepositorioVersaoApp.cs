@@ -17,10 +17,10 @@ namespace SME.SERAp.Prova.Dados.Repositorios.Serap
             try
             {
                 var query = @"select id, 
-                                     codigo_versao, 
-                                     descricao_versao, 
+                                     codigo_versao as Codigo, 
+                                     descricao_versao as Descricao, 
                                      mensagem, 
-                                     suporte_minimo, 
+                                     suporte_minimo as SuporteMinimo,
                                      url 
                                      from public.versao_app
                                      order by id desc 
