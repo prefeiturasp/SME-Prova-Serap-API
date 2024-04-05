@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SME.SERAp.Prova.Api.Middlewares;
+﻿using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
 using System.Collections.Generic;

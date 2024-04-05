@@ -28,35 +28,36 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<string> Handle(ObterUltimaVersaoApiQuery request, CancellationToken cancellationToken)
         {
-            var versaoApi = "Versão: 0";
+            var versaoApiCache = await repositorioCache.ObterRedisAsync<VersaoRepositorioGitHubDto>(CacheChave.VersaoApi);
+            if (versaoApiCache != null && !string.IsNullOrEmpty(versaoApiCache.Version))
+                return $"Versão: {versaoApiCache.Version}";
+            
+            const string versao = "Versão: 0";
 
-            var versaoApiCache = await repositorioCache.ObterRedisAsync<string>(CacheChave.VersaoApi);
-
-            if (string.IsNullOrEmpty(versaoApiCache))
+            var httpClient = httpClientFactory.CreateClient("githubApi");
+            var resposta = await httpClient.GetAsync($"repos/{githubOptions.RepositorioApi}/tags", cancellationToken);
+            if (!resposta.IsSuccessStatusCode || resposta.StatusCode == HttpStatusCode.NoContent) 
+                return versao;
+            
+            var json = await resposta.Content.ReadAsStringAsync(cancellationToken);
+            var options = new JsonSerializerOptions
             {
-                var httpClient = httpClientFactory.CreateClient("githubApi");
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var versoes = JsonSerializer.Deserialize<IEnumerable<VersaoGitHubRetornoDto>>(json, options);
+            if (versoes == null || !versoes.Any()) 
+                return versao;
+            
+            var versaoGitHub = versoes.FirstOrDefault().Name;
+            if (string.IsNullOrEmpty(versaoGitHub))
+                return versao;
 
-                var resposta = await httpClient.GetAsync($"repos/{githubOptions.RepositorioApi}/tags", cancellationToken);
-
-                if (resposta.IsSuccessStatusCode && resposta.StatusCode != HttpStatusCode.NoContent)
-                {
-                    var json = await resposta.Content.ReadAsStringAsync(cancellationToken);
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    };
-                    var versoes = JsonSerializer.Deserialize<IEnumerable<VersaoGitHubRetornoDto>>(json, options);
-
-                    if (versoes.Any())
-                        versaoApi = $"Versão: {versoes.FirstOrDefault().Name}";
-
-                    await repositorioCache.SalvarRedisAsync(CacheChave.VersaoApi, versaoApi, 10080);
-                }
-
-            }
-            else versaoApi = versaoApiCache;
-
-            return versaoApi;
+            var versaoApi = new VersaoRepositorioGitHubDto
+            {
+                Version = versaoGitHub
+            };
+            await repositorioCache.SalvarRedisAsync(CacheChave.VersaoApi, versaoApi, 10080);
+            return $"Versão: {versaoGitHub}";
         }
     }
 }

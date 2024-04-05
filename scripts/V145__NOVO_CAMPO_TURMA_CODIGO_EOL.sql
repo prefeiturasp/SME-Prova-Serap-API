@@ -1,0 +1,1 @@
+alter table exportacao_resultado_item add column if not exists turma_codigo_eol text;

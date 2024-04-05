@@ -136,5 +136,10 @@
         /// 1 - ID da prova
         /// </summary>
         public const string QuestaoAdministradoTaiAluno = "al-q-administrado-tai-prova-{0}-{1}";
+
+        /// <summary>
+        /// Dados da versão do app
+        /// </summary>
+        public const string VersaoApp = "versaoApp";
     }
 }
