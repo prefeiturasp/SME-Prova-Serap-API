@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
 using System.Threading.Tasks;
+using SME.SERAp.Prova.Infra.Exceptions;
 
 namespace SME.SERAp.Prova.Aplicacao.UseCase
 {
@@ -17,7 +18,16 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
         {
             var ra = await mediator.Send(new ObterRAUsuarioLogadoQuery());
             var proficiencia = await mediator.Send(new ObterProficienciaFinalPorProvaQuery(ra, provaId));
-            var resumo = await mediator.Send(new ObterProvaResultadoResumoQuery(provaId, ra));
+
+            var prova = await mediator.Send(new ObterProvaPorIdQuery(provaId));
+            if (prova == null)
+                throw new NegocioException($"Prova {provaId} não localizada para obter o resumo do resultado do aluno.");
+            
+            string caderno = null;
+            if (prova.PossuiBIB)
+                caderno = await mediator.Send(new ObterCadernoAlunoPorProvaIdRaQuery(provaId, ra));
+             
+            var resumo = await mediator.Send(new ObterProvaResultadoResumoQuery(provaId, ra, caderno));
 
             var provaResultado = new ProvaResultadoDto
             {
