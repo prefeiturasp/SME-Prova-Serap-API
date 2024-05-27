@@ -28,9 +28,10 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             var login = claims.FirstOrDefault(a => a.Chave == "LOGIN")?.Valor;
             var inicioFuturo = guidPerfil == Perfis.PERFIL_ADMINISTRADOR;
 
-            if(guidPerfil == Perfis.PERFIL_ADMINISTRADOR || 
+            if (guidPerfil == Perfis.PERFIL_ADMINISTRADOR || 
                 guidPerfil == Perfis.PERFIL_ADMINISTRADOR_NTA || 
-                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_SERAP_DRE)
+                guidPerfil == Perfis.PERFIL_ADMINISTRADOR_SERAP_DRE ||
+                guidPerfil == Perfis.PERFIL_ADM_COPED_LEITURA)
                 return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, inicioFuturo));
 
             return await mediator.Send(new ObterProvasAdministrativoPaginadaQuery(paginacaoFiltroDto, false, guidPerfil, login));
