@@ -4,7 +4,6 @@ using SME.SERAp.Prova.Api.Filtros;
 using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,15 +13,13 @@ namespace SME.SERAp.Prova.Api.Controllers
     [Route("/api/v1/questoes/respostas")]
     public class QuestaoAlunoRespostaController : ControllerBase
     {
-       
-
         [HttpPost]
         [ChaveAutenticacaoApi]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
         [ValidaDto]
         [Route("sincronizar")]
-        public async Task<IActionResult> SincronizarResposta([FromBody] List<QuestaoAlunoRespostaSincronizarDto>  listaquestaoAlunoRespostaSincronizarDto, 
+        public async Task<IActionResult> SincronizarResposta([FromBody] List<QuestaoAlunoRespostaSincronizarDto> listaquestaoAlunoRespostaSincronizarDto, 
             [FromServices] ISincronizarQuestaoAlunoRespostaUseCase sincronizarQuestaoAlunoRespostaUseCase)
         {
             return Ok(await sincronizarQuestaoAlunoRespostaUseCase.Executar(listaquestaoAlunoRespostaSincronizarDto));
@@ -38,6 +35,5 @@ namespace SME.SERAp.Prova.Api.Controllers
         {
             return Ok(await obterQuestaoAlunoRespostaPorQuestaoIdUseCase.Executar(questaoId));
         }
-
     }
 }

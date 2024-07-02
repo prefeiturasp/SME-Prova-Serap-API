@@ -453,5 +453,28 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<ProvaQuestaoDto>> ObterProvasEmAndamentoPorQuestaoIdAsync(long questaoId)
+        {
+            using var conn = ObterConexaoLeitura();
+            
+            const string query = @"select distinct p.id as ProvaId,
+	                                    p.prova_legado_id as ProvaLegadoId
+                                    from prova p
+                                    join questao q on q.prova_id = p.id
+                                    where p.fim >= now() 
+                                    and p.inicio <= now()
+                                    and q.id = @questaoId";
+
+            try
+            {
+                return await conn.QueryAsync<ProvaQuestaoDto>(query, new { questaoId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();                
+            }
+        }
     }
 }
