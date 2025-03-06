@@ -1,0 +1,1 @@
+ALTER TABLE  if exists public.prova ADD COLUMN IF NOT EXISTS exibir_no_boletim bool not NULL default false;
