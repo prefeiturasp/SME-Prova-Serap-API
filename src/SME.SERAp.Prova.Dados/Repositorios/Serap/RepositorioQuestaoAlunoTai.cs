@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dapper;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra.Dtos.Questao;
 using SME.SERAp.Prova.Infra.EnvironmentVariables;
@@ -31,6 +32,22 @@ namespace SME.SERAp.Prova.Dados
                                         and q.prova_id = @provaId";
 
                 return await conn.QueryAsync<QuestaoTaiDto>(query, new { alunoId, provaId });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        public async Task<bool> ExisteQuestaoAlunoTaiPorAlunoId(long provaId, long alunoId)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                const string query = @"SELECT CASE WHEN EXISTS ( SELECT 1 FROM questao_aluno_tai qat join questao q on qat.questao_id = q.id WHERE aluno_id = @alunoId and q.prova_id = @provaId) THEN 1 ELSE 0 END";
+
+                return await conn.ExecuteScalarAsync<bool>(query, new { alunoId, provaId });
             }
             finally
             {
