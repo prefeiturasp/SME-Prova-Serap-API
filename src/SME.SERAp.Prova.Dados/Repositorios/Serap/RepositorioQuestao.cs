@@ -263,5 +263,20 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
+
+        public async Task<IEnumerable<long>> ObterIdsQuestoesPorProvaIdCadernoAsync(long provaId, string caderno)
+        {
+            using var conn = ObterConexao();
+            try
+            {
+                const string query = "select id from questao where prova_id = @provaId and caderno = @caderno";
+                return await conn.QueryAsync<long>(query, new { provaId, caderno });
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
     }
 }

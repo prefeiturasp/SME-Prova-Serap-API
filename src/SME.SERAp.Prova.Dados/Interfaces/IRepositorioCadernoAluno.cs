@@ -7,6 +7,6 @@ namespace SME.SERAp.Prova.Dados
 {
     public interface IRepositorioCadernoAluno : IRepositorioBase<Dominio.CadernoAluno>
     {
-        
+        Task<bool> ExisteCadernoAlunoPorProvaIdAlunoId(long provaId, long alunoId);
     }
 }
