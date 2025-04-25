@@ -36,36 +36,8 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 if (dataMenos3Horas != null)
                     dataInicio = (DateTime)dataMenos3Horas;
 
-
                 if (provaStatus == null)
                 {
-
-                    var alunoDetalhes = await mediator.Send(new ObterAlunoDadosPorRaQuery(dadosAlunoLogado.Ra));
-
-    
-                    var existeCadernoAluno = await mediator.Send(new ExisteCadernoAlunoPorProvaIdAlunoIdQuery(provaId, alunoDetalhes.AlunoId));
-                    var existeQuestaoAlunoTai = await mediator.Send(new ExisteQuestaoAlunoTaiPorAlunoIdQuery(provaId, alunoDetalhes.AlunoId));
-
-                    if (!existeCadernoAluno)
-                    {
-                        await mediator.Send(new IncluirCadernoAlunoCommand(alunoDetalhes.AlunoId, provaId, "1"));
-                    }
-
-                    if (!existeQuestaoAlunoTai)
-                    {
-                        await IncluirPrimeiraQuestaoAlunoTai(provaId, alunoDetalhes.AlunoId, "1");
-
-                        //-> Limpar o cache
-
-
-                        await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
-                     
-
-
-                    }
-
-
-
                     provaAlunoStatusDto.Status = (int)ProvaStatus.Iniciado;
                     return await IncluirProvaAluno(provaId, provaAlunoStatusDto, dataInicio);
                 }
@@ -111,29 +83,5 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             var provaAlunoAcompDto = new ProvaAlunoAcompDto(provaId, alunoRa, status, criadoEm, finalizadoEm);
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoInicioFimTratar, provaAlunoAcompDto));
         }
-
-
-
-
-        private async Task IncluirPrimeiraQuestaoAlunoTai(long provaId, long alunoId, string caderno)
-        {
-            var idsQuestoes = (await mediator.Send(new ObterIdsQuestoesPorProvaIdCadernoQuery(provaId, caderno))).Distinct().ToList();
-            var sortear = new Random();
-            var questaoIdSorteada = idsQuestoes[sortear.Next(idsQuestoes.Count)];
-
-            var questaoAlunoTai = new QuestaoAlunoTai(questaoIdSorteada, alunoId, 0);
-            var questaoAlunoTaiId = await mediator.Send(new QuestaoAlunoTaiIncluirCommand(questaoAlunoTai));
-
-            if (questaoAlunoTaiId <= 0)
-                throw new NegocioException($"As questões TAI do aluno {alunoId} não foram inseridas.");
-        }
-
-
-        private async Task RemoverCaches(long provaId, long alunoRA, long alunoId)
-        {
-            await mediator.Send(new RemoverCacheCommand($"al-prova-{provaId}-{alunoRA}"));
-            await mediator.Send(new RemoverCacheCommand($"al-q-administrado-tai-prova-{alunoId}-{provaId}"));
-        }
-        
     }
 }
