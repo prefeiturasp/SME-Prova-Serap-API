@@ -44,11 +44,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (!existeQuestaoAlunoTai)
                 {
                     await IncluirPrimeiraQuestaoAlunoTai(provaId, alunoDetalhes.AlunoId, "1");
+                    await Task.Delay(2000);
                 }
 
-                await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
-
-                ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados, false);
+                var resultadoRemocaoCache = await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
+                if (resultadoRemocaoCache)
+                {
+                    ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados, false);
+                }  
 
                 if (ultimaQuestao == null)
                     throw new NegocioException("Última questão não localizada.");
@@ -89,10 +92,11 @@ namespace SME.SERAp.Prova.Aplicacao
                 throw new NegocioException($"As questões TAI do aluno {alunoId} não foram inseridas.");
         }
 
-        private async Task RemoverCaches(long provaId, long alunoRA, long alunoId)
+        private async Task<bool> RemoverCaches(long provaId, long alunoRA, long alunoId)
         {
             await mediator.Send(new RemoverCacheCommand($"al-prova-{provaId}-{alunoRA}"));
             await mediator.Send(new RemoverCacheCommand($"al-q-administrado-tai-prova-{alunoId}-{provaId}"));
+            return true;
         }
     }
 }
