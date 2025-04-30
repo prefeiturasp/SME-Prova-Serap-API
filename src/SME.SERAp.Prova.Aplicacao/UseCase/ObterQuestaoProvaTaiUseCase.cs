@@ -44,7 +44,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (!existeQuestaoAlunoTai)
                 {
                     await IncluirPrimeiraQuestaoAlunoTai(provaId, alunoDetalhes.AlunoId, "1");
-                    await Task.Delay(2000);
+                    //await Task.Delay(2000);
                 }
 
                 var resultadoRemocaoCache = await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
