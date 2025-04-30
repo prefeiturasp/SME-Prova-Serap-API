@@ -23,6 +23,13 @@ namespace SME.SERAp.Prova.Aplicacao
         public async Task<IEnumerable<QuestaoTaiDto>> Handle(ObterQuestoesTaiAdministradoPorProvaAlunoQuery request, CancellationToken cancellationToken)
         {
             var nomeChave = CacheChave.ObterChave(CacheChave.QuestaoAdministradoTaiAluno, request.AlunoId, request.ProvaId);
+            if (!request.UtilizarCache)
+            {
+                var resultado = await repositorioQuestaoAlunoTai.ObterQuestoesTaiPorProvaAlunoAsync(request.ProvaId, request.AlunoId);
+                await repositorioCache.SalvarRedisAsync(nomeChave, resultado);
+                return resultado;
+            }
+            
             return await repositorioCache.ObterRedisAsync(nomeChave, async() => await repositorioQuestaoAlunoTai.ObterQuestoesTaiPorProvaAlunoAsync(request.ProvaId, request.AlunoId));            
         }
     }
