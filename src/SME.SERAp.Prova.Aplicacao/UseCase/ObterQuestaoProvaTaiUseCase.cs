@@ -48,7 +48,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
 
-                ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados);
+                ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados, false);
 
                 if (ultimaQuestao == null)
                     throw new NegocioException("Última questão não localizada.");
@@ -68,9 +68,9 @@ namespace SME.SERAp.Prova.Aplicacao
             return questaoCompleta;
         }
 
-        private async Task<QuestaoTaiDto> ObterUltimaQuestaoAdministrado(long provaId, MeusDadosRetornoDto dados)
+        private async Task<QuestaoTaiDto> ObterUltimaQuestaoAdministrado(long provaId, MeusDadosRetornoDto dados, bool utilizarCache = true)
         {
-            var questoesTaiAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId));
+            var questoesTaiAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId, utilizarCache));
             return questoesTaiAdministrado?
                     .OrderBy(t => t.Ordem)?
                     .LastOrDefault();

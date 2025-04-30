@@ -7,14 +7,16 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public class ObterQuestoesTaiAdministradoPorProvaAlunoQuery : IRequest<IEnumerable<QuestaoTaiDto>>
     {
-        public ObterQuestoesTaiAdministradoPorProvaAlunoQuery(long provaId, long alunoId)
+        public ObterQuestoesTaiAdministradoPorProvaAlunoQuery(long provaId, long alunoId, bool utilizarCache = true)
         {
             ProvaId = provaId;
             AlunoId = alunoId;
+            UtilizarCache = utilizarCache;
         }
 
         public long ProvaId { get; }
-        public long AlunoId { get; }        
+        public long AlunoId { get; }  
+        public bool UtilizarCache { get; }
     }
 
     public class ObterQuestoesTaiAdministradoPorProvaAlunoQueryValidator : AbstractValidator<ObterQuestoesTaiAdministradoPorProvaAlunoQuery>
