@@ -8,5 +8,6 @@ namespace SME.SERAp.Prova.Dados
     public interface IRepositorioQuestaoAlunoTai : IRepositorioBase<QuestaoAlunoTai>
     {
         Task<IEnumerable<QuestaoTaiDto>> ObterQuestoesTaiPorProvaAlunoAsync(long provaId, long alunoId);
+        Task<bool> ExisteQuestaoAlunoTaiPorAlunoId(long provaId, long alunoId);
     }
 }
