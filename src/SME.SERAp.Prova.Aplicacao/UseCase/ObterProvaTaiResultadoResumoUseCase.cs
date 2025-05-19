@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Infra;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -20,16 +21,17 @@ namespace SME.SERAp.Prova.Aplicacao
         {
             var ra = await mediator.Send(new ObterRAUsuarioLogadoQuery());
 
-            //-> obter itens da amostra do aluno
             var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, ra));
-
-            //-> obter itens respondidos do aluno
             var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, ra));
+            var criadoEm = await mediator.Send(new ObterQuestaoAlternativaComCriadoEmTaiQuery(provaId, ra));
+
+            var criadoEmPorQuestao = criadoEm.ToDictionary(x => x.QuestaoId, x => x.CriadoEm);
 
             var ids = alunoRespostas.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray();
             var jsons = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(ids));
 
-            var retorno = new List<ProvaTaiResultadoDto>();
+            var retornoTemp = new List<(ProvaTaiResultadoDto Resultado, DateTime CriadoEm)>();
+
             foreach (var json in jsons)
             {
                 var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
@@ -38,20 +40,29 @@ namespace SME.SERAp.Prova.Aplicacao
                 var resposta = alunoRespostas.FirstOrDefault(t => t.QuestaoId == questaoCompleta.Id);
                 var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaResposta.GetValueOrDefault()));
 
-                retorno.Add(new ProvaTaiResultadoDto
+                if (questao != null && criadoEmPorQuestao.TryGetValue(questao.Id, out var dataCriado))
                 {
-                    DescricaoQuestao = questaoCompleta.Descricao,
-                    OrdemQuestao = questao.Ordem,
-                    AlternativaAluno = alternativa?.Numeracao
-                });
+                    retornoTemp.Add((
+                        new ProvaTaiResultadoDto
+                        {
+                            DescricaoQuestao = questaoCompleta.Descricao,
+                            OrdemQuestao = questao.Ordem,
+                            AlternativaAluno = alternativa?.Numeracao
+                        },
+                        dataCriado
+                    ));
+                }
             }
 
+            
             var ordem = 0;
-            return retorno.OrderBy(t => t.OrdemQuestao).Select(t =>
-            {
-                t.OrdemQuestao = ++ordem;
-                return t;
-            });
+            return retornoTemp
+                .OrderBy(t => t.CriadoEm)
+                .Select(t =>
+                {
+                    t.Resultado.OrdemQuestao = ++ordem;
+                    return t.Resultado;
+                });
         }
     }
 }
