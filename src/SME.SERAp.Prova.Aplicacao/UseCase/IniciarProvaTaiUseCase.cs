@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using SME.SERAp.Prova.Aplicacao.Commands;
+using SME.SERAp.Prova.Aplicacao.Queries;
 using SME.SERAp.Prova.Aplicacao.Queries.VerificaStatusProvaFinalizada;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
@@ -6,6 +8,7 @@ using SME.SERAp.Prova.Infra.Dtos.Aluno;
 using SME.SERAp.Prova.Infra.Exceptions;
 using SME.SERAp.Prova.Infra.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao.UseCase
@@ -26,9 +29,9 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
             {
                 await ObterDadosAlunoLogado();
                 var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, dadosAlunoLogado.Ra));
-                
+
                 var dataInicio = DateTime.Now;
-                
+
                 var dataMenos3Horas = provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataInicio);
                 if (dataMenos3Horas != null)
                     dataInicio = (DateTime)dataMenos3Horas;
@@ -52,16 +55,16 @@ namespace SME.SERAp.Prova.Aplicacao.UseCase
                 throw;
             }
         }
-        
+
         private async Task ObterDadosAlunoLogado()
         {
             dadosAlunoLogado = await mediator.Send(new ObterDadosAlunoLogadoQuery());
-            
+
         }
         private async Task<bool> IncluirProvaAluno(long provaId, ProvaAlunoStatusDto provaAlunoStatusDto, DateTime dataInicio)
         {
             var dataFim = provaAlunoStatusDto.DataFim != null && provaAlunoStatusDto.DataFim != 0 ? provaAlunoStatusDto.DataMenos3Horas(provaAlunoStatusDto.DataFim) : null;
-            
+
             await PublicarAcompProvaAlunoInicioFimTratar(provaId, dadosAlunoLogado.Ra, provaAlunoStatusDto.Status, dataInicio, dataFim);
 
             return await mediator.Send(new IncluirProvaAlunoCommand(provaId,
