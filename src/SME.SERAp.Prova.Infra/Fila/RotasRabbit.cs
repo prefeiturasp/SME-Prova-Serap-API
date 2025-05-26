@@ -22,6 +22,8 @@
         public const string TratarOrdemQuestaoAlunoProvaTai = "serap.estudante.prova.tai.ordem.questao.aluno.tratar";
         public const string TratarProficienciaAlunoProvaTai = "serap.estudante.prova.tai.proficiencia.aluno.tratar";
 
+        public const string TratarCadernoAlunoProva = "serap.estudante.prova.legado.tratar.caderno.aluno.prova";
+
         public const string ImportarResultadoAlunoPsp = "serap.resultados.psp.resultado.aluno";
         public const string ImportarResultadoSmePsp = "serap.resultados.psp.resultado.sme";
         public const string ImportarResultadoDrePsp = "serap.resultados.psp.resultado.dre";
