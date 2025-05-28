@@ -95,7 +95,7 @@ namespace SME.SERAp.Prova.Aplicacao
             //-> Se o id da questão retornado do tai não foi respondido continua a prova.
             var continuarProva = retorno.ProximaQuestao != -1;
 
-            ValidarRetornoApiTAI(questoesAluno, retorno, continuarProva);
+            ValidarRetornoApiTAI(questoesAluno, questoesTaiAdministrado, retorno, continuarProva);
 
             await AtualizarDadosBanco(continuarProva, provaId, questaoAlunoRespostaSincronizarDto, prova, aluno, dados, retorno);
             await AtualizarDadosCache(continuarProva, dados.AlunoId, provaId, aluno, questoesAluno, questoesTaiAdministrado.ToList(), alunoRespostas, retorno);
@@ -111,7 +111,7 @@ namespace SME.SERAp.Prova.Aplicacao
             return false;
         }
 
-        private static void ValidarRetornoApiTAI(IEnumerable<QuestaoTaiDto> questoesAluno, ObterProximoItemApiRRespostaDto retorno, bool continuarProva)
+        private static void ValidarRetornoApiTAI(IEnumerable<QuestaoTaiDto> questoesAluno, IEnumerable<QuestaoTaiDto> questoesTaiAdministrado, ObterProximoItemApiRRespostaDto retorno, bool continuarProva)
         {
             if (continuarProva)
             {
@@ -119,6 +119,9 @@ namespace SME.SERAp.Prova.Aplicacao
                     throw new NegocioException($"Próxima questão retornada pelo TAI não existe para o aluno. Questão: {retorno.ProximaQuestao}");
 
                 if (questoesAluno.Any(t => t.Ordem == retorno.Ordem))
+                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.ProximaQuestao}, Ordem: {retorno.Ordem}");
+
+                if (questoesTaiAdministrado.Any(t => t.Ordem == retorno.Ordem))
                     throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.ProximaQuestao}, Ordem: {retorno.Ordem}");
             }
         }
