@@ -23,7 +23,7 @@ namespace SME.SERAp.Prova.Aplicacao
 
         public async Task<ObterProximoItemApiRRespostaDto> Handle(ObterProximoItemApiRQuery request, CancellationToken cancellationToken)
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Clear();
 
             var obterItensProvaTaiDto = new ObterProximaQuestaoTaiDto
