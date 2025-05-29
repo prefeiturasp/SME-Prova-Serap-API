@@ -118,11 +118,11 @@ namespace SME.SERAp.Prova.Aplicacao
                 if (!questoesAluno.Any(t => t.Id == retorno.ProximaQuestao))
                     throw new NegocioException($"Próxima questão retornada pelo TAI não existe para o aluno. Questão: {retorno.ProximaQuestao}");
 
-                if (questoesAluno.Any(t => t.Ordem == retorno.Ordem))
-                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.ProximaQuestao}, Ordem: {retorno.Ordem}");
-
                 if (questoesTaiAdministrado.Any(t => t.Ordem == retorno.Ordem))
-                    throw new NegocioException($"Ordem da proxima questão retornada pelo TAI já existe para o aluno. Questão: {retorno.ProximaQuestao}, Ordem: {retorno.Ordem}");
+                {
+                    var ultimaOrdem = questoesTaiAdministrado.Max(t => t.Ordem);
+                    retorno.Ordem = ultimaOrdem + 1;
+                }
             }
         }
 
