@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using SME.SERAp.Prova.Aplicacao.Commands;
 using SME.SERAp.Prova.Aplicacao.Queries;
+using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using SME.SERAp.Prova.Infra.Dtos.Questao;
 using SME.SERAp.Prova.Infra.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -38,18 +40,28 @@ namespace SME.SERAp.Prova.Aplicacao
 
                 if (!existeCadernoAluno)
                 {
-                    await mediator.Send(new IncluirCadernoAlunoCommand(alunoDetalhes.AlunoId, provaId, "1"));
+                    await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarCadernoAlunoProva, new
+                    {
+                        ProvaId = provaId,
+                        AlunoId = alunoDetalhes.AlunoId,
+                        Caderno = "1",
+                    }));
                 }
 
                 if (!existeQuestaoAlunoTai)
                 {
-                    await IncluirPrimeiraQuestaoAlunoTai(provaId, alunoDetalhes.AlunoId, "1");
-                    await Task.Delay(2000);
+                    var novaQuestaoId = await IncluirPrimeiraQuestaoAlunoTai(provaId, alunoDetalhes.AlunoId, "1");
+                    ultimaQuestao = new QuestaoTaiDto
+                    {
+                        Id = novaQuestaoId,
+                        Ordem = 0
+                    };
+                    await SalvarPrimeiraQuestaoAdministradorCache(alunoDetalhes.AlunoId, provaId, ultimaQuestao);
                 }
-
-                await RemoverCaches(provaId, dadosAlunoLogado.Ra, alunoDetalhes.AlunoId);
-
-                ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados, false);
+                else
+                {
+                    ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados, false);
+                }
 
                 if (ultimaQuestao == null)
                     throw new NegocioException("Última questão não localizada.");
@@ -77,23 +89,26 @@ namespace SME.SERAp.Prova.Aplicacao
                     .LastOrDefault();
         }
 
-        private async Task IncluirPrimeiraQuestaoAlunoTai(long provaId, long alunoId, string caderno)
+        private async Task<long> IncluirPrimeiraQuestaoAlunoTai(long provaId, long alunoId, string caderno)
         {
             var idsQuestoes = (await mediator.Send(new ObterIdsQuestoesPorProvaIdCadernoQuery(provaId, caderno))).Distinct().ToList();
             var sortear = new Random();
             var questaoIdSorteada = idsQuestoes[sortear.Next(idsQuestoes.Count)];
 
-            var questaoAlunoTai = new QuestaoAlunoTai(questaoIdSorteada, alunoId, 0);
-            var questaoAlunoTaiId = await mediator.Send(new QuestaoAlunoTaiIncluirCommand(questaoAlunoTai));
-
-            if (questaoAlunoTaiId <= 0)
-                throw new NegocioException($"As questões TAI do aluno {alunoId} não foram inseridas.");
+            await mediator.Send(new PublicarFilaSerapEstudantesCommand(RotasRabbit.TratarOrdemQuestaoAlunoProvaTai, new
+            {
+                QuestaoId = questaoIdSorteada,
+                alunoId,
+                Ordem = 0
+            }));
+            return questaoIdSorteada;
         }
 
-        private async Task RemoverCaches(long provaId, long alunoRA, long alunoId)
+        private async Task SalvarPrimeiraQuestaoAdministradorCache(long alunoId, long provaId, QuestaoTaiDto novaQuestao)
         {
-            await mediator.Send(new RemoverCacheCommand($"al-prova-{provaId}-{alunoRA}"));
-            await mediator.Send(new RemoverCacheCommand($"al-q-administrado-tai-prova-{alunoId}-{provaId}"));
+            var nomeChaveAlunoQuestaoAdministrado = CacheChave.ObterChave(CacheChave.QuestaoAdministradoTaiAluno, alunoId, provaId);
+            var questoesAdministrado = new List<QuestaoTaiDto> { novaQuestao };
+            await mediator.Send(new SalvarCacheCommand(nomeChaveAlunoQuestaoAdministrado, questoesAdministrado));
         }
     }
 }
