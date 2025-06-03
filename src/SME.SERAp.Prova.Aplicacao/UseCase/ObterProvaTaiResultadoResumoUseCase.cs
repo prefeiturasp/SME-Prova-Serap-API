@@ -23,46 +23,53 @@ namespace SME.SERAp.Prova.Aplicacao
 
             var questoesAluno = await mediator.Send(new ObterQuestaoTaiPorProvaAlunoQuery(provaId, ra));
             var alunoRespostas = await mediator.Send(new ObterAlternativaAlunoRespostaQuery(provaId, ra));
-            var criadoEm = await mediator.Send(new ObterQuestaoAlternativaComCriadoEmTaiQuery(provaId, ra));
+            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(ra));
 
-            var criadoEmPorQuestao = criadoEm.ToDictionary(x => x.QuestaoId, x => x.CriadoEm);
+            var questoesTaiAdministrado = await mediator.Send(
+                new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId)
+            );
 
-            var ids = alunoRespostas.Where(t => t.AlternativaResposta.HasValue).Select(t => t.QuestaoId).ToArray();
+            var ids = alunoRespostas
+                .Where(t => t.AlternativaResposta.HasValue)
+                .Select(t => t.QuestaoId)
+                .ToArray();
+
             var jsons = await mediator.Send(new ObterQuestaoCompletaPorIdQuery(ids));
 
-            var retornoTemp = new List<(ProvaTaiResultadoDto Resultado, DateTime CriadoEm)>();
+            var ordemPorQuestaoId = questoesTaiAdministrado
+                .ToDictionary(q => q.Id, q => q.Ordem);
+
+            var retornoTemp = new List<(ProvaTaiResultadoDto Resultado, int Ordem)>();
 
             foreach (var json in jsons)
             {
-                var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var questaoCompleta = JsonSerializer.Deserialize<QuestaoCompletaDto>(
+                    json,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 var questao = questoesAluno.FirstOrDefault(t => t.Id == questaoCompleta.Id);
                 var resposta = alunoRespostas.FirstOrDefault(t => t.QuestaoId == questaoCompleta.Id);
-                var alternativa = await mediator.Send(new ObterAlternativaPorIdQuery(resposta.AlternativaResposta.GetValueOrDefault()));
+                var alternativa = await mediator.Send(
+                    new ObterAlternativaPorIdQuery(resposta.AlternativaResposta.GetValueOrDefault()));
 
-                if (questao != null && criadoEmPorQuestao.TryGetValue(questao.Id, out var dataCriado))
+                if (questao != null && ordemPorQuestaoId.TryGetValue(questao.Id, out var ordem))
                 {
                     retornoTemp.Add((
                         new ProvaTaiResultadoDto
                         {
                             DescricaoQuestao = questaoCompleta.Descricao,
-                            OrdemQuestao = questao.Ordem,
+                            OrdemQuestao = ordem + 1,
                             AlternativaAluno = alternativa?.Numeracao
                         },
-                        dataCriado
+                        ordem
                     ));
                 }
             }
 
-            
-            var ordem = 0;
             return retornoTemp
-                .OrderBy(t => t.CriadoEm)
-                .Select(t =>
-                {
-                    t.Resultado.OrdemQuestao = ++ordem;
-                    return t.Resultado;
-                });
+                .OrderBy(t => t.Ordem)
+                .Select(t => t.Resultado);
         }
+
     }
 }
