@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using System.Globalization;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,13 +17,21 @@ namespace SME.SERAp.Prova.Aplicacao
 
         private static bool ValidaRegraSenha(VerificaAutenticacaoUsuarioQuery request)
         {
-            var raString = request.AlunoRA.ToString();
-            var senhaAtual = raString[^4..];
+            try
+            {
+                var raString = request.AlunoRA.ToString();
+                var nascimentoSerap = request.DataNascimento.Date;
 
-            if (senhaAtual == request.Senha)
-                return true;
-
-            return false;
+                DateTime senhaInformada = DateTime.ParseExact(request.Senha, "ddMMyy", CultureInfo.InvariantCulture);
+                if (nascimentoSerap == senhaInformada)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

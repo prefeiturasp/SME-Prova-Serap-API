@@ -24,7 +24,7 @@ namespace SME.SERAp.Prova.Aplicacao
             {
                 var podeGerarToken =
                     await mediator.Send(
-                        new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha));
+                        new VerificaAutenticacaoUsuarioQuery(autenticacaoDto.Login, autenticacaoDto.Senha, aluno.DataNascimento));
                 if (podeGerarToken)
                 {
                     var tokenDtExpiracao =
