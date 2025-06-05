@@ -22,7 +22,7 @@ namespace SME.SERAp.Prova.Aplicacao
                 var raString = request.AlunoRA.ToString();
                 var nascimentoSerap = request.DataNascimento.Date;
 
-                DateTime senhaInformada = DateTime.ParseExact(request.Senha, "ddMMyy", CultureInfo.InvariantCulture);
+                DateTime senhaInformada = DateTime.ParseExact(request.Senha, "ddMMyyyy", CultureInfo.InvariantCulture);
                 if (nascimentoSerap == senhaInformada)
                     return true;
                 else
