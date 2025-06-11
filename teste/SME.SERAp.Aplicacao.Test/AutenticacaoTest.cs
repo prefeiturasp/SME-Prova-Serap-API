@@ -18,9 +18,8 @@ namespace SME.SERAp.Aplicacao.Test
             //Arrange
             var queryHandler = new VerificaAutenticacaoUsuarioQueryHandler();
 
-
             //Act
-            var estaAutenticado = await queryHandler.Handle(new VerificaAutenticacaoUsuarioQuery(alunoRA, senha), new CancellationToken());
+            var estaAutenticado = await queryHandler.Handle(new VerificaAutenticacaoUsuarioQuery(alunoRA, senha, new System.DateTime()), new CancellationToken());
 
             //Assert
             Assert.Equal(deveAutenticar, estaAutenticado);

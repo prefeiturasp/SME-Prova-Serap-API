@@ -103,30 +103,5 @@ namespace SME.SERAp.Prova.Dados
                 conn.Dispose();
             }
         }
-        public async Task<IEnumerable<QuestaoAlunoRespostaCriadoEmDto>> ObterQuestaoAlternativaComCriadoEmTaiAsync(long alunoRa, long provaId)
-        {
-            using var conn = ObterConexaoLeitura();
-            try
-            {
-                var query = @"select criado_em as CriadoEm, questao_id as QuestaoId from questao_aluno_resposta a inner join questao b on a.questao_id = b.id where b.prova_id = @provaId and a.aluno_ra = @alunoRa order by criado_em";
-
-                
-                var r = await conn.QueryAsync<QuestaoAlunoRespostaCriadoEmDto>(query, new { alunoRa, provaId });
-
-                return r;
-            }
-            catch (Exception ex)
-            {
-                // Aqui você pode logar ou tratar o erro conforme necessário
-                Console.Error.WriteLine($"Erro ao executar a consulta: {ex.Message}");
-                throw; // Re-lança a exceção, se necessário
-            }
-
-            finally
-            {
-                conn.Close();
-                conn.Dispose();
-            }
-        }
     }
 }
