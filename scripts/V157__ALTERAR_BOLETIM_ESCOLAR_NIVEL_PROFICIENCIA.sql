@@ -1,6 +1,6 @@
 -- Adicionar novos campos na tabela "boletim_escolar"
-ALTER TABLE public.boletim_escolar
-ADD COLUMN nivel_ue_codigo INTEGER;
+ALTER TABLE IF EXISTS public.boletim_escolar
+ADD COLUMN IF NOT EXISTS nivel_ue_codigo INTEGER;
 
-ALTER TABLE public.boletim_escolar
-ADD COLUMN nivel_ue_descricao TEXT;
+ALTER TABLE IF EXISTS public.boletim_escolar
+ADD COLUMN IF NOT EXISTS  nivel_ue_descricao TEXT;
