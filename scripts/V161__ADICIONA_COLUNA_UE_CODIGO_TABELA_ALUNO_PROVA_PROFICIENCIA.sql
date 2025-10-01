@@ -1,0 +1,1 @@
+alter table aluno_prova_sp_proficiencia add column if not exists ue_codigo varchar(15);
