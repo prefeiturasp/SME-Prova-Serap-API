@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SME.SERAp.Prova.Api.Middlewares;
 using SME.SERAp.Prova.Aplicacao;
 using SME.SERAp.Prova.Infra;
+using SME.SERAp.Prova.Infra.Dtos.ResultadoPsp;
 using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Api.Controllers
@@ -20,12 +21,19 @@ namespace SME.SERAp.Prova.Api.Controllers
         [HttpPost("upload-arquivo")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(RetornoBaseDto), 500)]
-        [DisableRequestSizeLimit]        
-        public async Task<IActionResult> UploadArquivoResultadosPsp([FromForm] IFormFile arquivo, 
-                                                                    [FromForm] ImportArquivoResultadoPspDto arquivoResultadoDto,
-                                                                    [FromServices] IImportarArquivoResultadoPspUseCase importarArquivoResultadoPspUseCase)
+        [DisableRequestSizeLimit]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadArquivoResultadosPsp(
+                                    [FromForm] UploadArquivoResultadoPspRequest request,
+                                    [FromServices] IImportarArquivoResultadoPspUseCase importarArquivoResultadoPspUseCase)
         {
-            return Ok(await importarArquivoResultadoPspUseCase.Executar(arquivo, arquivoResultadoDto));
+            var dto = new ImportArquivoResultadoPspDto
+            {
+                Arquivo = request.Arquivo,
+                NomeArquivo = request.NomeArquivo
+            };
+
+            return Ok(await importarArquivoResultadoPspUseCase.Executar(dto));
         }
 
         [HttpGet("processo/{processoId}/tipo-resultado/{tipoResultado}/tratar")]
