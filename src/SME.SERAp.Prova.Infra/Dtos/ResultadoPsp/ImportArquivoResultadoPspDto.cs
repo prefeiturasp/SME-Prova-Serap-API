@@ -1,4 +1,6 @@
-﻿namespace SME.SERAp.Prova.Infra
+﻿using Microsoft.AspNetCore.Http;
+
+namespace SME.SERAp.Prova.Infra
 {
     public class ImportArquivoResultadoPspDto : DtoBase
     {
@@ -7,7 +9,7 @@
 
         }
 
+        public IFormFile Arquivo { get; set; }
         public string NomeArquivo { get; set; }
-
     }
 }

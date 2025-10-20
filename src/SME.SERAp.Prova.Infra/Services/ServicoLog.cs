@@ -45,7 +45,7 @@ namespace SME.SERAp.Prova.Infra.Services
             servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
         }
 
-        private void PublicarMensagem(byte[] body)
+        private async void PublicarMensagem(byte[] body)
         {
             try
             {
@@ -57,15 +57,20 @@ namespace SME.SERAp.Prova.Infra.Services
                     VirtualHost = configuracaoRabbitOptions.VirtualHost
                 };
 
-                using (var conexaoRabbit = factory.CreateConnection())
+                using var conexaoRabbit = await factory.CreateConnectionAsync();
+                using var channel = await conexaoRabbit.CreateChannelAsync();
+                var props = new BasicProperties
                 {
-                    using (IModel _channel = conexaoRabbit.CreateModel())
-                    {
-                        var props = _channel.CreateBasicProperties();
-                        props.Persistent = true;
-                        _channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
-                    }
-                }
+                    Persistent = true
+                };
+
+                await channel.BasicPublishAsync(
+                    ExchangeRabbit.Logs,
+                    RotasRabbit.RotaLogs,
+                    true,
+                    props,
+                    body
+                );
             }
             catch (Exception ex)
             {
@@ -74,5 +79,3 @@ namespace SME.SERAp.Prova.Infra.Services
         }
     }
 }
-
-
