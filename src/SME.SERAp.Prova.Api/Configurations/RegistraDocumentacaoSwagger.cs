@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using SME.SERAp.Prova.Api.Filtros;
 using SME.SERAp.Prova.Aplicacao;
 
 namespace SME.SERAp.Prova.Api.Configuracoes
@@ -14,10 +15,8 @@ namespace SME.SERAp.Prova.Api.Configuracoes
             var mediator = sp.GetService<IMediator>();
             var versaoAtual = mediator.Send(new ObterUltimaVersaoApiQuery()).Result;
 
-
             services.AddSwaggerGen(c =>
             {
-
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SERAp Estudantes API", Version = versaoAtual });
 
                 var securitySchema = new OpenApiSecurityScheme
@@ -43,6 +42,7 @@ namespace SME.SERAp.Prova.Api.Configuracoes
 
                 c.AddSecurityRequirement(securityRequirement);
 
+                c.SchemaFilter<FormFileSchemaFilter>();
             });
         }
     }
