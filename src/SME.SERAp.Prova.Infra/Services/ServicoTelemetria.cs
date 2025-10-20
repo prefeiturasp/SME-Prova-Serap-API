@@ -33,15 +33,51 @@ namespace SME.SERAp.Prova.Infra
 
             if (telemetriaOptions.Apm)
             {
-                var temporizadorApm = Stopwatch.StartNew();
-                result = await acao();
-                temporizadorApm.Stop();
 
-                Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                if(Agent.Tracer.CurrentTransaction is null)
                 {
-                    span.SetLabel(telemetriaNome, telemetriaValor);
-                    span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
-                });
+                    var transaction = Agent.Tracer.StartTransaction(telemetriaNome, acaoNome);
+
+                    try
+                    {
+                        result = await transaction.CaptureSpan(telemetriaNome, acaoNome, async (span) =>
+                        {
+                            var temporizador = Stopwatch.StartNew();
+                            var resultado = await acao();
+                            temporizador.Stop();
+
+                            span.SetLabel(telemetriaNome, telemetriaValor);
+                            span.Duration = temporizador.Elapsed.TotalMilliseconds;
+
+                            return resultado;
+                        });
+
+                        transaction.Result = "success";
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.CaptureException(ex);
+                        transaction.Result = "failure";
+                        throw;
+                    }
+                    finally
+                    {
+                        transaction.End();
+                    }
+                }
+                else
+                {
+                    var temporizadorApm = Stopwatch.StartNew();
+                    result = await acao();
+                    temporizadorApm.Stop();
+
+                    Agent.Tracer.CurrentTransaction.CaptureSpan(telemetriaNome, acaoNome, (span) =>
+                    {
+                        span.SetLabel(telemetriaNome, telemetriaValor);
+                        span.Duration = temporizadorApm.Elapsed.TotalMilliseconds;
+                    });
+                }
+
             }
             else
             {
