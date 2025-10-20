@@ -64,9 +64,9 @@ namespace SME.SERAp.Prova.Api
             Configuration.GetSection(TelemetriaOptions.Secao).Bind(telemetriaOptions, c => c.BindNonPublicProperties = true);
             services.AddSingleton(telemetriaOptions);
 
-            if (telemetriaOptions != null && telemetriaOptions.Apm)
+            if (telemetriaOptions.Apm == true)
             {
-                services.AddAllElasticApm();
+                services.AddElasticApm(new HttpDiagnosticsSubscriber());
             }
 
             var rabbitOptions = new RabbitOptions();
@@ -144,15 +144,6 @@ namespace SME.SERAp.Prova.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var telemetriaOptions = app.ApplicationServices.GetService<TelemetriaOptions>();
-            if (telemetriaOptions != null && telemetriaOptions.Apm)
-            {
-                app.UseAllElasticApm(Configuration);
-
-                var muxer = app.ApplicationServices.GetService<IConnectionMultiplexer>();
-                muxer.UseElasticApm();
-            }
-
             app.UseResponseCompression();
             
 
