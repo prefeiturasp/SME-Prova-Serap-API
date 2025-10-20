@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SME.SGP.Aplicacao.Pipelines
+namespace SME.SERAp.Prova.Aplicacao.Pipelines
 {
     public class ValidacoesPipeline<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
@@ -17,7 +17,7 @@ namespace SME.SGP.Aplicacao.Pipelines
             this.validadores = validadores ?? throw new System.ArgumentNullException(nameof(validadores));
         }
 
-        public Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+        public Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             if (validadores.Any())
             {
