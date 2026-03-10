@@ -19,7 +19,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
     public class ObterProximaQuestaoProvaTaiUseCaseTeste
     {
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_Prova_Nao_Localizada()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_Prova_Nao_Localizada()
         {
             var contexto = CriarContextoPadrao();
             contexto.MediatorMock
@@ -32,7 +32,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_AlunoRa_Diferente()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_AlunoRa_Diferente()
         {
             var contexto = CriarContextoPadrao();
             contexto.Dto.AlunoRa = contexto.AlunoRa + 1;
@@ -43,7 +43,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_UltimaQuestao_Diferente()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_UltimaQuestao_Diferente()
         {
             var contexto = CriarContextoPadrao();
             contexto.QuestoesAdministrado.Clear();
@@ -56,7 +56,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_Prova_Nao_Iniciada()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_Prova_Nao_Iniciada()
         {
             var contexto = CriarContextoPadrao();
             contexto.ProvaAluno.Status = ProvaStatus.NaoIniciado;
@@ -68,7 +68,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_Questao_Nao_Pertence_Ao_Aluno()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_Questao_Nao_Pertence_Ao_Aluno()
         {
             var contexto = CriarContextoPadrao();
             contexto.QuestoesAluno.RemoveAll(q => q.Id == contexto.QuestaoId);
@@ -79,7 +79,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_Resposta_Nao_Encontrada()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_Resposta_Nao_Encontrada()
         {
             var contexto = CriarContextoPadrao();
             contexto.AlunoRespostas.Clear();
@@ -91,7 +91,7 @@ namespace SME.SERAp.Aplicacao.Test.UseCase
         }
 
         [Fact]
-        public async Task Executar_Deve_Lancar_Quando_Retorno_Tai_Nao_Existe_Para_Aluno()
+        public async Task Executar_Deve_Lancar_Negocio_Exception_Quando_Retorno_Tai_Nao_Existe_Para_Aluno()
         {
             var contexto = CriarContextoPadrao();
             contexto.Retorno.ProximaQuestao = 999;
