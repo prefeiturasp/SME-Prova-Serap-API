@@ -90,43 +90,43 @@ pipeline {
         }
     }
 
-//     post {
-//         always {
-//             script {
-//                 withDockerRegistry(credentialsId: 'jenkins_registry', url: 'https://registry.sme.prefeitura.sp.gov.br/repository/sme-registry/') {
-//                     sh '''
-//                         docker pull registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2
-//                         docker run \
-//                             --rm \
-//                             -v "$WORKSPACE:/app" \
-//                             -w /app \
-//                             registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2 \
-//                             sh -c "rm -rf package-lock.json node_modules/ || true && chown 1001:1001 * -R || true  && chmod 777 * -R || true"
-//                     '''
-//                 }
+    post {
+        always {
+            script {
+                withDockerRegistry(credentialsId: 'jenkins_registry', url: 'https://registry.sme.prefeitura.sp.gov.br/repository/sme-registry/') {
+                    sh '''
+                        docker pull registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2
+                        docker run \
+                            --rm \
+                            -v "$WORKSPACE:/app" \
+                            -w /app \
+                            registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2 \
+                            sh -c "rm -rf package-lock.json node_modules/ || true && chown 1001:1001 * -R || true  && chmod 777 * -R || true"
+                    '''
+                }
                 
-//                 if (fileExists("${ALLURE_PATH}") && sh(script: "ls -A ${ALLURE_PATH} | wc -l", returnStdout: true).trim() != "0") {
-//                     allure includeProperties: false, jdk: '', results: [[path: "${ALLURE_PATH}"]]
-//                 } else {
-//                     echo "⚠️ Resultados do Allure não encontrados ou vazios, plugin não será acionado."
-//                 }
+                if (fileExists("${ALLURE_PATH}") && sh(script: "ls -A ${ALLURE_PATH} | wc -l", returnStdout: true).trim() != "0") {
+                    allure includeProperties: false, jdk: '', results: [[path: "${ALLURE_PATH}"]]
+                } else {
+                    echo "⚠️ Resultados do Allure não encontrados ou vazios, plugin não será acionado."
+                }
 
-//                 def zipExists = sh(script: "ls testes/ui/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
-//                 if (zipExists) {
-//                     archiveArtifacts artifacts: 'testes/ui/allure-results-*.zip', fingerprint: true
-//                 } else {
-//                     echo "⚠️ Nenhum .zip de Allure encontrado para arquivamento."
-//                 }
-//             }
-//         }
+                def zipExists = sh(script: "ls teste/ui/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
+                if (zipExists) {
+                    archiveArtifacts artifacts: 'teste/ui/allure-results-*.zip', fingerprint: true
+                } else {
+                    echo "⚠️ Nenhum .zip de Allure encontrado para arquivamento."
+                }
+            }
+        }
         
-//         success { sendTelegram("<b>SUCESSO! ✅</b>") }
-//         unstable { sendTelegram("<b>INSTÁVEL! ⚠️</b>") }
-//         failure { sendTelegram("<b>FALHA! ❌</b>\n") }
-//         aborted { sendTelegram("<b>CANCELADO! ✖️</b>\n") }
+        // success { sendTelegram("<b>SUCESSO! ✅</b>") }
+        // unstable { sendTelegram("<b>INSTÁVEL! ⚠️</b>") }
+        // failure { sendTelegram("<b>FALHA! ❌</b>\n") }
+        // aborted { sendTelegram("<b>CANCELADO! ✖️</b>\n") }
         
-//     }
-// }
+    }
+}
 
 
 // def sendTelegram(message) {
@@ -149,4 +149,4 @@ pipeline {
 //             validResponseCodes: '200')
 //         return response
 //     }
-}
+// }
