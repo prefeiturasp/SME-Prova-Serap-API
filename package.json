@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/prefeiturasp/SME-Prova-Serap-API#readme",
   "devDependencies": {
+    "cypress-cloud": "^1.13.1",
+    "mocha-allure-reporter": "^1.4.0",
     "semantic-release": "^17.4.4"
   }
 }
