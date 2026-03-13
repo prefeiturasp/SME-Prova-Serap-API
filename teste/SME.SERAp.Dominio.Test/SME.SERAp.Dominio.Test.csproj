@@ -13,4 +13,14 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Constantes\" />
+    <Folder Include="Enumerados\" />
+    <Folder Include="Extensoes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SME.SERAp.Prova.Dominio\SME.SERAp.Prova.Dominio.csproj" />
+  </ItemGroup>
+
 </Project>
