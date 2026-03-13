@@ -1,9 +1,10 @@
 const { defineConfig } = require('cypress')
+const { cloudPlugin } = require('cypress-cloud/plugin')
 const allureWriter = require('@shelex/cypress-allure-plugin/writer')
 const dotenv = require('dotenv')
 const cucumber = require('cypress-cucumber-preprocessor').default
 const postgreSQL = require('cypress-postgresql')
-const pg = require('pg')
+const { Pool } = require('pg')
 
 dotenv.config()
 
@@ -16,14 +17,31 @@ const dbConfig = {
 
 module.exports = defineConfig({
   e2e: {
+
+    env: {
+      allure: true
+    },
+
     async setupNodeEvents(on, config) {
+
+      // Allure reporter
       allureWriter(on, config)
+
+      // Cucumber preprocessor
       on('file:preprocessor', cucumber())
 
-      const pool = new pg.Pool(dbConfig)
-      const tasks = postgreSQL.loadDBPlugin(pool)
-      on('task', tasks)
+      // Cypress Cloud plugin
+      config = await cloudPlugin(on, config)
 
+      // PostgreSQL connection
+      const pool = new Pool(dbConfig)
+      const tasks = postgreSQL.loadDBPlugin(pool)
+
+      on('task', {
+        ...tasks
+      })
+
+      // Environment variables
       const envKeys = [
         'ALUNO_RA',
         'DATA_NASC',
@@ -49,39 +67,42 @@ module.exports = defineConfig({
         envKeys.map((key) => [key, process.env[key] ?? ''])
       )
 
-      const enhancedConfig = {
-        ...config,
-        env: {
-          ...config.env,
-          ...customVariable,
-        },
+      config.env = {
+        ...config.env,
+        ...customVariable,
       }
 
-      return enhancedConfig
+      return config
     },
 
     baseUrl: 'https://hom-serap-estudante.sme.prefeitura.sp.gov.br',
+
     supportFile: 'cypress/support/e2e.js',
-    viewportWidth: 1600,
-    viewportHeight: 1050,
-    video: false,
-    retries: {
-      runMode: 2,
-      openMode: 0,
-    },
-    screenshotOnRunFailure: false,
-    chromeWebSecurity: false,
-    experimentalRunAllSpecs: true,
-    failOnStatusCode: false,
 
     specPattern: [
       'cypress/e2e/**/*.feature'
     ],
 
+    viewportWidth: 1600,
+    viewportHeight: 1050,
+
+    video: false,
+
+    retries: {
+      runMode: 2,
+      openMode: 0,
+    },
+
+    screenshotOnRunFailure: false,
+    chromeWebSecurity: false,
+    experimentalRunAllSpecs: true,
+    failOnStatusCode: false,
+
     defaultCommandTimeout: 60000,
     requestTimeout: 60000,
     execTimeout: 60000,
     pageLoadTimeout: 60000,
+
     waitForAnimations: true,
     animationDistanceThreshold: 5,
   },
