@@ -111,9 +111,9 @@ pipeline {
                     echo "⚠️ Resultados do Allure não encontrados ou vazios, plugin não será acionado."
                 }
 
-                def zipExists = sh(script: "ls teste/ui/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
+                def zipExists = sh(script: "ls teste/api/allure-results/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
                 if (zipExists) {
-                    archiveArtifacts artifacts: 'teste/ui/allure-results-*.zip', fingerprint: true
+                    archiveArtifacts artifacts: 'teste/api/allure-results/allure-results-*.zip', fingerprint: true
                 } else {
                     echo "⚠️ Nenhum .zip de Allure encontrado para arquivamento."
                 }
