@@ -15,3 +15,23 @@ Feature: Consultar vídeo por ID
     When eu consulto o vídeo com um ID inexistente
     Then o status da resposta deve ser 409
     And a resposta deve indicar que o vídeo não foi encontrado
+
+  Scenario: Consultar outro vídeo existente
+    When eu consulto o vídeo com o ID 123457
+    Then o status da resposta deve ser 200
+    And o corpo da resposta do vídeo deve conter os campos esperados
+
+  Scenario: Consultar vídeo com ID muito alto
+    When eu consulto o vídeo com o ID 999999999
+    Then o status da resposta deve ser 409
+    And a resposta deve indicar que o vídeo não foi encontrado
+
+  Scenario: Consultar vídeo com ID zero
+    When eu consulto o vídeo com o ID 0
+    Then o status da resposta deve ser 409
+    And a resposta deve indicar que o vídeo não foi encontrado
+
+  Scenario: Consultar vídeo com ID negativo
+    When eu consulto o vídeo com o ID -1
+    Then o status da resposta deve ser 409
+    And a resposta deve indicar que o vídeo não foi encontrado

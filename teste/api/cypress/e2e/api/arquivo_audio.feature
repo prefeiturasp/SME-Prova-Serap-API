@@ -10,3 +10,18 @@ Feature: Consultar arquivo de áudio da prova
     When eu consulto o vídeo com o ID 999999
     Then o status da resposta deve ser 409
     And o corpo da resposta deve conter a mensagem "O vídeo não foi encontrado"
+
+  Scenario: Consultar vídeo com ID inválido
+    When eu consulto o vídeo com o ID -1
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O vídeo não foi encontrado"
+
+  Scenario: Consultar vídeo com ID zero
+    When eu consulto o vídeo com o ID 0
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O vídeo não foi encontrado"
+
+  Scenario: Consultar vídeo com ID muito alto
+    When eu consulto o vídeo com o ID 88888888
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O vídeo não foi encontrado"
