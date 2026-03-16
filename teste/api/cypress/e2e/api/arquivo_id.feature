@@ -15,3 +15,18 @@ Feature: Consultar arquivo por ID
     When eu consulto o arquivo com o ID 1099998798
     Then o status da resposta deve ser 409
     And o corpo da resposta deve conter a mensagem "O Arquivo não foi encontrado"
+
+  Scenario: Consultar arquivo com ID muito alto
+    When eu consulto o arquivo com o ID 999999999
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O Arquivo não foi encontrado"
+
+  Scenario: Consultar arquivo com ID zero
+    When eu consulto o arquivo com o ID 0
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O Arquivo não foi encontrado"
+
+  Scenario: Consultar arquivo com ID negativo
+    When eu consulto o arquivo com o ID -1
+    Then o status da resposta deve ser 409
+    And o corpo da resposta deve conter a mensagem "O Arquivo não foi encontrado"
