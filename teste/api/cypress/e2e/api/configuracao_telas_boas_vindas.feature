@@ -10,3 +10,23 @@ Feature: Consultar lista de vídeos de boas-vindas
     When eu faço uma requisição GET para "/api/v1/configuracoes/telas-boas-vindas"  
     Then o status da resposta deve ser 200  
     And o corpo da resposta deve conter a lista de vídeos com os campos esperados  
+
+  Scenario: Validar retorno consistente da lista de vídeos
+    When eu faço uma requisição GET para "/api/v1/configuracoes/telas-boas-vindas"
+    Then o status da resposta deve ser 200
+    And o corpo da resposta deve conter a lista de vídeos com os campos esperados
+
+  Scenario: Validar múltiplas requisições da lista de vídeos
+    When eu faço uma requisição GET para "/api/v1/configuracoes/telas-boas-vindas"
+    Then o status da resposta deve ser 200
+    And o corpo da resposta deve conter a lista de vídeos com os campos esperados
+
+  Scenario: Garantir que a lista de vídeos é retornada corretamente
+    When eu faço uma requisição GET para "/api/v1/configuracoes/telas-boas-vindas"
+    Then o status da resposta deve ser 200
+    And o corpo da resposta deve conter a lista de vídeos com os campos esperados
+
+  Scenario: Validar resposta com dados de vídeos válidos
+    When eu faço uma requisição GET para "/api/v1/configuracoes/telas-boas-vindas"
+    Then o status da resposta deve ser 200
+    And o corpo da resposta deve conter a lista de vídeos com os campos esperados

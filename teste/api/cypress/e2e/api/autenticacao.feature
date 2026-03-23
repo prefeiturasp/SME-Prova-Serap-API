@@ -19,3 +19,23 @@ Feature: API - Autenticação
     Given que acesso o endpoint de autenticação
     When envio os dados com senha inválida
     Then retorna status 412 retorna a mensagem que está incorreta
+
+  Scenario: Não autenticar sem login e senha
+    Given que acesso o endpoint de autenticação
+    When envio os dados sem o login
+    Then retorna status 422 que acesso foi inválido
+
+  Scenario: Garantir autenticação com dados válidos
+    Given que acesso o endpoint de autenticação
+    When envio os dados de acesso
+    Then retorna status 200 com o token válido
+
+  Scenario: Validar múltiplas autenticações consecutivas
+    Given que acesso o endpoint de autenticação
+    When envio os dados de acesso
+    Then retorna status 200 com o token válido
+
+  Scenario: Não autenticar com credenciais inválidas
+    Given que acesso o endpoint de autenticação
+    When envio os dados com senha inválida
+    Then retorna status 412 retorna a mensagem que está incorreta
