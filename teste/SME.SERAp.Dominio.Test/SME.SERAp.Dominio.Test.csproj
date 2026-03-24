@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Constantes\" />
-    <Folder Include="Enumerados\" />
     <Folder Include="Extensoes\" />
   </ItemGroup>
 
