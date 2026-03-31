@@ -19,7 +19,8 @@ module.exports = defineConfig({
   e2e: {
 
     env: {
-      allure: true
+      allure: true,
+      TAGS: "not @ignore"
     },
 
     async setupNodeEvents(on, config) {

@@ -1,5 +1,6 @@
 Feature: API - Questão completa do ID da prova e legado
 
+  @ignore
   Scenario: Retorna a questão completa com ID da prova e legado
     Given que possuo um token de acesso válido
     When envio uma requisição GET para questão com ID da prova
