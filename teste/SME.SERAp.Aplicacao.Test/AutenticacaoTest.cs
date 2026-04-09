@@ -1,4 +1,6 @@
 using SME.SERAp.Prova.Aplicacao;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -7,23 +9,28 @@ namespace SME.SERAp.Aplicacao.Test
 {
     public class AutenticacaoTest
     {
+        public static IEnumerable<object[]> VerificaRegraSenhaData =>
+            new List<object[]>
+            {
+                new object[] { 5215402, "01022010", new DateTime(2010, 01, 01, 0, 0, 0), false },
+                new object[] { 5215402, "20042012", new DateTime(2012, 04, 20, 0, 0, 0), true },
+                new object[] { 5215402, "10052010", new DateTime(2009, 05, 09, 0, 0, 0), false },
+                new object[] { 856472584, "02112015", new DateTime(2015, 11, 02, 0, 0, 0), true },
+                new object[] { 856472584, "16072016", new DateTime(2016, 07, 15, 0, 0, 0), false }
+            };
+
         [Theory]
-        [InlineData(5215402, "402", false)]
-        [InlineData(5215402, "5402", true)]
-        [InlineData(5215402, "ABCS", false)]
-        [InlineData(856472584, "2584", true)]
-        [InlineData(856472584, "1584", false)]        
-        public async Task VerificaRegraSenha(long alunoRA, string senha, bool deveAutenticar)
+        [MemberData(nameof(VerificaRegraSenhaData))]
+        public async Task VerificaRegraSenha(long alunoRA, string senha, DateTime dataNascimento, bool deveAutenticar)
         {
             //Arrange
             var queryHandler = new VerificaAutenticacaoUsuarioQueryHandler();
 
             //Act
-            var estaAutenticado = await queryHandler.Handle(new VerificaAutenticacaoUsuarioQuery(alunoRA, senha, new System.DateTime()), new CancellationToken());
+            var estaAutenticado = await queryHandler.Handle(new VerificaAutenticacaoUsuarioQuery(alunoRA, senha, dataNascimento), new CancellationToken());
 
             //Assert
             Assert.Equal(deveAutenticar, estaAutenticado);
-
         }
     }
 }
