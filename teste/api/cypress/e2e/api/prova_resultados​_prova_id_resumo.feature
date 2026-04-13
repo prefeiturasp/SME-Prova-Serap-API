@@ -19,3 +19,28 @@ Feature: API - Resumo de resultados do ID da prova
     Given que não possuo um token de acesso válido
     When tento a requisição GET de resumo de resultados
     Then retorna verifica o status 401 sem acesso aos resultados
+
+  Scenario: Não retorna dados com token expirado
+    Given que não possuo um token de acesso válido
+    When tento a requisição GET de resumo de resultados
+    Then retorna verifica o status 401 sem acesso aos resultados
+
+  Scenario: Garante consistência ao consultar múltiplas vezes com ID válido
+    Given que possuo um token de acesso válido
+    When envio uma requisição GET com ID da prova
+    Then retorna status 200 com resumo dos resultados
+
+  Scenario: Garante que ID inválido continua retornando erro em chamadas repetidas
+    Given que possuo um token de acesso válido
+    When envio uma requisição GET com ID inválido
+    Then retorna status 409 sem resumo dos resultados
+
+  Scenario: Garante que ausência de ID continua retornando erro após sucesso anterior
+    Given que possuo um token de acesso válido
+    When envio uma requisição GET sem o ID da prova
+    Then retorna status 404 sem resumo dos resultados
+
+  Scenario: Valida acesso autorizado após tentativa não autorizada
+    Given que possuo um token de acesso válido
+    When envio uma requisição GET com ID da prova
+    Then retorna status 200 com resumo dos resultados
