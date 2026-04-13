@@ -31,8 +31,12 @@ namespace SME.SERAp.Prova.Aplicacao
             if (questaoAlunoRespostaSincronizarDto.AlunoRa != alunoRa)
                 throw new NegocioException("Resposta enviada não pertence ao aluno logado");
 
-            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));
-            
+            var dados = await mediator.Send(new ObterDetalhesAlunoCacheQuery(alunoRa));     
+            var ultimaQuestao = await ObterUltimaQuestaoAdministrado(provaId, dados);
+
+            if (ultimaQuestao.Id != questaoAlunoRespostaSincronizarDto.QuestaoId)
+                throw new NegocioException("A questão respondida não é a última questão administrada para o aluno. Página precisa ser atualizada.", 410);
+
             var provaStatus = await mediator.Send(new ObterProvaAlunoPorProvaIdRaQuery(provaId, alunoRa));
             if (provaStatus is not { Status: ProvaStatus.Iniciado })
                 throw new NegocioException("Esta prova precisa ser iniciada.", 411);
@@ -221,6 +225,14 @@ namespace SME.SERAp.Prova.Aplicacao
                 questaoAlunoRespostaSincronizarDto.TempoRespostaAluno);
             
             await mediator.Send(new PublicarFilaSerapEstudanteAcompanhamentoCommand(RotasRabbit.AcompProvaAlunoRespostaTratar, dtoAcompanhamento));
-        }        
+        }
+
+        private async Task<QuestaoTaiDto> ObterUltimaQuestaoAdministrado(long provaId, MeusDadosRetornoDto dados, bool utilizarCache = true)
+        {
+            var questoesTaiAdministrado = await mediator.Send(new ObterQuestoesTaiAdministradoPorProvaAlunoQuery(provaId, dados.AlunoId, utilizarCache));
+            return questoesTaiAdministrado?
+                    .OrderBy(t => t.Ordem)?
+                    .LastOrDefault();
+        }
     }
 }
