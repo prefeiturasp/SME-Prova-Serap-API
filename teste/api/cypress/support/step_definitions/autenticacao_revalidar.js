@@ -17,12 +17,12 @@ When('envio os dados de acesso', function () {
         token: token
       },
       failOnStatusCode: false
-    }).as('response')
+    }).as('resposta')
   })
 })
 
 Then('retorna status 200 com o token válido', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([200]).to.include(response.status)
     expect(response.body).to.have.property('token')
     expect(response.body).to.have.property('dataHoraExpiracao')
@@ -43,11 +43,11 @@ When('envio os dados sem o login', function () {
     "token":" "
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 422 que acesso foi inválido', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([422]).to.include(response.status)
     expect(response.body).to.have.property('mensagens')
     expect(response.body).to.have.property('existemErros')

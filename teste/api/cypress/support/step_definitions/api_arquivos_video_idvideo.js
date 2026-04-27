@@ -33,7 +33,7 @@ When('eu consulto o vídeo com o ID {int}', (idVideo) => {
       },
       failOnStatusCode: false
     }).then((resp) => {
-      cy.wrap(resp).as('response')
+      cy.wrap(resp).as('resposta')
       cy.log('Consulta de vídeo existente - Status:', resp.status)
     })
   })
@@ -51,7 +51,7 @@ When('eu consulto o vídeo com um ID inexistente', () => {
       },
       failOnStatusCode: false
     }).then((resp) => {
-      cy.wrap(resp).as('response')
+      cy.wrap(resp).as('resposta')
       cy.log('Consulta de vídeo inexistente - Status:', resp.status)
       cy.log('Corpo retornado:', JSON.stringify(resp.body))
     })
@@ -60,14 +60,14 @@ When('eu consulto o vídeo com um ID inexistente', () => {
 
 //Valida status esperado
 Then('o status da resposta deve ser {int}', (statusCode) => {
-  cy.get('@response').then((resp) => {
+  cy.get('@resposta').then((resp) => {
     expect(resp.status).to.eq(statusCode)
   })
 })
 
 //Valida corpo do vídeo existente
 Then('o corpo da resposta do vídeo deve conter os campos esperados', () => {
-  cy.get('@response').then((resp) => {
+  cy.get('@resposta').then((resp) => {
     const body = resp.body
     expect(body).to.have.property('id')
     expect(body).to.have.property('caminho')
@@ -77,7 +77,7 @@ Then('o corpo da resposta do vídeo deve conter os campos esperados', () => {
 
 //Valida resposta de erro
 Then('a resposta deve indicar que o vídeo não foi encontrado', () => {
-  cy.get('@response').then((resp) => {
+  cy.get('@resposta').then((resp) => {
     expect(resp.status).to.eq(409)
     expect(resp.body).to.have.property('mensagens')
     expect(resp.body.mensagens[0]).to.include('O vídeo não foi encontrado')

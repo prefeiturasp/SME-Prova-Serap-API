@@ -21,11 +21,11 @@ When('que realizo a busca no endpoint de meus dados', function () {
       Authorization: `Bearer ${token}`
     },    
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 com as informações do estudante', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.body).to.have.property('alunoId')
     expect(response.body).to.have.property('dreAbreviacao')
     expect(response.body).to.have.property('escola')
@@ -55,11 +55,11 @@ When('que tento a busca no endpoint de meus dados', function () {
       Authorization: 'Bearer token_invalido'
     },    
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 401 sem as informações do estudante', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([401]).to.include(response.status)    
   })
 })

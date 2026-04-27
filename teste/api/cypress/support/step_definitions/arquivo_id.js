@@ -33,7 +33,7 @@ When('eu consulto o arquivo com o ID {int}', (id) => {
     failOnStatusCode: false
   }).then((res) => {
     response = res
-    cy.wrap(response).as('response')
+    cy.wrap(response).as('resposta')
     cy.log('Consulta de arquivo - Status:', res.status)
     cy.log('Corpo da resposta:', JSON.stringify(res.body))
   })
@@ -51,7 +51,7 @@ When('eu consulto um arquivo inexistente com o ID {int}', (id) => {
     failOnStatusCode: false
   }).then((res) => {
     response = res
-    cy.wrap(response).as('response')
+    cy.wrap(response).as('resposta')
     cy.log('Consulta de arquivo inexistente - Status:', res.status)
     cy.log('Corpo da resposta:', JSON.stringify(res.body))
   })
@@ -59,14 +59,14 @@ When('eu consulto um arquivo inexistente com o ID {int}', (id) => {
 
 // Valida o status HTTP
 Then('o status da resposta deve ser {int}', (statusCode) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     expect(res.status, 'Status code incorreto').to.eq(statusCode)
   })
 })
 
 // Valida o corpo com os dados esperados da prova
 Then('o corpo da resposta deve conter o arquivo com os dados esperados', () => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     const body = res.body
     expect(body).to.have.property('id', 10)
     expect(body).to.have.property('legadoId', 10)
@@ -78,7 +78,7 @@ Then('o corpo da resposta deve conter o arquivo com os dados esperados', () => {
 
 // Valida a mensagem de erro quando o arquivo não é encontrado
 Then('o corpo da resposta deve conter a mensagem {string}', (mensagemEsperada) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     const body = res.body
     expect(body).to.have.property('mensagens')
     expect(body.mensagens).to.include(mensagemEsperada)

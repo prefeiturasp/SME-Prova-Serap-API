@@ -30,21 +30,21 @@ When('eu envio uma requisição HEAD para o endpoint de verificação de conexã
     failOnStatusCode: false
   }).then((res) => {
     response = res;
-    cy.wrap(response).as('response');
+    cy.wrap(response).as('resposta');
     cy.log('Requisição HEAD executada com sucesso');
   });
 });
 
 // Valida status da resposta
 Then('o status da resposta deve ser 200', () => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     expect(res.status).to.eq(200);
   });
 });
 
 // Valida corpo da resposta (quando houver retorno)
 Then('o corpo da resposta deve conter {string}', (textoEsperado) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     // Alguns HEADs retornam o valor no body, outros não
     if (res.body) {
       expect(res.body).to.include(textoEsperado);
@@ -65,7 +65,7 @@ When('eu envio uma requisição HEAD para o endpoint inexistente de verificaçã
     failOnStatusCode: false // evita que o Cypress falhe no 404
   }).then((res) => {
     response = res;
-    cy.wrap(response).as('response');
+    cy.wrap(response).as('resposta');
     cy.log('Requisição HEAD (endpoint incorreto) executada com sucesso');
   });
 });

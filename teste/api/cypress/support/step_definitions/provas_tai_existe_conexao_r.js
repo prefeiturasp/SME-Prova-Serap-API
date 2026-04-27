@@ -22,11 +22,11 @@ When('envio uma requisição GET para o endpoint de existe conexão', function (
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 de confirmação', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(200)
   })
 })
@@ -44,11 +44,11 @@ When('tento a requisição GET para o endpoint de existe conexão', function () 
      Authorization: 'Bearer token_invalido'
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna o status 401 não permitindo verificar', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(401)
   })
 })

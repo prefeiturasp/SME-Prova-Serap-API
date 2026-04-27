@@ -33,7 +33,7 @@ When('eu consulto o arquivo de áudio com o ID {int}', (id) => {
     failOnStatusCode: false
   }).then((res) => {
     response = res
-    cy.wrap(response).as('response')
+    cy.wrap(response).as('resposta')
     cy.log('Consulta de áudio - Status:', res.status)
     cy.log('Corpo da resposta:', JSON.stringify(res.body))
   })
@@ -41,14 +41,14 @@ When('eu consulto o arquivo de áudio com o ID {int}', (id) => {
 
 //Valida o status HTTP
 Then('o status da resposta deve ser {int}', (statusCode) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     expect(res.status, 'Status code incorreto').to.eq(statusCode)
   })
 })
 
 //Valida o corpo do áudio retornado
 Then('o corpo da resposta deve conter o áudio com os dados esperados', () => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     const body = res.body
 
     //Verifica campos e valores esperados
@@ -73,7 +73,7 @@ When('eu consulto o vídeo com o ID {int}', (id) => {
     failOnStatusCode: false // permite validar status diferentes de 2xx
   }).then((res) => {
     response = res
-    cy.wrap(response).as('response')
+    cy.wrap(response).as('resposta')
     cy.log(`Consulta de vídeo com ID ${id} - Status: ${res.status}`)
     cy.log('Corpo da resposta:', JSON.stringify(res.body))
   })
@@ -81,7 +81,7 @@ When('eu consulto o vídeo com o ID {int}', (id) => {
 
 //Valida a mensagem de erro no corpo da resposta
 Then('o corpo da resposta deve conter a mensagem {string}', (mensagemEsperada) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     const mensagens = res.body.mensagens
     expect(mensagens, 'Campo mensagens não encontrado').to.exist
     expect(mensagens).to.include(mensagemEsperada)

@@ -29,20 +29,20 @@ When('eu faço uma requisição GET para {string}', (rota) => {
     failOnStatusCode: false
   }).then((res) => {
     response = res;
-    cy.wrap(res).as('response');
+    cy.wrap(res).as('resposta');
     cy.log('Status:', res.status);
     cy.log('Corpo da resposta:', JSON.stringify(res.body));
   });
 });
 
 Then('o status da resposta deve ser {int}', (statusCode) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     expect(res.status).to.eq(statusCode);
   });
 });
 
 Then('o corpo da resposta deve conter os campos {string} e {string}', (campo1, campo2) => {
-  cy.get('@response').then((res) => {
+  cy.get('@resposta').then((res) => {
     const body = res.body;
     expect(body).to.have.property(campo1);
     expect(body).to.have.property(campo2);

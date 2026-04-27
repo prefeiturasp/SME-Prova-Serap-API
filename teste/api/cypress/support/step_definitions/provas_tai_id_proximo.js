@@ -31,11 +31,11 @@ When('envio uma requisição POST da próxima', function () {
       tempoRespostaAluno: Cypress.env('TEMPO_RESPOTA_ALUNO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 de sucesso da questão', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([200, 411]).to.include(response.status)
   })
 })
@@ -59,11 +59,11 @@ When('envio uma requisição POST da próxima sem o ID', function () {
       tempoRespostaAluno: Cypress.env('TEMPO_RESPOTA_ALUNO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 404 sem a questão', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(404)
   })
 })
@@ -90,11 +90,11 @@ When('tento a requisição POST da próxima', function () {
       tempoRespostaAluno: Cypress.env('TEMPO_RESPOTA_ALUNO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('não retorna a questão somente 401', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([401, 405]).to.include(response.status)
   })
 })

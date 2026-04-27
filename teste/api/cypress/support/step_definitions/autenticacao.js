@@ -18,11 +18,11 @@ When('envio os dados de acesso', function () {
       dispositivo: Cypress.env('DISPOSITIVO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 com o token válido', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([200]).to.include(response.status)
     expect(response.body).to.have.property('token')
     expect(response.body).to.have.property('dataHoraExpiracao')
@@ -45,11 +45,11 @@ When('envio os dados sem o login', function () {
       dispositivo: Cypress.env('DISPOSITIVO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 422 que acesso foi inválido', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([422]).to.include(response.status)
     expect(response.body).to.have.property('mensagens')
     expect(response.body).to.have.property('existemErros')
@@ -71,11 +71,11 @@ When('envio os dados sem a senha', function () {
       dispositivo: Cypress.env('DISPOSITIVO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 422 que é necessário ser informada', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([422]).to.include(response.status)
     expect(response.body).to.have.property('mensagens')
     expect(response.body).to.have.property('existemErros')
@@ -100,11 +100,11 @@ When('envio os dados com senha inválida', function () {
       dispositivo: Cypress.env('DISPOSITIVO')
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 412 retorna a mensagem que está incorreta', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect([412]).to.include(response.status)
     expect(response.body).to.have.property('mensagens')
     expect(response.body).to.have.property('existemErros')

@@ -34,11 +34,11 @@ When('envio uma requisição POST para iniciar a TAI', function () {
       dataFim
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 que a prova foi iniciada', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.be.oneOf([200, 411])
   })
 })
@@ -59,11 +59,11 @@ When('envio uma requisição POST para iniciar sem o ID', function () {
       dataFim: Cypress.env('DATA_FIM')      
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 404 sem iniciar a prova', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(404)
   })
 })
@@ -87,11 +87,11 @@ When('tento a requisição POST de iniciar prova', function () {
       dataFim: Cypress.env('DATA_FIM')      
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('a prova não é iniciada retornando o status 401', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(401)
   })
 })
