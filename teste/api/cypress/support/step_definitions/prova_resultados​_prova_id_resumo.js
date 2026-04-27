@@ -22,11 +22,11 @@ When('envio uma requisição GET com ID da prova', function () {
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 com resumo dos resultados', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(200)
     expect(response.body).to.have.property('proficiencia', 0)
     expect(response.body).to.have.property('resumos')
@@ -52,11 +52,11 @@ When('envio uma requisição GET com ID inválido', function () {
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 409 sem resumo dos resultados', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(409)
     expect(response.body).to.have.property('mensagens')
     expect(response.body.mensagens).to.include("Prova 999 não localizada para obter o resumo do resultado do aluno.")
@@ -74,11 +74,11 @@ When('envio uma requisição GET sem o ID da prova', function () {
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 404 sem resumo dos resultados', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(404)
   })
 })
@@ -96,11 +96,11 @@ When('tento a requisição GET de resumo de resultados', function () {
       Authorization: 'Bearer token_invalido'
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna verifica o status 401 sem acesso aos resultados', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(401)
   })
 })

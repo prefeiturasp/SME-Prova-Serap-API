@@ -22,11 +22,11 @@ When('envio uma requisição POST de obter questão', function () {
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 200 de sucesso', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.be.oneOf([200, 411])
   })
 })
@@ -41,11 +41,11 @@ When('envio uma requisição POST de obter questão sem o ID', function () {
       Authorization: `Bearer ${token}`
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('retorna status 404', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(404)
   })
 })
@@ -63,11 +63,11 @@ When('tento a requisição POST de obter questão', function () {
      Authorization: 'Bearer token_invalido'
     },
     failOnStatusCode: false
-  }).as('response')
+  }).as('resposta')
 })
 
 Then('não retorna a questão com status 401', function () {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     expect(response.status).to.eq(401)
   })
 })

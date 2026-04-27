@@ -32,7 +32,7 @@ When('eu consulto o arquivo legado com o ID {int}', (id) => {
     },
     failOnStatusCode: false // permite capturar 4xx e 5xx
   }).then((res) => {
-    cy.wrap(res).as('response')
+    cy.wrap(res).as('resposta')
     cy.log(`Consulta de arquivo legado - ID: ${id}`)
     cy.log('Status:', res.status)
     cy.log('Corpo da resposta:', JSON.stringify(res.body))
@@ -41,7 +41,7 @@ When('eu consulto o arquivo legado com o ID {int}', (id) => {
 
 //Valida o status code
 Then('o status da resposta deve ser {int}', (statusCode) => {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     cy.log('Status retornado:', response.status)
     expect(response.status).to.eq(statusCode)
   })
@@ -49,7 +49,7 @@ Then('o status da resposta deve ser {int}', (statusCode) => {
 
 //Valida campos esperados (para cenário existente)
 Then('o corpo da resposta deve conter os campos esperados', () => {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     const body = response.body
     expect(body).to.have.property('id')
     expect(body).to.have.property('legadoId')
@@ -61,7 +61,7 @@ Then('o corpo da resposta deve conter os campos esperados', () => {
 
 //Valida mensagem de erro (para cenário inexistente)
 Then('a mensagem de erro deve ser {string}', (mensagemEsperada) => {
-  cy.get('@response').then((response) => {
+  cy.get('@resposta').then((response) => {
     const body = response.body
     expect(body).to.have.property('mensagens')
     expect(body.mensagens[0]).to.eq(mensagemEsperada)
