@@ -61,7 +61,11 @@ module.exports = defineConfig({
         'ALTERNATIVA_ID',
         'RESPOSTA',
         'DATA_HORA_RESPOSTA_TICKS',
-        'TEMPO_RESPOSTA_ALUNO'
+        'TEMPO_RESPOSTA_ALUNO',
+        'API_URL',
+        'LOGIN',
+        'SENHA',
+        'PROVA_ID'
       ]
 
       const customVariable = Object.fromEntries(
