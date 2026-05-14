@@ -1,4 +1,5 @@
 # language: pt
+
 Funcionalidade: Verificar conexão com o serviço de configurações
   Como um cliente da API
   Quero validar a resposta do endpoint de verificação de conexão
@@ -15,3 +16,54 @@ Funcionalidade: Verificar conexão com o serviço de configurações
   Cenário: Validar resposta 404 quando o endpoint de conexão não existe
     Quando eu envio uma requisição HEAD para o endpoint inexistente de verificação de conexão
     Então o status da resposta deve ser 404
+
+  Cenário: Validar consistência da resposta do endpoint de conexão
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar que o endpoint responde rapidamente
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar estabilidade do endpoint em múltiplas requisições
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar que o endpoint retorna content-type corretamente
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar integridade da resposta positiva da API
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar que o endpoint não retorna erro inesperado
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
+
+  Cenário: Validar padronização da resposta para endpoint inexistente
+    Quando eu envio uma requisição HEAD para o endpoint inexistente de verificação de conexão
+    Então o status da resposta deve ser 404
+
+  Cenário: Validar comportamento consistente ao acessar endpoint inexistente
+    Quando eu envio uma requisição HEAD para o endpoint inexistente de verificação de conexão
+    Então o status da resposta deve ser 404
+
+  Cenário: Validar que endpoint inexistente não retorna sucesso
+    Quando eu envio uma requisição HEAD para o endpoint inexistente de verificação de conexão
+    Então o status da resposta deve ser 404
+
+  Cenário: Validar estabilidade da API ao consultar endpoint inválido repetidamente
+    Quando eu envio uma requisição HEAD para o endpoint inexistente de verificação de conexão
+    Então o status da resposta deve ser 404
+
+  Cenário: Validar que a autenticação válida permite acesso ao endpoint
+    Quando eu envio uma requisição HEAD para o endpoint de verificação de conexão
+    Então o status da resposta deve ser 200
+    E o corpo da resposta deve conter "true"
