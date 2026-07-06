@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using SME.SERAp.Prova.Dominio;
 using SME.SERAp.Prova.Infra;
 using System;
@@ -20,25 +21,36 @@ namespace SME.SERAp.Prova.Aplicacao
             this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public Task<bool> Handle(PublicarFilaSerapCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(PublicarFilaSerapCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 var mensagem = new MensagemRabbit(request.Mensagem, Guid.NewGuid());
                 var body = Encoding.UTF8.GetBytes(mensagem.ConverterObjectParaJson());
 
-                using var canal = connectionRabbit.CreateModel();
-                var props = canal.CreateBasicProperties();
-                
-                props.Persistent = true;
-                canal.BasicPublish(ExchangeRabbit.Serap, request.Fila, props, body);
+                await using var canal = await connectionRabbit.CreateChannelAsync(null, cancellationToken);
 
-                return Task.FromResult(true);
+                var props = new BasicProperties
+                {
+                    Persistent = true
+                };
+
+                await canal.BasicPublishAsync(
+                    ExchangeRabbit.Serap,
+                    request.Fila,
+                    true,
+                    props,
+                    body,
+                    cancellationToken
+                );
+
+                return true;
             }
             catch (Exception ex)
             {
                 mediator.Send(new SalvarLogViaRabbitCommand($"Erros: PublicarFilaSerapCommand: Fila -> {request.Fila}", LogNivel.Critico, ex.Message), cancellationToken);
-                return Task.FromResult(false);
+
+                return false;
             }
         }
     }

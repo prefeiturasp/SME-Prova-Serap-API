@@ -6,6 +6,6 @@ namespace SME.SERAp.Prova.Aplicacao
 {
     public interface IImportarArquivoResultadoPspUseCase
     {
-        Task<bool> Executar(IFormFile arquivo, ImportArquivoResultadoPspDto arquivoResultadoDto);
+        Task<bool> Executar(ImportArquivoResultadoPspDto arquivoResultadoDto);
     }
 }

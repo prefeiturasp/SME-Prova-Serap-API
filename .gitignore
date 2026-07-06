@@ -263,3 +263,5 @@ __pycache__/
 
 # Variáveis de ambiente para docker-compose
 api.env
+
+.github/copilot-instructions.md

@@ -17,12 +17,13 @@ namespace SME.SERAp.Prova.Aplicacao
             this.pathOptions = pathOptions ?? throw new ArgumentNullException(nameof(pathOptions));
         }
 
-        public async Task<bool> Executar(IFormFile arquivo, ImportArquivoResultadoPspDto arquivoResultadoDto)
+        public async Task<bool> Executar(ImportArquivoResultadoPspDto arquivoResultadoDto)
         {
             try
             {
+                var arquivo = arquivoResultadoDto.Arquivo;
 
-                if (arquivo == null || arquivo?.Length == 0) return false;
+                if (arquivo == null || arquivo.Length == 0) return false;
                 if (arquivoResultadoDto == null) return false;
                 if (string.IsNullOrEmpty(arquivoResultadoDto.NomeArquivo)) return false;
 

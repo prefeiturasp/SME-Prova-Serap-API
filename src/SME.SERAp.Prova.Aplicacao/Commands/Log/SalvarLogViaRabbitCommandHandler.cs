@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using SME.SERAp.Prova.Infra;
 using System;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SME.SERAp.Prova.Aplicacao.Commands.Log
 {
-   public class SalvarLogViaRabbitCommandHandler : IRequestHandler<SalvarLogViaRabbitCommand, bool>
+    public class SalvarLogViaRabbitCommandHandler : IRequestHandler<SalvarLogViaRabbitCommand, bool>
     {
         private readonly RabbitLogOptions configuracaoRabbitOptions;
         private readonly IServicoTelemetria servicoTelemetria;
@@ -32,7 +33,7 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
 
                 var body = Encoding.UTF8.GetBytes(mensagem.ConverterObjectParaJson());
 
-                servicoTelemetria.Registrar(() => PublicarMensagem(body), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
+                servicoTelemetria.Registrar(() => PublicarMensagemAsync(body).GetAwaiter().GetResult(), "RabbitMQ", "Salvar Log Via Rabbit", RotasRabbit.RotaLogs);
 
                 return Task.FromResult(true);
             }
@@ -41,24 +42,42 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
                 return Task.FromResult(false);
             }
         }
-        
-        private void PublicarMensagem(byte[] body)
-        {
-            var factory = new ConnectionFactory
-            {
-                HostName = configuracaoRabbitOptions.HostName,
-                UserName = configuracaoRabbitOptions.UserName,
-                Password = configuracaoRabbitOptions.Password,
-                VirtualHost = configuracaoRabbitOptions.VirtualHost
-            };
 
-            using var conexaoRabbit = factory.CreateConnection();
-            using var channel = conexaoRabbit.CreateModel();
-            
-            var props = channel.CreateBasicProperties();
-            channel.BasicPublish(ExchangeRabbit.Logs, RotasRabbit.RotaLogs, props, body);
+        private async Task PublicarMensagemAsync(byte[] body)
+        {
+            try
+            {
+                var factory = new ConnectionFactory
+                {
+                    HostName = configuracaoRabbitOptions.HostName,
+                    UserName = configuracaoRabbitOptions.UserName,
+                    Password = configuracaoRabbitOptions.Password,
+                    VirtualHost = configuracaoRabbitOptions.VirtualHost
+                };
+
+                using var conexaoRabbit = await factory.CreateConnectionAsync();
+                using var channel = await conexaoRabbit.CreateChannelAsync();
+
+                var props = new BasicProperties
+                {
+                    Persistent = true
+                };
+
+                await channel.BasicPublishAsync(
+                    ExchangeRabbit.Logs,
+                    RotasRabbit.RotaLogs,
+                    true,
+                    props,
+                    body
+                );
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
+
     public class LogMensagem
     {
         public LogMensagem(string mensagem, string nivel, string observacao, string projeto, string rastreamento, string excecaoInterna)
@@ -79,7 +98,5 @@ namespace SME.SERAp.Prova.Aplicacao.Commands.Log
         public string Rastreamento { get; set; }
         public string ExcecaoInterna { get; set; }
         public DateTime DataHora { get; set; }
-
     }
-
 }
