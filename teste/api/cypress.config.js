@@ -65,7 +65,13 @@ module.exports = defineConfig({
         'API_URL',
         'LOGIN',
         'SENHA',
-        'PROVA_ID'
+        'PROVA_ID',
+        'WEB_BASE_URL',
+        'WEB_LOGIN',
+        'WEB_SENHA',
+        'WEB_LOGIN_INVALIDO',
+        'WEB_SENHA_INVALIDA',
+        'WEB_NOME_USUARIO_ESPERADO'
       ]
 
       const customVariable = Object.fromEntries(
