@@ -49,4 +49,3 @@ Funcionalidade: Web - Menu de navegação do SERAp
     E seleciono a opção de menu "Provas"
     E seleciono a opção de menu "Consultar provas"
     Então devo ser redirecionado para a página "Test"
-    
