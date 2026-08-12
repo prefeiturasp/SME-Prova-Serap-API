@@ -43,5 +43,8 @@
         public const string ImportarResultadoCicloTurma = "serap.resultados.psp.resultado.ciclo.turma";
         public const string ImportarResultadoCicloDrePsp = "serap.resultados.psp.resultado.ciclo.dre";
 
+        public const string CriarProvaPresenca = "serap.estudantes.provaPresenca.criar";
+        public const string AtualizarProvaPresenca = "serap.estudantes.provaPresenca.atualizar";
+        public const string DeletarProvaPresenca = "serap.estudantes.provaPresenca.deletar";
     }
 }
