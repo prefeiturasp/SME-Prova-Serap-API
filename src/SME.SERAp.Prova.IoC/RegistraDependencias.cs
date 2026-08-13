@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SME.SERAp.Prova.Aplicacao;
+using SME.SERAp.Prova.Aplicacao.Interfaces.UseCase;
 using SME.SERAp.Prova.Aplicacao.UseCase;
 using SME.SERAp.Prova.Dados;
 using SME.SERAp.Prova.Dados.Cache;
@@ -56,6 +57,7 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IRepositorioArquivoResultadoPsp, RepositorioArquivoResultadoPsp>();
             services.TryAddScoped<IRepositorioExecucaoControle, RepositorioExecucaoControle>();
             services.TryAddScoped<IRepositorioQuestaoAlunoTai, RepositorioQuestaoAlunoTai>();
+            services.TryAddScoped<IRepositorioProvaPresenca, RepositorioProvaPresenca>();
         }
 
         private static void RegistrarServicos(IServiceCollection services)
@@ -124,6 +126,11 @@ namespace SME.SERAp.Prova.IoC
             services.TryAddScoped<IObterArquivoVideoPorIdUseCase, ObterArquivoVideoPorIdUseCase>();
             services.TryAddScoped<IObterQuestaoPorIdUseCase, ObterQuestaoPorIdUseCase>();
             services.TryAddScoped<IObterDataUltimaSincronizacaoProvasUseCase, ObterDataUltimaSincronizacaoProvasUseCase>();
+            services.TryAddScoped<ICriarProvaPresencaUseCase, CriarProvaPresencaUseCase>();
+            services.TryAddScoped<IListarProvaPresencaUseCase, ListarProvaPresencaUseCase>();
+            services.TryAddScoped<IObterProvaPresencaPorIdUseCase, ObterProvaPresencaPorIdUseCase>();
+            services.TryAddScoped<IAtualizarProvaPresencaUseCase, AtualizarProvaPresencaUseCase>();
+            services.TryAddScoped<IDeletarProvaPresencaUseCase, DeletarProvaPresencaUseCase>();
         }
     }
 }
