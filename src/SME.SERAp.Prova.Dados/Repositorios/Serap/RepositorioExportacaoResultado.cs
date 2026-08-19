@@ -38,7 +38,7 @@ namespace SME.SERAp.Prova.Dados
 
         public async Task<PaginacaoResultadoDto<ProvaExportacaoResultadoDto>> ObterPorFiltroDataPaginadaAsync(DateTime? dataInicio,
             DateTime? dataFim, long provaSerapId, string descricaoProva, int quantidadeRegistros, int numeroPagina)
-        {           
+        {
             const string query = @"select p.id as  ProvaId, 
                                         p.prova_legado_id as ProvaLegadoId,
                                         p.descricao as Descricao,
@@ -48,7 +48,13 @@ namespace SME.SERAp.Prova.Dados
                                         case when ex.id is null then 0 else ex.id end ProcessoId,
                                         case when ex.status is null then 1 else ex.status end Status,
                                         ex.criado_em as CriadoEm,
-                                        coalesce(ex.atualizado_em, ex.criado_em) as UltimaExportacao
+                                        coalesce(ex.atualizado_em, ex.criado_em) as UltimaExportacao,
+                                        tp.id as TipoId,
+                                        tp.legado_id as TipoLegadoId,
+                                        tp.descricao as TipoDescricao,
+                                        tp.para_estudante_com_deficiencia as TipoParaEstudanteComDeficiencia,
+                                        tp.criado_em as TipoCriadoEm,
+                                        tp.atualizado_em as TipoAtualizadoEm
                                     from prova p
                                     inner join (select distinct prova_id 
                                                 from prova_aluno
@@ -60,8 +66,9 @@ namespace SME.SERAp.Prova.Dados
                                                 having id = (select max(id) 
                                                                 from exportacao_resultado
                                                                 where prova_serap_id = ex.prova_serap_id)) as ex on p.prova_legado_id = ex.prova_serap_id
+                                    left join tipo_prova tp on tp.id = p.tipo_prova_id
                                     where 1 = 1";
-            
+
             const string queryCount = @"select count(1)
                                         from prova p
                                         inner join (select distinct prova_id
@@ -74,10 +81,11 @@ namespace SME.SERAp.Prova.Dados
                                                     having id = (select max(id) 
                                                                     from exportacao_resultado
                                                                     where prova_serap_id = ex.prova_serap_id)) as ex on p.prova_legado_id = ex.prova_serap_id
+                                        left join tipo_prova tp on tp.id = p.tipo_prova_id
                                         where 1 = 1";
 
             var retorno = new PaginacaoResultadoDto<ProvaExportacaoResultadoDto>();
-            
+
             using var conn = ObterConexaoLeitura();
             try
             {
@@ -100,7 +108,7 @@ namespace SME.SERAp.Prova.Dados
                 sql.AppendLine(" limit @quantidadeRegistros offset(@numeroPagina - 1) * @quantidadeRegistros; ");
 
                 sql.AppendLine(queryCount);
-                
+
                 if (dataInicio != null)
                     sql.AppendLine(" and p.inicio >= @DataInicio");
 
@@ -109,10 +117,10 @@ namespace SME.SERAp.Prova.Dados
 
                 if (provaSerapId > 0)
                     sql.AppendLine(" and p.prova_legado_id = @ProvaSerapId");
-                
+
                 if (!string.IsNullOrEmpty(descricaoProva))
-                    sql.AppendLine($" and lower(p.descricao) like '%{descricaoProva.ToLower()}%'");                
-                
+                    sql.AppendLine($" and lower(p.descricao) like '%{descricaoProva.ToLower()}%'");
+
                 using (var multi = await conn.QueryMultipleAsync(sql.ToString(), new { dataInicio, dataFim, provaSerapId, quantidadeRegistros, numeroPagina }))
                 {
                     retorno.Items = multi.Read<ProvaExportacaoResultadoDto>();

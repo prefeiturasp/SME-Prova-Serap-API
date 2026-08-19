@@ -38,6 +38,10 @@ namespace SME.SERAp.Prova.Aplicacao
                     CreateDate = x.CriadoEm.ToString("dd/MM/yyyy HH:mm:ss"),
                     UpdateDate = x.UltimaExportacao?.ToString("dd/MM/yyyy HH:mm:ss"),
                     FileId = x.ProcessoId,
+                    TipoId = x.TipoId,
+                    TipoLegadoId = x.TipoLegadoId,
+                    TipoDescricao = x.TipoDescricao,
+                    TipoParaEstudanteComDeficiencia = x.TipoParaEstudanteComDeficiencia
                 }),
                 TotalRegistros = result.TotalRegistros,
                 TotalPaginas = result.TotalPaginas
