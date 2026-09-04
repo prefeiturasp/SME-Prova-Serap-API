@@ -50,7 +50,7 @@ pipeline {
                                                 --headed true \
                                                 --record \
                                                 --key somekey \
-                                                --ci-build-id SME-CDEP_JENKINS-BUILD-${BUILD_NUMBER} && \
+                                                --ci-build-id SME-SERAP_JENKINS-BUILD-${BUILD_NUMBER} && \
                                         chown 1001:1001 * -R && \
                                         chmod 777 * -R"
                             '''
