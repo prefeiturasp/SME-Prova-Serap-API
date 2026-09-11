@@ -1,3 +1,6 @@
+import LoginPage from './pages/LoginPage'
+import GrupoAcessoPage from './pages/GrupoAcessoPage'
+
 Cypress.Commands.add('gerar_token', () => {
   return cy.request({
     method: 'POST',
@@ -19,6 +22,11 @@ Cypress.Commands.add('gerar_token', () => {
     }
     return response.body.token
   })
+})
+
+Cypress.Commands.add('loginWeb', (usuario = Cypress.env('WEB_LOGIN'), senha = Cypress.env('WEB_SENHA')) => {
+  LoginPage.visitar().efetuarLogin(usuario, senha)
+  GrupoAcessoPage.selecionarAdministrador()
 })
  
  
