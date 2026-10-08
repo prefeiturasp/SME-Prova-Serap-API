@@ -15,5 +15,9 @@ namespace SME.SERAp.Prova.Infra
         public ExportacaoResultadoStatus Status { get; set; }
         public DateTime CriadoEm { get; set; }
         public DateTime? UltimaExportacao { get; set; }
+        public long? TipoId { get; set; }
+        public long? TipoLegadoId { get; set; }
+        public string TipoDescricao { get; set; }
+        public bool? TipoParaEstudanteComDeficiencia { get; set; }
     }
 }
