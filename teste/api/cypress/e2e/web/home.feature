@@ -11,6 +11,7 @@ Funcionalidade: Web - Tela inicial (Home) do SERAp
   Cenário: Exibir cabeçalho com o nome do sistema
     Então devo visualizar o cabeçalho com o nome "SERAp"
 
+
   Cenário: Exibir saudação de boas-vindas ao usuário autenticado
     Então devo visualizar a saudação de boas-vindas ao usuário
 

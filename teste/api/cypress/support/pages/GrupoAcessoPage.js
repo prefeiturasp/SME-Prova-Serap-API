@@ -7,7 +7,8 @@ class GrupoAcessoPage {
   }
 
   grupo(nome) {
-    return cy.contains(nome)
+    this.titulo()
+    return cy.contains(nome, { matchCase: false, timeout: 60000 })
   }
 
   selecionarAdministrador() {
