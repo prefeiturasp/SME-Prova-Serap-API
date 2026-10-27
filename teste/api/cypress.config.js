@@ -20,7 +20,6 @@ module.exports = defineConfig({
 
     env: {
       allure: true,
-      allureReuseAfterSpec: true,
       TAGS: "not @ignore"
     },
 
