@@ -21,6 +21,16 @@ Then('devo visualizar a seção de ferramentas em destaque', () => {
   HomePage.ferramentasEmDestaque().should('be.visible')
 })
 
+Then('devo visualizar o menu Cadastros', () => {
+  HomePage.abrirMenu()
+  HomePage.menuCadastros().should('be.visible')
+})
+
+Then('devo visualizar a opção Componente curricular no menu Cadastros', () => {
+  HomePage.abrirMenuCadastros()
+  HomePage.opcaoComponenteCurricular().should('be.visible')
+})
+
 Then('devo visualizar o link {string} no cabeçalho', (texto) => {
   cy.contains(texto, { timeout: 15000 }).should('be.visible')
 })
