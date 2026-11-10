@@ -15,7 +15,7 @@ pipeline {
     }
 
     environment {
-        ALLURE_PATH = 'teste/api/allure-results'
+        ALLURE_PATH = 'teste/e2e/allure-results'
         WORKSPACE_DIR = "${env.WORKSPACE}"
     }
 
@@ -32,12 +32,12 @@ pipeline {
                     withDockerRegistry(credentialsId: 'jenkins_registry', url: 'https://registry.sme.prefeitura.sp.gov.br/repository/sme-registry/') {
                         withCredentials([file(credentialsId: "cypress_env_serap", variable: 'env')]){   
                             sh '''
-                                touch teste/api/.env
-                                cp "$env" "teste/api/.env"
+                                touch teste/e2e/.env
+                                cp "$env" "teste/e2e/.env"
                                 docker pull registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2
                                 docker run \
                                     --rm \
-                                    -v "$WORKSPACE/teste/api:/app" \
+                                    -v "$WORKSPACE/teste/e2e:/app" \
                                     -w /app \
                                     registry.sme.prefeitura.sp.gov.br/devops/cypress-agent:14.5.2 \
                                     sh -c "rm -rf allure-results && \
@@ -111,9 +111,9 @@ pipeline {
                     echo "⚠️ Resultados do Allure não encontrados ou vazios, plugin não será acionado."
                 }
 
-                def zipExists = sh(script: "ls teste/api/allure-results/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
+                def zipExists = sh(script: "ls teste/e2e/allure-results/allure-results-*.zip 2>/dev/null || true", returnStdout: true).trim()
                 if (zipExists) {
-                    archiveArtifacts artifacts: 'teste/api/allure-results/allure-results-*.zip', fingerprint: true
+                    archiveArtifacts artifacts: 'teste/e2e/allure-results/allure-results-*.zip', fingerprint: true
                 } else {
                     echo "⚠️ Nenhum .zip de Allure encontrado para arquivamento."
                 }
@@ -145,7 +145,7 @@ def sendTelegram(message) {
         response = httpRequest (consoleLogResponseBody: true,
             contentType: 'APPLICATION_JSON',
             httpMode: 'GET',
-            url: 'https://api.telegram.org/bot'+"$TOKEN"+'/sendMessage?text='+encodedMessage+'&chat_id='+"$CHAT_ID"+'&parse_mode='+"HTML"+'&disable_web_page_preview=true',
+            url: 'https://e2e.telegram.org/bot'+"$TOKEN"+'/sendMessage?text='+encodedMessage+'&chat_id='+"$CHAT_ID"+'&parse_mode='+"HTML"+'&disable_web_page_preview=true',
             validResponseCodes: '200')
         return response
     }

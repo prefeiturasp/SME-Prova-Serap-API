@@ -30,6 +30,28 @@ class HomePage {
     return cy.contains('Ferramentas em destaque')
   }
 
+  botaoMenu() {
+    return cy.contains('MENU', { matchCase: false, timeout: 15000 })
+  }
+
+  abrirMenu() {
+    this.botaoMenu().click()
+    return this
+  }
+
+  menuCadastros() {
+    return cy.contains('Cadastros', { timeout: 15000 })
+  }
+
+  abrirMenuCadastros() {
+    this.menuCadastros().click()
+    return this
+  }
+
+  opcaoComponenteCurricular() {
+    return cy.contains('Componente curricular', { timeout: 15000 })
+  }
+
   sair() {
     this.botaoSair().click()
     return this
