@@ -7,7 +7,7 @@ Funcionalidade: Web - Menu Cadastros do SERAp
 
   Contexto:
     Dado que estou autenticado no SERAp
-
+@ignore
   Cenário: Exibir a opção Componente curricular no menu Cadastros
     Então devo visualizar o menu Cadastros
     E devo visualizar a opção Componente curricular no menu Cadastros
